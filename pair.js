@@ -1692,12 +1692,12 @@ case 'ping': {
 
 			  // ---------------------- VV ----------------------
 
-case 'vv':
-case 'wow':
-case 'antiviewonce':
+
+        
+    case 'antiviewonce':
 case 'antiview': {
 
-  // ⏳ instant reaction
+  // ⏳ thinking reaction (no await)
   socket.sendMessage(sender, {
     react: { text: "⏳", key: msg.key }
   }).catch(() => {});
@@ -1717,12 +1717,7 @@ case 'antiview': {
       );
     }
 
-    const viewOnceMsg =
-      quoted?.viewOnceMessageV2?.message ||
-      quoted?.viewOnceMessage?.message ||
-      quoted?.viewOnceMessageV2Extension?.message ||
-      quoted?.ephemeralMessage?.message?.viewOnceMessageV2?.message ||
-      quoted?.ephemeralMessage?.message?.viewOnceMessage?.message;
+    const viewOnceMsg = extractViewOnceMessage(quoted);
 
     if (!viewOnceMsg) {
       socket.sendMessage(sender, {
@@ -1749,13 +1744,15 @@ case 'antiview': {
       );
     }
 
-    const type = media.mimetype.startsWith("image") ? "image" : "video";
-
-    // 🔥 Correct download (THIS is the fix)
-    const buffer = await downloadViewOnce(media, type);
+    const buffer = await downloadMediaMessage(
+      { message: media, key: msg.key },
+      "buffer",
+      {},
+      { logger }
+    );
 
     await socket.sendMessage(sender, {
-      [type]: buffer,
+      [media.mimetype.startsWith("image") ? "image" : "video"]: buffer,
       caption: media.caption || "🔓 *Anti View-Once*",
     }, { quoted: msg });
 
@@ -2326,6 +2323,7 @@ initMongo().catch(err => console.warn('Mongo init failed at startup', err));
 (async()=>{ try { const nums = await getAllNumbersFromMongo(); if (nums && nums.length) { for (const n of nums) { if (!activeSockets.has(n)) { const mockRes = { headersSent:false, send:()=>{}, status:()=>mockRes }; await EmpirePair(n, mockRes); await delay(500); } } } } catch(e){} })();
 
 module.exports = router;
+
 
 
 
