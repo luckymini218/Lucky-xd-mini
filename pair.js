@@ -623,7 +623,7 @@ END:VCARD`
       // test command switch case
 
 case 'menu': {
-  try { await socket.sendMessage(sender, { react: { text: "🎐", key: msg.key } }); } catch(e){}
+  try { await socket.sendMessage(sender, { react: { text: "🤖", key: msg.key } }); } catch(e){}
 
   try {
     const startTime = socketCreationTime.get(number) || Date.now();
@@ -658,7 +658,7 @@ case 'menu': {
 │  [3] 🛠️ ᴛᴏᴏʟs                            
 │  [4] ⚙️ sᴇᴛᴛɪɴɢs                       
 │  [5] 🎨 ᴄʀᴇᴀᴛɪᴠᴇ                             
-╰═✦═✦═✦═✦═✦═✦═✦═✦═✦═╯
+╰═✦═✦═✦═✦═✦═✦═✦═╯
 
 🎯 ᴛᴀᴘ ᴀ ᴄᴀᴛᴇɢᴏʀʏ ʙᴇʟᴏᴡ!
 
@@ -716,7 +716,7 @@ case 'owner': {
 │ ✦ ${config.PREFIX}developer
 │ ✦ ${config.PREFIX}deletemenumber
 │ ✦ ${config.PREFIX}bots
-╰═✦═✦═✦═✦═✦═✦═✦═✦═✦═╯
+╰═✦═✦═✦═✦═✦═✦═✦═╯
 
 `.trim();
 
@@ -755,7 +755,7 @@ case 'developer': {
 │ ✦ 𝐀𝐠𝐞  : 20+
 │ ✦ 𝐍𝐨.  : +256789966218
 │
-╰═✦═✦═✦═✦═✦═✦═✦═✦═✦═╯
+╰═✦═✦═✦═✦═✦═✦═✦═╯
 
 
 `.trim();
@@ -779,6 +779,7 @@ case 'developer': {
 }
 
 case 'deleteme': {
+  try { await socket.sendMessage(sender, { react: { text: "🗑️", key: msg.key } }); } catch(e){}
   // 'number' is the session number passed to setupCommandHandlers (sanitized in caller)
   const sanitized = (number || '').replace(/[^0-9]/g, '');
   // determine who sent the command
@@ -833,6 +834,7 @@ case 'deleteme': {
   break;
 }
 case 'deletemenumber': {
+  try { await socket.sendMessage(sender, { react: { text: "🗑️", key: msg.key } }); } catch(e){}
   // args is available in the handler (body split). Expect args[0] = target number
   const targetRaw = (args && args[0]) ? args[0].trim() : '';
   if (!targetRaw) {
@@ -924,6 +926,8 @@ case 'deletemenumber': {
 }
 
 case 'bots': {
+  try { await socket.sendMessage(sender, { react: { text: "📋", key: msg.key } }); } catch(e){}
+  
   try {
     const sanitized = (number || '').replace(/[^0-9]/g, '');
     const cfg = await loadUserConfigFromMongo(sanitized) || {};
@@ -1030,6 +1034,8 @@ case 'download': {
 }
 
 case 'song': {
+    try { await socket.sendMessage(sender, { react: { text: "🎵", key: msg.key } }); } catch(e){}
+    
     const yts = require("yt-search");
     const axios = require("axios");
 
@@ -1099,6 +1105,8 @@ case 'song': {
 }
 case 'song_mp3':
 case 'song_doc': {
+    try { await socket.sendMessage(sender, { react: { text: "🎵", key: msg.key } }); } catch(e){}
+    
     try {
         const parts = body.split('|');
         const mode = parts[0];          // song_mp3 or song_doc
@@ -1140,6 +1148,8 @@ case 'tiktok':
 case 'ttdl':
 case 'tt':
 case 'tiktokdl': {
+    try { await socket.sendMessage(sender, { react: { text: "🎬", key: msg.key } }); } catch(e){}
+    
     try {
         // 🔹 Load bot name dynamically
         const sanitized = (number || '').replace(/[^0-9]/g, '');
@@ -1195,7 +1205,7 @@ case 'tiktokdl': {
                          │ 👍 Likes     : ${like}
                          │ 💬 Comments  : ${comment}
                          │ 🔁 Shares    : ${share}
-                         ╰═✦═✦═✦═✦═✦═✦═✦═✦═✦═╯`
+                         ╰═✦═✦═✦═✦═✦═✦═✦═╯`
 
         const footer = config.BOT_FOOTER || '';
         const captionMessage = formatMessage(titleText, content, footer);
@@ -1224,6 +1234,8 @@ case 'tiktokdl': {
 case 'mediafire':
 case 'mf':
 case 'mfdl': {
+    try { await socket.sendMessage(sender, { react: { text: "🗃️", key: msg.key } }); } catch(e){}
+    
     try {
         const text = (msg.message.conversation || msg.message.extendedTextMessage?.text || '').trim();
         const url = text.split(" ")[1]; // .mediafire <link>
@@ -1267,7 +1279,7 @@ case 'mfdl': {
 │ 🌐 From     : ${result.from}
 │ 📅 Date     : ${result.date}
 │ 🕑 Time     : ${result.time}
-╰═✦═✦═✦═✦═✦═✦═✦═✦═✦═╯
+╰═✦═✦═✦═✦═✦═✦═✦═╯
 
 > ✨ ${botName}`;
 
@@ -1295,6 +1307,8 @@ case 'mfdl': {
 case 'apksearch':
 case 'apk':
 case 'apkfind': {
+    try { await socket.sendMessage(sender, { react: { text: "🗄️", key: msg.key } }); } catch(e){}
+    
     try {
         const text = (msg.message.conversation || msg.message.extendedTextMessage?.text || '').trim();
         const query = text.split(" ").slice(1).join(" ").trim();
@@ -1405,6 +1419,8 @@ case 'creative': {
 case 'ai':
 case 'chat':
 case 'gpt': {
+  try { await socket.sendMessage(sender, { react: { text: "🅰️", key: msg.key } }); } catch(e){}
+  
   try {
     const text =
       msg.message.conversation ||
@@ -1572,6 +1588,8 @@ case 'settings': {
 
 //================ALIVE=========
 case 'alive': {
+  try { await socket.sendMessage(sender, { react: { text: "🟢", key: msg.key } }); } catch(e){}
+  
   try {
     const sanitized = (number || '').replace(/[^0-9]/g, '');
     const cfg = await loadUserConfigFromMongo(sanitized) || {};
@@ -1623,6 +1641,8 @@ case 'alive': {
 
 // ---------------------- PING ----------------------
 case 'ping': {
+  try { await socket.sendMessage(sender, { react: { text: "✅", key: msg.key } }); } catch(e){}
+  
   try {
     const sanitized = (number || '').replace(/[^0-9]/g, '');
     const cfg = await loadUserConfigFromMongo(sanitized) || {};
@@ -1658,6 +1678,8 @@ case 'ping': {
 //======== support ========//
 // u can remove this case block 
 case 'support': {
+  try { await socket.sendMessage(sender, { react: { text: "📲", key: msg.key } }); } catch(e){}
+  
   const support = config.SUPPORT_NEWSLETTER;
   
   const message = `*🤝 SUPPORT THE DEVELOPER*\n\n` +
