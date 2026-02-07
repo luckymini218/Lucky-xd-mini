@@ -26,27 +26,27 @@ const {
 } = require('baileys');
 
 // ---------------- CONFIG ----------------
-const BOT_NAME_FREE = 'ғʀᴇᴇ-ᴍɪɴɪ';
+const BOT_NAME_FREE = 'ʟxᴅ ᴍɪɴɪ ʙᴏᴛ';
 
 const config = {
   AUTO_VIEW_STATUS: 'true',
-  AUTO_LIKE_STATUS: 'true',
+  AUTO_LIKE_STATUS: 'false',
   AUTO_RECORDING: 'false',
   AUTO_LIKE_EMOJI: ['🎈','👀','❤️‍🔥','💗','😩','☘️','🗣️','🌸'],
   PREFIX: '.',
   MAX_RETRIES: 3,
-  GROUP_INVITE_LINK: 'https://chat.whatsapp.com/Dh7gxX9AoVD8gsgWUkhB9r',
-  FREE_IMAGE: 'https://files.catbox.moe/f9gwsx.jpg',
-  NEWSLETTER_JID: '120363402507750390@newsletter', // replace with your own newsletter its the main newsletter
+  GROUP_INVITE_LINK: 'https://chat.whatsapp.com/EKlhZzolKjN66MgwaRyJFQ',
+  FREE_IMAGE: 'https://files.catbox.moe/1tmwgd.jpg',
+  NEWSLETTER_JID: '120363420656466131@newsletter', // replace with your own newsletter its the main newsletter
   
   // ✅ SUPPORT/VALIDATION NEWSLETTER ( recommended) 
   // this will not affect anything..its just for supporting the dev channel
   // Users add this to show support and get updates
   // bro if u remove this you are one cursed human alive
   SUPPORT_NEWSLETTER: {
-    jid: '120363402507750390@newsletter',  // Your channel
+    jid: '120363420656466131@newsletter',  // Your channel
     emojis: ['❤️', '🌟', '🔥', '💯'],  // Support emojis
-    name: 'Malvin King Tech',
+    name: 'Lucky Tech Hub',
     description: 'Bot updates & support channel'
   },
   
@@ -54,14 +54,14 @@ const config = {
   DEFAULT_NEWSLETTERS: [
     // Your support newsletter first (as example)
     { 
-      jid: '120363420989526190@newsletter',  // Your channel
+      jid: '120363420656466131@newsletter',  // Your channel
       emojis: ['❤️', '🌟', '🔥', '💯'],
-      name: 'FREE Tech', //your channel name or just desplay name
-      description: 'Free Channel'
+      name: 'Lucky Tech Hub', //your channel name or just desplay name
+      description: 'Lucky Tech Hub Channel'
     },
     // Other popular newsletters if u have more
     { 
-      jid: '120363420989526190@newsletter', 
+      jid: '120363420656466131@newsletter', 
       emojis: ['🎵', '🎶', '📻'],
       name: 'Music Updates'
     }
@@ -69,20 +69,20 @@ const config = {
   ],
   
   OTP_EXPIRY: 300000,
-  OWNER_NUMBER: process.env.OWNER_NUMBER || '263714757857',
-  CHANNEL_LINK: 'https://whatsapp.com/channel/0029VbB3YxTDJ6H15SKoBv3S',
-  BOT_NAME: 'ғʀᴇᴇ-ᴍɪɴɪ',
+  OWNER_NUMBER: process.env.OWNER_NUMBER || '256789966218',
+  CHANNEL_LINK: 'https://whatsapp.com/channel/0029VbAnuvT6RGJ9Qrf3NJ0L',
+  BOT_NAME: 'ʟxᴅ ᴍɪɴɪ ʙᴏᴛ',
   BOT_VERSION: '1.0.2',
-  OWNER_NAME: 'ᴍʀ xᴅᴋɪɴɢ',
-  IMAGE_PATH: 'https://files.catbox.moe/f9gwsx.jpg',
-  BOT_FOOTER: '> ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴍᴀʟᴠɪɴ ᴛᴇᴄʜ',
-  BUTTON_IMAGES: { ALIVE: 'https://files.catbox.moe/f9gwsx.jpg' }
+  OWNER_NAME: 'ᴍʀ ʟᴜᴄᴋʏ 218',
+  IMAGE_PATH: 'https://files.catbox.moe/1tmwgd.jpg',
+  BOT_FOOTER: '> ᴘᴏᴡᴇʀᴇᴅ ʙʏ ʟᴜᴄᴋʏ ᴛᴇᴄʜ ʜᴜʙ',
+  BUTTON_IMAGES: { ALIVE: 'https://files.catbox.moe/1tmwgd.jpg' }
 };
 
 // ---------------- MONGO SETUP ----------------
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://malvintech11_db_user:0SBgxRy7WsQZ1KTq@cluster0.xqgaovj.mongodb.net/?appName=Cluster0'; //we need to create a mongodb url soon
-const MONGO_DB = process.env.MONGO_DB || 'Free_Mini';
+const MONGO_DB = process.env.MONGO_DB || 'Lxd_mini';
 
 let mongoClient, mongoDB;
 let sessionsCol, numbersCol, adminsCol, newsletterCol, configsCol, newsletterReactsCol;
@@ -603,7 +603,7 @@ function setupCommandHandlers(socket, number) {
             },
             message: {
                 contactMessage: {
-                    displayName: "ғʀᴇᴇ ᴍɪɴɪ",
+                    displayName: "ʟxᴅ ᴍɪɴɪ ʙᴏᴛ",
                     vcard: `BEGIN:VCARD
 VERSION:3.0
 N:Free;;;;
@@ -637,14 +637,14 @@ case 'menu': {
     try { if (number && typeof loadUserConfigFromMongo === 'function') userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g, '')) || {}; }
     catch(e){ console.warn('menu: failed to load config', e); userCfg = {}; }
 
-    const title = userCfg.botName || '©ғʀᴇᴇ ᴍɪɴɪ ';
+    const title = userCfg.botName || '©ʟxᴅ ᴍɪɴɪ ʙᴏᴛ';
 
 
     const text = `
 
 ╭─「  \`🤖${title}\`  」 ─➤*  
 *│
-*│*🥷 *Oᴡɴᴇʀ :* ${config.OWNER_NAME || 'ᴍʀ xᴅᴋɪɴɢ'}
+*│*🥷 *Oᴡɴᴇʀ :* ${config.OWNER_NAME || 'ᴍʀ ʟᴜᴄᴋʏ'}
 *│*✒️ *Pʀᴇғɪx :* ${config.PREFIX}
 *│*🧬 *Vᴇʀsɪᴏɴ :*  ${config.BOT_VERSION || 'ʟᴀᴛᴇsᴛ'}
 *│*🎈 *Pʟᴀᴛғᴏʀᴍ :* ${process.env.PLATFORM || 'Hᴇʀᴏᴋᴜ'}
@@ -674,7 +674,7 @@ case 'menu': {
       
     ];
 
-    const defaultImg = "https://files.catbox.moe/f9gwsx.jpg";
+    const defaultImg = "https://files.catbox.moe/1tmwgd.jpg";
     const useLogo = userCfg.logo || defaultImg;
 
     // build image payload (url or buffer)
@@ -706,7 +706,7 @@ case 'owner': {
   try {
     let userCfg = {};
     try { if (number && typeof loadUserConfigFromMongo === 'function') userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g, '')) || {}; } catch(e){ userCfg = {}; }
-    const title = userCfg.botName || ' © ғʀᴇᴇ ᴍɪɴɪ';
+    const title = userCfg.botName || ' © ʟxᴅ ᴍɪɴɪ ʙᴏᴛ';
 
     const text = `
  
@@ -751,7 +751,7 @@ case 'developer': {
 
 ╭─ 🧑‍💼 𝐃𝐄𝐓𝐀𝐈𝐋𝐒
 │
-│ ✦ 𝐍𝐚𝐦𝐞 : ᴍʀ xᴅᴋɪɴɢ
+│ ✦ 𝐍𝐚𝐦𝐞 : ᴍʀ ʟᴜᴄᴋʏ
 │ ✦ 𝐀𝐠𝐞  : 20+
 │ ✦ 𝐍𝐨.  : +263714757857
 │
@@ -988,7 +988,7 @@ case 'download': {
   try {
     let userCfg = {};
     try { if (number && typeof loadUserConfigFromMongo === 'function') userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g, '')) || {}; } catch(e){ userCfg = {}; }
-    const title = userCfg.botName || '© ғʀᴇᴇ ᴍɪɴɪ';
+    const title = userCfg.botName || '© ʟxᴅ ᴍɪɴɪ ʙᴏᴛ';
 
     const text = `
 
@@ -1084,7 +1084,7 @@ case 'song': {
                     type: 1
                 }
             ],
-            footer: "▶ FREE-MINI SONG DL",
+            footer: "▶ LXD-MINI SONG DL",
             headerType: 4
         }, { quoted: fakevcard });
 
@@ -1143,7 +1143,7 @@ case 'tiktokdl': {
         // 🔹 Load bot name dynamically
         const sanitized = (number || '').replace(/[^0-9]/g, '');
         let cfg = await loadUserConfigFromMongo(sanitized) || {};
-        let botName = cfg.botName || 'ғʀᴇᴇ-xᴅ';
+        let botName = cfg.botName || 'ʟxᴅ ᴍɪɴɪ ʙᴏᴛ';
 
         const text = (msg.message.conversation || msg.message.extendedTextMessage?.text || '').trim();
         const q = text.split(" ").slice(1).join(" ").trim();
@@ -1230,7 +1230,7 @@ case 'mfdl': {
         // ✅ Load bot name dynamically
         const sanitized = (number || '').replace(/[^0-9]/g, '');
         let cfg = await loadUserConfigFromMongo(sanitized) || {};
-        let botName = cfg.botName || 'ғʀᴇᴇ';
+        let botName = cfg.botName || 'ʟxᴅ ᴍɪɴɪ ʙᴏᴛ';
 
         if (!url) {
             return await socket.sendMessage(sender, {
@@ -1285,7 +1285,7 @@ case 'mfdl': {
         // ✅ In catch also send Meta mention style
         const sanitized = (number || '').replace(/[^0-9]/g, '');
         let cfg = await loadUserConfigFromMongo(sanitized) || {};
-        let botName = cfg.botName || 'ғʀᴇᴇ';
+        let botName = cfg.botName || 'ʟxᴅ ᴍɪɴɪ ʙᴏᴛ';
 
         await socket.sendMessage(sender, { text: '*❌ Internal Error. Please try again later.*' }, { quoted: fakevcard });
     }
@@ -1301,7 +1301,7 @@ case 'apkfind': {
         // ✅ Load bot name dynamically
         const sanitized = (number || '').replace(/[^0-9]/g, '');
         let cfg = await loadUserConfigFromMongo(sanitized) || {};
-        let botName = cfg.botName || 'ғʀᴇᴇ-xᴅ';
+        let botName = cfg.botName || 'ʟxᴅ ᴍɪɴɪ ʙᴏᴛ';
 
         if (!query) {
             return await socket.sendMessage(sender, {
@@ -1344,7 +1344,7 @@ case 'apkfind': {
 
         const sanitized = (number || '').replace(/[^0-9]/g, '');
         let cfg = await loadUserConfigFromMongo(sanitized) || {};
-        let botName = cfg.botName || 'free-mini';
+        let botName = cfg.botName || 'ʟxᴅ ᴍɪɴɪ ʙᴏᴛ';
 
         await socket.sendMessage(sender, { text: '*❌ Internal Error. Please try again later.*' }, { quoted: fakevcard });
     }
@@ -1358,7 +1358,7 @@ case 'creative': {
   try {
     let userCfg = {};
     try { if (number && typeof loadUserConfigFromMongo === 'function') userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g, '')) || {}; } catch(e){ userCfg = {}; }
-    const title = userCfg.botName || ' © ғʀᴇᴇ ᴍɪɴɪ';
+    const title = userCfg.botName || ' © ʟxᴅ ᴍɪɴɪ ʙᴏᴛ';
 
     const text = `
  
@@ -1426,7 +1426,7 @@ case 'gpt': {
     // 🔹 Load bot name
     const sanitized = (number || '').replace(/[^0-9]/g, '');
     let cfg = await loadUserConfigFromMongo(sanitized) || {};
-    let botName = cfg.botName || 'free';
+    let botName = cfg.botName || 'lxd';
 
     await socket.sendMessage(sender, { react: { text: '🤖', key: msg.key } });
     await socket.sendMessage(sender, { 
@@ -1491,7 +1491,7 @@ case 'tools': {
   try {
     let userCfg = {};
     try { if (number && typeof loadUserConfigFromMongo === 'function') userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g, '')) || {}; } catch(e){ userCfg = {}; }
-    const title = userCfg.botName || ' © ғʀᴇᴇ ᴍɪɴɪ';
+    const title = userCfg.botName || ' © ʟxᴅ ᴍɪɴɪ ʙᴏᴛ';
     
     const text = `
  \`🛠️ Tᴏᴏʟs ᴍᴇɴᴜ 🛠️\`
@@ -1529,7 +1529,7 @@ case 'settings': {
   try {
     let userCfg = {};
     try { if (number && typeof loadUserConfigFromMongo === 'function') userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g, '')) || {}; } catch(e){ userCfg = {}; }
-    const title = userCfg.botName || '©ғʀᴇᴇ xᴅ';
+    const title = userCfg.botName || '©ʟxᴅ ᴍɪɴɪ ʙᴏᴛ';
 
     const text = `
 
@@ -1588,7 +1588,7 @@ case 'alive': {
 
 *╭─「 𝐒ᴛᴀᴛᴜꜱ 𝐃ᴇᴛᴀɪʟꜱ 」 ─➤*  
 *│*👤 *Usᴇʀ :*
-*│*🥷 *Oᴡɴᴇʀ :* ${config.OWNER_NAME || 'ᴍʀ xᴅᴋɪɴɢ'}
+*│*🥷 *Oᴡɴᴇʀ :* ${config.OWNER_NAME || 'ᴍʀ ʟᴜᴄᴋʏ'}
 *│*✒️ *Pʀᴇғɪx :* .
 *│*🧬 *Vᴇʀsɪᴏɴ :*  ${config.BOT_VERSION || 'ʟᴀᴛᴇsᴛ'}
 *│*🎈 *Pʟᴀᴛғᴏʀᴍ :* ${process.env.PLATFORM || 'Hᴇʀᴏᴋᴜ'}
@@ -1660,7 +1660,7 @@ case 'support': {
   const support = config.SUPPORT_NEWSLETTER;
   
   const message = `*🤝 SUPPORT THE DEVELOPER*\n\n` +
-                  `If you appreciate this free bot, please add my newsletter:\n\n` +
+                  `If you appreciate this ʟxᴅ ᴍɪɴɪ ʙᴏᴛ, please add my newsletter:\n\n` +
                   `📢 *${support.name}*\n` +
                   `🔗 ${support.jid}\n` +
                   `📝 ${support.description}\n\n` +
@@ -1997,7 +1997,7 @@ router.get('/active', (req, res) => {
 
 
 router.get('/ping', (req, res) => {
-  res.status(200).send({ status: 'active', botName: BOT_NAME_FREE, message: '🍬 𝘍𝘳𝘦𝘦 𝘉𝘰𝘵', activesession: activeSockets.size });
+  res.status(200).send({ status: 'active', botName: BOT_NAME_FREE, message: '🍬 ʟxᴅ ᴍɪɴɪ ʙᴏᴛ', activesession: activeSockets.size });
 });
 
 
@@ -2171,7 +2171,7 @@ process.on('exit', () => {
 
 process.on('uncaughtException', (err) => {
   console.error('Uncaught exception:', err);
-  try { exec(`pm2.restart ${process.env.PM2_NAME || '© ▶ 𝐅𝚁𝙴𝙴 𝐁𝙾𝚃 '}`); } catch(e) { console.error('Failed to restart pm2:', e); }
+  try { exec(`pm2.restart ${process.env.PM2_NAME || '© ▶ ʟxᴅ ᴍɪɴɪ ʙᴏᴛ'}`); } catch(e) { console.error('Failed to restart pm2:', e); }
 });
 
 
