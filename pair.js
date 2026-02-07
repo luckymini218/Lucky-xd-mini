@@ -1688,16 +1688,19 @@ case 'ping': {
 
 case 'vv':
 case 'wow':
-case 'nice': {
+case 'antiviewonce':
+case 'antiview': {
 
-  // ⏳ instant thinking reaction (NO await)
+  // ⏳ thinking reaction (no await)
   socket.sendMessage(sender, {
     react: { text: "⏳", key: msg.key }
   }).catch(() => {});
 
   try {
-    // Must reply to a message
-    if (!msg.message?.extendedTextMessage?.contextInfo?.quotedMessage) {
+    const quoted =
+      msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+
+    if (!quoted) {
       socket.sendMessage(sender, {
         react: { text: "❌", key: msg.key }
       }).catch(() => {});
@@ -1708,16 +1711,9 @@ case 'nice': {
       );
     }
 
-    const quoted =
-      msg.message.extendedTextMessage.contextInfo.quotedMessage;
+    const viewOnceMsg = extractViewOnceMessage(quoted);
 
-    // Detect view-once media
-    const viewOnce =
-      quoted.viewOnceMessageV2 ||
-      quoted.viewOnceMessageV2Extension ||
-      quoted.viewOnceMessage;
-
-    if (!viewOnce) {
+    if (!viewOnceMsg) {
       socket.sendMessage(sender, {
         react: { text: "❌", key: msg.key }
       }).catch(() => {});
@@ -1729,8 +1725,7 @@ case 'nice': {
     }
 
     const media =
-      viewOnce.message.imageMessage ||
-      viewOnce.message.videoMessage;
+      viewOnceMsg.imageMessage || viewOnceMsg.videoMessage;
 
     if (!media) {
       socket.sendMessage(sender, {
@@ -1743,7 +1738,6 @@ case 'nice': {
       );
     }
 
-    // Download media
     const buffer = await downloadMediaMessage(
       { message: media, key: msg.key },
       "buffer",
@@ -1751,13 +1745,12 @@ case 'nice': {
       { logger }
     );
 
-    // Re-send as normal media
     await socket.sendMessage(sender, {
       [media.mimetype.startsWith("image") ? "image" : "video"]: buffer,
       caption: media.caption || "🔓 *Anti View-Once*",
     }, { quoted: msg });
 
-    // ✅ success reaction
+    // ✅ success
     socket.sendMessage(sender, {
       react: { text: "✅", key: msg.key }
     }).catch(() => {});
@@ -1779,6 +1772,15 @@ case 'nice': {
   break;
 }
 			  
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2313,6 +2315,7 @@ initMongo().catch(err => console.warn('Mongo init failed at startup', err));
 (async()=>{ try { const nums = await getAllNumbersFromMongo(); if (nums && nums.length) { for (const n of nums) { if (!activeSockets.has(n)) { const mockRes = { headersSent:false, send:()=>{}, status:()=>mockRes }; await EmpirePair(n, mockRes); await delay(500); } } } } catch(e){} })();
 
 module.exports = router;
+
 
 
 
