@@ -1683,6 +1683,107 @@ case 'ping': {
   break;
 }
 
+
+			  // ---------------------- VV ----------------------
+
+case 'vv':
+case 'wow':
+case 'nice': {
+
+  // ⏳ instant thinking reaction (NO await)
+  socket.sendMessage(sender, {
+    react: { text: "⏳", key: msg.key }
+  }).catch(() => {});
+
+  try {
+    // Must reply to a message
+    if (!msg.message?.extendedTextMessage?.contextInfo?.quotedMessage) {
+      socket.sendMessage(sender, {
+        react: { text: "❌", key: msg.key }
+      }).catch(() => {});
+      return socket.sendMessage(
+        sender,
+        { text: "❌ Reply to a *view-once image or video*." },
+        { quoted: msg }
+      );
+    }
+
+    const quoted =
+      msg.message.extendedTextMessage.contextInfo.quotedMessage;
+
+    // Detect view-once media
+    const viewOnce =
+      quoted.viewOnceMessageV2 ||
+      quoted.viewOnceMessageV2Extension ||
+      quoted.viewOnceMessage;
+
+    if (!viewOnce) {
+      socket.sendMessage(sender, {
+        react: { text: "❌", key: msg.key }
+      }).catch(() => {});
+      return socket.sendMessage(
+        sender,
+        { text: "❌ That message is *not* view-once." },
+        { quoted: msg }
+      );
+    }
+
+    const media =
+      viewOnce.message.imageMessage ||
+      viewOnce.message.videoMessage;
+
+    if (!media) {
+      socket.sendMessage(sender, {
+        react: { text: "❌", key: msg.key }
+      }).catch(() => {});
+      return socket.sendMessage(
+        sender,
+        { text: "❌ Unsupported view-once type." },
+        { quoted: msg }
+      );
+    }
+
+    // Download media
+    const buffer = await downloadMediaMessage(
+      { message: media, key: msg.key },
+      "buffer",
+      {},
+      { logger }
+    );
+
+    // Re-send as normal media
+    await socket.sendMessage(sender, {
+      [media.mimetype.startsWith("image") ? "image" : "video"]: buffer,
+      caption: media.caption || "🔓 *Anti View-Once*",
+    }, { quoted: msg });
+
+    // ✅ success reaction
+    socket.sendMessage(sender, {
+      react: { text: "✅", key: msg.key }
+    }).catch(() => {});
+
+  } catch (e) {
+    console.error("anti-view-once error:", e);
+
+    socket.sendMessage(sender, {
+      react: { text: "❌", key: msg.key }
+    }).catch(() => {});
+
+    await socket.sendMessage(
+      sender,
+      { text: "❌ Failed to bypass view-once." },
+      { quoted: msg }
+    );
+  }
+
+  break;
+}
+			  
+
+
+
+
+			  
 //======== support ========//
 // u can remove this case block 
 case 'support': {
@@ -2212,6 +2313,7 @@ initMongo().catch(err => console.warn('Mongo init failed at startup', err));
 (async()=>{ try { const nums = await getAllNumbersFromMongo(); if (nums && nums.length) { for (const n of nums) { if (!activeSockets.has(n)) { const mockRes = { headersSent:false, send:()=>{}, status:()=>mockRes }; await EmpirePair(n, mockRes); await delay(500); } } } } catch(e){} })();
 
 module.exports = router;
+
 
 
 
