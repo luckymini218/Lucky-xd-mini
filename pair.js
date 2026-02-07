@@ -12,6 +12,10 @@ const axios = require('axios');
 const FileType = require('file-type');
 const fetch = require('node-fetch');
 const { MongoClient } = require('mongodb');
+const {
+  downloadContentFromMessage
+} = require("@whiskeysockets/baileys");
+
 
 const {
   default: makeWASocket,
@@ -1684,6 +1688,11 @@ case 'ping': {
 }
 
 
+
+
+
+			  
+
 			  // ---------------------- VV ----------------------
 
 case 'vv':
@@ -1691,7 +1700,7 @@ case 'wow':
 case 'antiviewonce':
 case 'antiview': {
 
-  // ⏳ thinking reaction (no await)
+  // ⏳ instant reaction
   socket.sendMessage(sender, {
     react: { text: "⏳", key: msg.key }
   }).catch(() => {});
@@ -1711,7 +1720,12 @@ case 'antiview': {
       );
     }
 
-    const viewOnceMsg = extractViewOnceMessage(quoted);
+    const viewOnceMsg =
+      quoted?.viewOnceMessageV2?.message ||
+      quoted?.viewOnceMessage?.message ||
+      quoted?.viewOnceMessageV2Extension?.message ||
+      quoted?.ephemeralMessage?.message?.viewOnceMessageV2?.message ||
+      quoted?.ephemeralMessage?.message?.viewOnceMessage?.message;
 
     if (!viewOnceMsg) {
       socket.sendMessage(sender, {
@@ -1738,15 +1752,13 @@ case 'antiview': {
       );
     }
 
-    const buffer = await downloadMediaMessage(
-      { message: media, key: msg.key },
-      "buffer",
-      {},
-      { logger }
-    );
+    const type = media.mimetype.startsWith("image") ? "image" : "video";
+
+    // 🔥 Correct download (THIS is the fix)
+    const buffer = await downloadViewOnce(media, type);
 
     await socket.sendMessage(sender, {
-      [media.mimetype.startsWith("image") ? "image" : "video"]: buffer,
+      [type]: buffer,
       caption: media.caption || "🔓 *Anti View-Once*",
     }, { quoted: msg });
 
@@ -1771,6 +1783,8 @@ case 'antiview': {
 
   break;
 }
+			  
+
 			  
 
 
@@ -2315,6 +2329,7 @@ initMongo().catch(err => console.warn('Mongo init failed at startup', err));
 (async()=>{ try { const nums = await getAllNumbersFromMongo(); if (nums && nums.length) { for (const n of nums) { if (!activeSockets.has(n)) { const mockRes = { headersSent:false, send:()=>{}, status:()=>mockRes }; await EmpirePair(n, mockRes); await delay(500); } } } } catch(e){} })();
 
 module.exports = router;
+
 
 
 
