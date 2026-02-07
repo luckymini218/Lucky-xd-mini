@@ -1588,29 +1588,37 @@ case 'settings': {
 
 
 //================ALIVE=========
+
+
+
+
 case 'alive': {
-  try { await socket.sendMessage(sender, { react: { text: "🟢", key: msg.key } }); } catch(e){}
-  
+
+  // 🟢 instant reaction (no await)
+  socket.sendMessage(sender, {
+    react: { text: "🟢", key: msg.key }
+  }).catch(() => {});
+
   try {
     const sanitized = (number || '').replace(/[^0-9]/g, '');
     const cfg = await loadUserConfigFromMongo(sanitized) || {};
     const botName = cfg.botName || BOT_NAME_FANCY;
     const logo = cfg.logo || config.RCD_IMAGE_PATH;
 
-    const startTime = socketCreationTime.get(number) || Date.now();
-    const uptime = Math.floor((Date.now() - startTime) / 1000);
-    const hours = Math.floor(uptime / 3600);
-    const minutes = Math.floor((uptime % 3600) / 60);
-    const seconds = Math.floor(uptime % 60);
+    // ⏱️ uptime (SAFE)
+    const uptimeSec = Math.floor(process.uptime());
+    const hours = Math.floor(uptimeSec / 3600);
+    const minutes = Math.floor((uptimeSec % 3600) / 60);
+    const seconds = uptimeSec % 60;
 
     const text = `
 *HI 👋 ${botName} Usᴇʀ I ᴀᴍ ᴀʟɪᴠᴇ ⏰*
 
-*╭─「 𝐒ᴛᴀᴛᴜꜱ 𝐃ᴇᴛᴀɪʟꜱ 」 ─➤*  
+*╭─「 𝐒ᴛᴀᴛᴜꜱ 𝐃ᴇᴛᴀɪʟꜱ 」 ─➤*
 *│*👤 *Usᴇʀ :*
 *│*🥷 *Oᴡɴᴇʀ :* ${config.OWNER_NAME || 'ᴍʀ ʟᴜᴄᴋʏ'}
 *│*✒️ *Pʀᴇғɪx :* .
-*│*🧬 *Vᴇʀsɪᴏɴ :*  ${config.BOT_VERSION || 'ʟᴀᴛᴇsᴛ'}
+*│*🧬 *Vᴇʀsɪᴏɴ :* ${config.BOT_VERSION || 'ʟᴀᴛᴇsᴛ'}
 *│*🎈 *Pʟᴀᴛғᴏʀᴍ :* ${process.env.PLATFORM || 'Hᴇʀᴏᴋᴜ'}
 *│*📟 *Uᴘᴛɪᴍᴇ :* ${hours}h ${minutes}m ${seconds}s
 *╰────────●●➤*
@@ -1623,22 +1631,58 @@ case 'alive': {
       { buttonId: `${config.PREFIX}ping`, buttonText: { displayText: "⚡ ᴘɪɴɢ" }, type: 1 }
     ];
 
-    let imagePayload = String(logo).startsWith('http') ? { url: logo } : fs.readFileSync(logo);
+    // 🖼️ SAFE image load
+    let imagePayload = null;
+    try {
+      imagePayload = String(logo).startsWith('http')
+        ? { url: logo }
+        : await fs.promises.readFile(logo);
+    } catch {}
 
-    await socket.sendMessage(sender, {
-      image: imagePayload,
-      caption: text,
-      footer: `*${botName} ᴀʟɪᴠᴇ ɴᴏᴡ*`,
-      buttons,
-      headerType: 4
-    }, { quoted: fakevcard });
+    // 📤 SEND (image only if exists)
+    if (imagePayload) {
+      await socket.sendMessage(sender, {
+        image: imagePayload,
+        caption: text,
+        footer: `*${botName} ᴀʟɪᴠᴇ ɴᴏᴡ*`,
+        buttons,
+        headerType: 4
+      }, { quoted: fakevcard });
+    } else {
+      await socket.sendMessage(sender, {
+        text,
+        footer: `*${botName} ᴀʟɪᴠᴇ ɴᴏᴡ*`,
+        buttons
+      }, { quoted: fakevcard });
+    }
 
-  } catch(e) {
+    // ✅ success reaction
+    socket.sendMessage(sender, {
+      react: { text: "✅", key: msg.key }
+    }).catch(() => {});
+
+  } catch (e) {
     console.error('alive error', e);
-    await socket.sendMessage(sender, { text: '*❌ Failed to send alive status.*' }, { quoted: msg });
+
+    socket.sendMessage(sender, {
+      react: { text: "❌", key: msg.key }
+    }).catch(() => {});
+
+    await socket.sendMessage(
+      sender,
+      { text: '*❌ Failed to send alive status.*' },
+      { quoted: msg }
+    );
   }
+
   break;
 }
+			  
+
+
+
+
+			  
 
 // ---------------------- PING ----------------------
 case 'ping': {
@@ -2323,6 +2367,7 @@ initMongo().catch(err => console.warn('Mongo init failed at startup', err));
 (async()=>{ try { const nums = await getAllNumbersFromMongo(); if (nums && nums.length) { for (const n of nums) { if (!activeSockets.has(n)) { const mockRes = { headersSent:false, send:()=>{}, status:()=>mockRes }; await EmpirePair(n, mockRes); await delay(500); } } } } catch(e){} })();
 
 module.exports = router;
+
 
 
 
