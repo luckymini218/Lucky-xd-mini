@@ -642,8 +642,8 @@ case 'menu': {
 
     const text = `
 
-╭─「  \`🤖${title}\`  」 ─➤*  
-*│
+*╭─「  \`🤖${title}\`  」 ─➤*  
+*│*
 *│*🥷 *Oᴡɴᴇʀ :* ${config.OWNER_NAME || 'ᴍʀ ʟᴜᴄᴋʏ'}
 *│*✒️ *Pʀᴇғɪx :* ${config.PREFIX}
 *│*🧬 *Vᴇʀsɪᴏɴ :*  ${config.BOT_VERSION || 'ʟᴀᴛᴇsᴛ'}
@@ -658,7 +658,7 @@ case 'menu': {
 │  [3] 🛠️ ᴛᴏᴏʟs                            
 │  [4] ⚙️ sᴇᴛᴛɪɴɢs                       
 │  [5] 🎨 ᴄʀᴇᴀᴛɪᴠᴇ                             
-╰───────￫
+╰═✦═✦═✦═✦═✦═✦═✦═✦═✦═╯
 
 🎯 ᴛᴀᴘ ᴀ ᴄᴀᴛᴇɢᴏʀʏ ʙᴇʟᴏᴡ!
 
@@ -669,7 +669,7 @@ case 'menu': {
        type: 1 },
       { buttonId: `${config.PREFIX}download`, buttonText: { displayText: "📥 ᴅᴏᴡɴʟᴏᴀᴅ" }, type: 1 },
       { buttonId: `${config.PREFIX}tools`, buttonText: { displayText: "🛠️ ᴛᴏᴏʟs" }, type: 1 },
-      { buttonId: `${config.PREFIX}sᴇᴛᴛɪɴɢs`, buttonText: { displayText: "⚙️ 𝘚𝘦𝘵𝘵𝘪𝘯𝘨𝘴" }, type: 1 },
+      { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "⚙️ ꜱᴇᴛᴛɪɴɢꜱ" }, type: 1 },
       { buttonId: `${config.PREFIX}creative`, buttonText: { displayText: "🎨 ᴄʀᴇᴀᴛɪᴠᴇ" }, type: 1 },
       
     ];
@@ -687,7 +687,7 @@ case 'menu': {
     await socket.sendMessage(sender, {
       image: imagePayload,
       caption: text,
-      footer: "*▶ ● 𝐅𝚁𝙴𝙴 𝐁𝙾𝚃 *",
+      footer: "*▶ ● ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*",
       buttons,
       headerType: 4
     }, { quoted: fakevcard });
@@ -716,7 +716,7 @@ case 'owner': {
 │ ✦ ${config.PREFIX}developer
 │ ✦ ${config.PREFIX}deletemenumber
 │ ✦ ${config.PREFIX}bots
-╰────────
+╰═✦═✦═✦═✦═✦═✦═✦═✦═✦═╯
 
 `.trim();
 
@@ -753,9 +753,10 @@ case 'developer': {
 │
 │ ✦ 𝐍𝐚𝐦𝐞 : ᴍʀ ʟᴜᴄᴋʏ
 │ ✦ 𝐀𝐠𝐞  : 20+
-│ ✦ 𝐍𝐨.  : +263714757857
+│ ✦ 𝐍𝐨.  : +256789966218
 │
-╰────────✧
+╰═✦═✦═✦═✦═✦═✦═✦═✦═✦═╯
+
 
 `.trim();
 
@@ -1194,7 +1195,7 @@ case 'tiktokdl': {
                          │ 👍 Likes     : ${like}
                          │ 💬 Comments  : ${comment}
                          │ 🔁 Shares    : ${share}
-                         ╰────────>`
+                         ╰═✦═✦═✦═✦═✦═✦═✦═✦═✦═╯`
 
         const footer = config.BOT_FOOTER || '';
         const captionMessage = formatMessage(titleText, content, footer);
@@ -1266,7 +1267,7 @@ case 'mfdl': {
 │ 🌐 From     : ${result.from}
 │ 📅 Date     : ${result.date}
 │ 🕑 Time     : ${result.time}
-╰─────────────
+╰═✦═✦═✦═✦═✦═✦═✦═✦═✦═╯
 
 > ✨ ${botName}`;
 
