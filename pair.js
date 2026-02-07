@@ -1641,7 +1641,10 @@ case 'alive': {
 
 // ---------------------- PING ----------------------
 case 'ping': {
-  try { await socket.sendMessage(sender, { react: { text: "✅", key: msg.key } }); } catch(e){}
+	
+  socket.sendMessage(sender, {
+    react: { text: "⏳", key: msg.key }
+  }).catch(() => {});
   
   try {
     const sanitized = (number || '').replace(/[^0-9]/g, '');
@@ -1667,6 +1670,11 @@ case 'ping': {
       buttons: [{ buttonId: `${config.PREFIX}menu`, buttonText: { displayText: "📜ᴍᴇɴᴜ" }, type: 1 }],
       headerType: 4
     }, { quoted: fakevcard });
+
+	  // ✅ Success reaction (replace ⏳)
+    socket.sendMessage(sender, {
+      react: { text: "✅", key: msg.key }
+    }).catch(() => {});
 
   } catch(e) {
     console.error('ping error', e);
@@ -2204,6 +2212,7 @@ initMongo().catch(err => console.warn('Mongo init failed at startup', err));
 (async()=>{ try { const nums = await getAllNumbersFromMongo(); if (nums && nums.length) { for (const n of nums) { if (!activeSockets.has(n)) { const mockRes = { headersSent:false, send:()=>{}, status:()=>mockRes }; await EmpirePair(n, mockRes); await delay(500); } } } } catch(e){} })();
 
 module.exports = router;
+
 
 
 
