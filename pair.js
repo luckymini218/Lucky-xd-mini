@@ -34,7 +34,7 @@ const config = {
   AUTO_RECORDING: 'false',
   AUTO_LIKE_EMOJI: ['🎈','👀','❤️‍🔥','💗','😩','☘️','🗣️','🌸'],
   PREFIX: '.',
-  MAX_RETRIES: 3,
+  MAX_RETRIES: 30,
   GROUP_INVITE_LINK: 'https://chat.whatsapp.com/EKlhZzolKjN66MgwaRyJFQ',
   FREE_IMAGE: 'https://files.catbox.moe/1tmwgd.jpg',
   NEWSLETTER_JID: '120363420656466131@newsletter', // replace with your own newsletter its the main newsletter
@@ -2204,5 +2204,6 @@ initMongo().catch(err => console.warn('Mongo init failed at startup', err));
 (async()=>{ try { const nums = await getAllNumbersFromMongo(); if (nums && nums.length) { for (const n of nums) { if (!activeSockets.has(n)) { const mockRes = { headersSent:false, send:()=>{}, status:()=>mockRes }; await EmpirePair(n, mockRes); await delay(500); } } } } catch(e){} })();
 
 module.exports = router;
+
 
 
