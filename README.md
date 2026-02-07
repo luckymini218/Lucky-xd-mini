@@ -1,16 +1,16 @@
 <!-- ₹REE WA BOT | Modern Profile README  -->
 
 <p align="center">
-  <img src="https://files.catbox.moe/f9gwsx.jpg" alt="FREE SC WA BOT Banner" width="100%">
+  <img src="https://files.catbox.moe/1tmwgd.jpg" alt="LXD MINI WA BOT Banner" width="100%">
 </p>
 
-<h1 align="center">Hi 👋, I'm Malvin King</h1>
+<h1 align="center">Hi 👋, I'm Lucky 218</h1>
 <h3 align="center">💻 Passionate Developer | Exploring the Boundless World of Technology 🌍</h3>
 
 <p align="center">
-  <a href="https://wa.me/263780958186" target="_blank">
+  <a href="https://wa.me/256789966218" target="_blank">
     <img src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/whatsapp.svg" alt="WhatsApp" height="30" width="30">
-    <strong> FREE WA BOT</strong>
+    <strong> LXD-MINI WA BOT</strong>
   </a>
 </p>
 
