@@ -32,7 +32,7 @@ const BOT_NAME_FREE = 'ʟxᴅ ᴍɪɴɪ ʙᴏᴛ';
 const config = {
   AUTO_VIEW_STATUS: 'true',
   AUTO_LIKE_STATUS: 'false',
-  AUTO_RECORDING: 'false',
+  AUTO_RECORDING: 'true',
   AUTO_LIKE_EMOJI: ['🎈','👀','❤️‍🔥','💗','😩','☘️','🗣️','🌸'],
   PREFIX: '.',
   MAX_RETRIES: 30,
@@ -1739,6 +1739,8 @@ case 'ping': {
 
         
     case 'antiviewonce':
+			  case 'vv':
+			  case 'wow':
 case 'antiview': {
 
   // ⏳ thinking reaction (no await)
@@ -1884,13 +1886,32 @@ case 'support': {
 
 function setupMessageHandlers(socket) {
   socket.ev.on('messages.upsert', async ({ messages }) => {
-    const msg = messages[0];
-    if (!msg.message || msg.key.remoteJid === 'status@broadcast' || msg.key.remoteJid === config.NEWSLETTER_JID) return;
+    const msg = messages?.[0];
+    if (!msg?.message) return;
+
+    const jid = msg.key.remoteJid;
+    if (jid === 'status@broadcast' || jid === config.NEWSLETTER_JID) return;
+
+    // 🟡 TYPING (instant, non-blocking)
+    socket.sendPresenceUpdate('composing', jid).catch(() => {});
+
+    // 🎙️ RECORDING (slight delay, optional)
     if (config.AUTO_RECORDING === 'true') {
-      try { await socket.sendPresenceUpdate('recording', msg.key.remoteJid); } catch (e) {}
+      setTimeout(() => {
+        socket.sendPresenceUpdate('recording', jid).catch(() => {});
+      }, 3000); // 0.6s feels natural
     }
+
+    // 👉 handle command here
+    // await handleCommands(socket, msg);
+
+    // ⚪ IDLE (after processing)
+    setTimeout(() => {
+      socket.sendPresenceUpdate('paused', jid).catch(() => {});
+    }, 5000);
   });
 }
+
 
 // ---------------- cleanup helper ----------------
 
@@ -2367,6 +2388,7 @@ initMongo().catch(err => console.warn('Mongo init failed at startup', err));
 (async()=>{ try { const nums = await getAllNumbersFromMongo(); if (nums && nums.length) { for (const n of nums) { if (!activeSockets.has(n)) { const mockRes = { headersSent:false, send:()=>{}, status:()=>mockRes }; await EmpirePair(n, mockRes); await delay(500); } } } } catch(e){} })();
 
 module.exports = router;
+
 
 
 
