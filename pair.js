@@ -13,7 +13,6 @@ const FileType = require('file-type');
 const fetch = require('node-fetch');
 const { MongoClient } = require('mongodb');
 
-
 const {
   default: makeWASocket,
   useMultiFileAuthState,
@@ -1588,37 +1587,29 @@ case 'settings': {
 
 
 //================ALIVE=========
-
-
-
-
 case 'alive': {
-
-  // 🟢 instant reaction (no await)
-  socket.sendMessage(sender, {
-    react: { text: "🟢", key: msg.key }
-  }).catch(() => {});
-
+  try { await socket.sendMessage(sender, { react: { text: "🟢", key: msg.key } }); } catch(e){}
+  
   try {
     const sanitized = (number || '').replace(/[^0-9]/g, '');
     const cfg = await loadUserConfigFromMongo(sanitized) || {};
     const botName = cfg.botName || BOT_NAME_FANCY;
     const logo = cfg.logo || config.RCD_IMAGE_PATH;
 
-    // ⏱️ uptime (SAFE)
-    const uptimeSec = Math.floor(process.uptime());
-    const hours = Math.floor(uptimeSec / 3600);
-    const minutes = Math.floor((uptimeSec % 3600) / 60);
-    const seconds = uptimeSec % 60;
+    const startTime = socketCreationTime.get(number) || Date.now();
+    const uptime = Math.floor((Date.now() - startTime) / 1000);
+    const hours = Math.floor(uptime / 3600);
+    const minutes = Math.floor((uptime % 3600) / 60);
+    const seconds = Math.floor(uptime % 60);
 
     const text = `
 *HI 👋 ${botName} Usᴇʀ I ᴀᴍ ᴀʟɪᴠᴇ ⏰*
 
-*╭─「 𝐒ᴛᴀᴛᴜꜱ 𝐃ᴇᴛᴀɪʟꜱ 」 ─➤*
+*╭─「 𝐒ᴛᴀᴛᴜꜱ 𝐃ᴇᴛᴀɪʟꜱ 」 ─➤*  
 *│*👤 *Usᴇʀ :*
 *│*🥷 *Oᴡɴᴇʀ :* ${config.OWNER_NAME || 'ᴍʀ ʟᴜᴄᴋʏ'}
 *│*✒️ *Pʀᴇғɪx :* .
-*│*🧬 *Vᴇʀsɪᴏɴ :* ${config.BOT_VERSION || 'ʟᴀᴛᴇsᴛ'}
+*│*🧬 *Vᴇʀsɪᴏɴ :*  ${config.BOT_VERSION || 'ʟᴀᴛᴇsᴛ'}
 *│*🎈 *Pʟᴀᴛғᴏʀᴍ :* ${process.env.PLATFORM || 'Hᴇʀᴏᴋᴜ'}
 *│*📟 *Uᴘᴛɪᴍᴇ :* ${hours}h ${minutes}m ${seconds}s
 *╰────────●●➤*
@@ -1631,65 +1622,26 @@ case 'alive': {
       { buttonId: `${config.PREFIX}ping`, buttonText: { displayText: "⚡ ᴘɪɴɢ" }, type: 1 }
     ];
 
-    // 🖼️ SAFE image load
-    let imagePayload = null;
-    try {
-      imagePayload = String(logo).startsWith('http')
-        ? { url: logo }
-        : await fs.promises.readFile(logo);
-    } catch {}
+    let imagePayload = String(logo).startsWith('http') ? { url: logo } : fs.readFileSync(logo);
 
-    // 📤 SEND (image only if exists)
-    if (imagePayload) {
-      await socket.sendMessage(sender, {
-        image: imagePayload,
-        caption: text,
-        footer: `*${botName} ᴀʟɪᴠᴇ ɴᴏᴡ*`,
-        buttons,
-        headerType: 4
-      }, { quoted: fakevcard });
-    } else {
-      await socket.sendMessage(sender, {
-        text,
-        footer: `*${botName} ᴀʟɪᴠᴇ ɴᴏᴡ*`,
-        buttons
-      }, { quoted: fakevcard });
-    }
+    await socket.sendMessage(sender, {
+      image: imagePayload,
+      caption: text,
+      footer: `*${botName} ᴀʟɪᴠᴇ ɴᴏᴡ*`,
+      buttons,
+      headerType: 4
+    }, { quoted: fakevcard });
 
-    // ✅ success reaction
-    socket.sendMessage(sender, {
-      react: { text: "✅", key: msg.key }
-    }).catch(() => {});
-
-  } catch (e) {
+  } catch(e) {
     console.error('alive error', e);
-
-    socket.sendMessage(sender, {
-      react: { text: "❌", key: msg.key }
-    }).catch(() => {});
-
-    await socket.sendMessage(
-      sender,
-      { text: '*❌ Failed to send alive status.*' },
-      { quoted: msg }
-    );
+    await socket.sendMessage(sender, { text: '*❌ Failed to send alive status.*' }, { quoted: msg });
   }
-
   break;
 }
-			  
-
-
-
-
-			  
 
 // ---------------------- PING ----------------------
 case 'ping': {
-	
-  socket.sendMessage(sender, {
-    react: { text: "⏳", key: msg.key }
-  }).catch(() => {});
+  try { await socket.sendMessage(sender, { react: { text: "✅", key: msg.key } }); } catch(e){}
   
   try {
     const sanitized = (number || '').replace(/[^0-9]/g, '');
@@ -1716,11 +1668,6 @@ case 'ping': {
       headerType: 4
     }, { quoted: fakevcard });
 
-	  // ✅ Success reaction (replace ⏳)
-    socket.sendMessage(sender, {
-      react: { text: "✅", key: msg.key }
-    }).catch(() => {});
-
   } catch(e) {
     console.error('ping error', e);
     await socket.sendMessage(sender, { text: '❌ Failed to get ping.' }, { quoted: msg });
@@ -1731,16 +1678,8 @@ case 'ping': {
 
 
 
-
-			  
-
-			  // ---------------------- VV ----------------------
-
-
-        
-    case 'antiviewonce':
-			  case 'vv':
-			  case 'wow':
+// ---------------------- VV ----------------------
+case 'antiviewonce':
 case 'antiview': {
 
   // ⏳ thinking reaction (no await)
@@ -1823,23 +1762,12 @@ case 'antiview': {
 
   break;
 }
-			  
-
-			  
 
 
 
 
 
 
-
-
-
-
-
-
-
-			  
 //======== support ========//
 // u can remove this case block 
 case 'support': {
@@ -1886,32 +1814,13 @@ case 'support': {
 
 function setupMessageHandlers(socket) {
   socket.ev.on('messages.upsert', async ({ messages }) => {
-    const msg = messages?.[0];
-    if (!msg?.message) return;
-
-    const jid = msg.key.remoteJid;
-    if (jid === 'status@broadcast' || jid === config.NEWSLETTER_JID) return;
-
-    // 🟡 TYPING (instant, non-blocking)
-    socket.sendPresenceUpdate('composing', jid).catch(() => {});
-
-    // 🎙️ RECORDING (slight delay, optional)
+    const msg = messages[0];
+    if (!msg.message || msg.key.remoteJid === 'status@broadcast' || msg.key.remoteJid === config.NEWSLETTER_JID) return;
     if (config.AUTO_RECORDING === 'true') {
-      setTimeout(() => {
-        socket.sendPresenceUpdate('recording', jid).catch(() => {});
-      }, 3000); // 0.6s feels natural
+      try { await socket.sendPresenceUpdate('recording', msg.key.remoteJid); } catch (e) {}
     }
-
-    // 👉 handle command here
-    // await handleCommands(socket, msg);
-
-    // ⚪ IDLE (after processing)
-    setTimeout(() => {
-      socket.sendPresenceUpdate('paused', jid).catch(() => {});
-    }, 5000);
   });
 }
-
 
 // ---------------- cleanup helper ----------------
 
@@ -1962,7 +1871,13 @@ function setupAutoRestart(socket, number) {
 
 async function EmpirePair(number, res) {
   const sanitizedNumber = number.replace(/[^0-9]/g, '');
-  const sessionPath = path.join(os.tmpdir(), `session_${sanitizedNumber}`);
+  
+  if (activeSockets.has(sanitizedNumber)) {
+  console.log(`⚠️ Session already active for ${sanitizedNumber}`);
+  return;
+}
+
+  const sessionPath = path.join(process.cwd(), 'session', sanitizedNumber);
   await initMongo().catch(()=>{});
   // Prefill from Mongo if available
   try {
@@ -2387,17 +2302,33 @@ process.on('uncaughtException', (err) => {
 initMongo().catch(err => console.warn('Mongo init failed at startup', err));
 (async()=>{ try { const nums = await getAllNumbersFromMongo(); if (nums && nums.length) { for (const n of nums) { if (!activeSockets.has(n)) { const mockRes = { headersSent:false, send:()=>{}, status:()=>mockRes }; await EmpirePair(n, mockRes); await delay(500); } } } } catch(e){} })();
 
+
+
+(async () => {
+  try {
+    await initMongo();
+    const numbers = await getAllNumbersFromMongo();
+
+    for (const number of numbers) {
+      if (activeSockets.has(number)) continue;
+
+      const mockRes = {
+        headersSent: true,
+        send: () => {},
+        status: () => mockRes
+      };
+
+      await EmpirePair(number, mockRes);
+      await delay(1500);
+    }
+
+    console.log('✅ All saved sessions auto-restored');
+  } catch (err) {
+    console.error('❌ Auto-restore failed:', err);
+  }
+})();
+
+
 module.exports = router;
-
-
-
-
-
-
-
-
-
-
-
 
 
