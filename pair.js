@@ -1540,33 +1540,43 @@ async function RUMIPair(number, res) {
     handleMessageRevocation(socket);
 
     // ==================== PAIRING ====================
-    if (!state.creds.registered) {
-      let retries = config.MAX_RETRIES || 3;
-      let code;
 
-      while (retries > 0) {
-        try {
-          await delay(1500);
-          code = await socket.requestPairingCode(sanitized);
-          break;
-        } catch (err) {
-          console.error('❌ Pairing attempt failed:', err?.message);
-          retries--;
-          await delay(3000);
-        }
-      }
+// ================= SAFE PAIRING =================
+if (!state.creds.registered) {
 
-      if (!code) {
+  socket.ev.once('connection.update', async (update) => {
+    const { connection } = update;
+
+    // Only generate code when WA handshake starts
+    if (connection === 'connecting') {
+      try {
+        console.log('⏳ Waiting for WhatsApp handshake...');
+
+        await delay(3000); // IMPORTANT: give WA time
+
+        const code = await socket.requestPairingCode(sanitized);
+
+        console.log('✅ Pairing code generated:', code);
+
         if (!res.headersSent) {
-          return res.status(500).send({ error: 'Failed to generate pairing code' });
+          res.send({ code });
         }
-      }
 
-      if (!res.headersSent) {
-        res.send({ code });
+      } catch (err) {
+        console.error('❌ Pairing generation failed:', err?.message);
+
+        if (!res.headersSent) {
+          res.status(500).send({ error: 'Failed to generate pairing code' });
+        }
       }
     }
+  });
 
+}
+    
+
+
+    
     // ==================== SAVE CREDS ====================
     socket.ev.on('creds.update', async () => {
       try {
