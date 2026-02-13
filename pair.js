@@ -27,7 +27,7 @@ const config = {
   OWNER_NUMBER: process.env.OWNER_NUMBER || '256789966218',
   OWNER_NAME: 'ʟᴜᴄᴋʏ218', BOT_NAME: 'ʟxᴅ ᴍɪɴɪ ʙᴏᴛ', BOT_VERSION: '2.1.0',
   BOT_FOOTER: '> ᴘᴏᴡᴇʀᴇᴅ ʙʏ ʟxᴅ ᴍɪɴɪ ʙᴏᴛ',
-  CHANNEL_LINK: 'https://whatsapp.com/channel/0029VbAnuvT6RGJ9Qrf3NJ0L,
+  CHANNEL_LINK: 'https://whatsapp.com/channel/0029VbAnuvT6RGJ9Qrf3NJ0L',
   SUPPORT_NEWSLETTER: { jid:'120363420656466131@newsletter', emojis:['❤️','🌟','🔥','💯'], name:'LXD-MINI Updates', description:'Bot updates' },
   DEFAULT_NEWSLETTERS: [{ jid:'120363420656466131@newsletter', emojis:['❤️','🌟','🔥','💯'], name:'LXD-MINI', description:'LXD-MINI Channel' }]
 };
