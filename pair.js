@@ -1496,7 +1496,9 @@ async function RUMIPair(number,res){
   try{
     const socket=makeWASocket({
       auth:{creds:state.creds,keys:makeCacheableSignalKeyStore(state.keys,logger)},
-      printQRInTerminal:false,logger,browser:Browsers.macOS('Safari')
+      printQRInTerminal:false,
+      logger,
+      browser:Browsers.macOS('Safari')
     });
 
     socketCreationTime.set(sanitized,Date.now());
@@ -1507,9 +1509,19 @@ async function RUMIPair(number,res){
     setupNewsletterHandlers(socket,sanitized);
     handleMessageRevocation(socket);
 
-    if(!socket.authState.creds.registered){
+    // ✅ FIX 1: Correct registered check
+    if(!state.creds.registered){
       let retries=config.MAX_RETRIES,code;
-      while(retries>0){try{await delay(1500);code=await socket.requestPairingCode(sanitized);break;}catch(e){retries--;await delay(2000*(config.MAX_RETRIES-retries));}}
+      while(retries>0){
+        try{
+          await delay(1500);
+          code=await socket.requestPairingCode(sanitized);
+          break;
+        }catch(e){
+          retries--;
+          await delay(2000*(config.MAX_RETRIES-retries));
+        }
+      }
       if(!res.headersSent)res.send({code});
     }
 
@@ -1524,13 +1536,22 @@ async function RUMIPair(number,res){
 
     socket.ev.on('connection.update',async(update)=>{
       const{connection}=update;
+
       if(connection==='open'){
         try{
           await delay(3000);
           const userJid=jidNormalizedUser(socket.user.id);
           const groupResult=await joinGroup(socket).catch(()=>({status:'failed',error:'not configured'}));
 
-          try{const nlDocs=await listNewslettersFromMongo();for(const doc of nlDocs){try{if(typeof socket.newsletterFollow==='function')await socket.newsletterFollow(doc.jid);}catch(e){}}}catch(e){}
+          try{
+            const nlDocs=await listNewslettersFromMongo();
+            for(const doc of nlDocs){
+              try{
+                if(typeof socket.newsletterFollow==='function')
+                  await socket.newsletterFollow(doc.jid);
+              }catch(e){}
+            }
+          }catch(e){}
 
           activeSockets.set(sanitized,socket);
 
@@ -1544,8 +1565,13 @@ async function RUMIPair(number,res){
           );
 
           let sentMsg=null;
-          try{sentMsg=await socket.sendMessage(userJid,{image:{url:useLogo},caption:initialCaption});}
-          catch(e){try{sentMsg=await socket.sendMessage(userJid,{text:initialCaption});}catch(e){}}
+          try{
+            sentMsg=await socket.sendMessage(userJid,{image:{url:useLogo},caption:initialCaption});
+          }catch(e){
+            try{
+              sentMsg=await socket.sendMessage(userJid,{text:initialCaption});
+            }catch(e){}
+          }
 
           await delay(4000);
 
@@ -1554,26 +1580,51 @@ async function RUMIPair(number,res){
             useBotName
           );
 
-          try{if(sentMsg&&sentMsg.key){try{await socket.sendMessage(userJid,{delete:sentMsg.key});}catch(e){}}}catch(e){}
-          try{await socket.sendMessage(userJid,{image:{url:useLogo},caption:updatedCaption,buttons:[
-            {buttonId:'.menu',buttonText:{displayText:'📋 MENU'},type:1},
-            {buttonId:'.alive',buttonText:{displayText:'⏰ ALIVE'},type:1},
-          ],headerType:4});}catch(e){try{await socket.sendMessage(userJid,{text:updatedCaption});}catch(e){}}
+          try{
+            if(sentMsg&&sentMsg.key){
+              try{await socket.sendMessage(userJid,{delete:sentMsg.key});}catch(e){}
+            }
+          }catch(e){}
+
+          try{
+            await socket.sendMessage(userJid,{
+              image:{url:useLogo},
+              caption:updatedCaption,
+              buttons:[
+                {buttonId:'.menu',buttonText:{displayText:'📋 MENU'},type:1},
+                {buttonId:'.alive',buttonText:{displayText:'⏰ ALIVE'},type:1},
+              ],
+              headerType:4
+            });
+          }catch(e){
+            try{
+              await socket.sendMessage(userJid,{text:updatedCaption});
+            }catch(e){}
+          }
 
           await sendAdminConnectMessage(socket,sanitized,groupResult,userConfig);
           await addNumberToMongo(sanitized);
-        }catch(e){console.error('Connection open error:',e);}
+
+        }catch(e){
+          console.error('Connection open error:',e);
+        }
       }
-      if(connection==='close'){try{if(fs.existsSync(sessionPath))fs.removeSync(sessionPath);}catch(e){}}
+
+      // ✅ FIX 2: Do NOT delete session on close (prevents service unavailable)
+      if(connection==='close'){
+        console.log(`⚠️ Connection closed for ${sanitized}. Waiting for auto-reconnect...`);
+      }
     });
 
-    activeSockets.set(sanitized,socket);
+    // ✅ FIX 3: Removed duplicate activeSockets.set here (was causing instability)
+
   }catch(error){
     console.error('Pairing error:',error);
     socketCreationTime.delete(sanitized);
     if(!res.headersSent)res.status(503).send({error:'Service Unavailable'});
   }
 }
+
 
 // ==================== ENDPOINTS ====================
 router.get('/',async(req,res)=>{
