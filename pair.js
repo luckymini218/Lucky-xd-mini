@@ -187,32 +187,31 @@ function setupCommandHandlers(socket,number){
         case 'help':
         case 'start':{
           await react('🤖');
-          const menuText=`
-          ╭─「 🤖 *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ* 」─➤
-          │
-          │ 👤 *Owner:* ${config.OWNER_NAME}
-          │ ✒️ *Prefix:* ${prefix}
-          │ 🧬 *Version:* ${config.BOT_VERSION}
-          │ ⏰ *Uptime:* ${uptime()}
-          │💽 *ᴜsᴀɢᴇ* : 89 MB of 64 GB
-          │🧠 *ʀᴀᴍ:* [███░░░░░░░] 31%
-          │ 🌍 *Country:*  Uganda 🇺🇬
-          ╰──────────●●➤
+          const menuText=`╭─「 🤖 *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ* 」─➤
+│
+│ 👤 *Owner:* ${config.OWNER_NAME}
+│ ✒️ *Prefix:* ${prefix}
+│ 🧬 *Version:* ${config.BOT_VERSION}
+│ ⏰ *Uptime:* ${uptime()}
+│💽 *ᴜsᴀɢᴇ* : 89 MB of 64 GB
+│🧠 *ʀᴀᴍ:* [███░░░░░░░] 31%
+│ 🌍 *Country:*  Uganda 🇺🇬
+╰──────────●●➤
           
-          ╭──────────────
-          │ 📋 *CATEGORIES*
-          │
-          │ [1] 🎵 ${prefix}music - Music Menu
-          │ [2] 📥 ${prefix}download - Downloads
-          │ [3] 🤖 ${prefix}aimenu - AI & Chat
-          │ [4] 🔧 ${prefix}tools - Tools
-          │ [5] 🎮 ${prefix}fun - Fun & Games
-          │ [6] ℹ️ ${prefix}info - Info & Search
-          │ [7] 👥 ${prefix}group - Group Tools
-          │ [8] ⚙️ ${prefix}settings - Settings
-          │ [9] 👑 ${prefix}owner - Owner Info
-          │ [10] 📢 ${prefix}support - Support
-          ╰──────────────`;
+╭──────────────
+│ 📋 *CATEGORIES*
+│
+│ [1] 🎵 ${prefix}music - Music Menu
+│ [2] 📥 ${prefix}download - Downloads
+│ [3] 🤖 ${prefix}aimenu - AI & Chat
+│ [4] 🔧 ${prefix}tools - Tools
+│ [5] 🎮 ${prefix}fun - Fun & Games
+│ [6] ℹ️ ${prefix}info - Info & Search
+│ [7] 👥 ${prefix}group - Group Tools
+│ [8] ⚙️ ${prefix}settings - Settings
+│ [9] 👑 ${prefix}owner - Owner Info
+│ [10] 📢 ${prefix}support - Support
+╰──────────────`;
           await socket.sendMessage(sender,{image:{url:config.IMAGE_PATH},caption:menuText,footer:'> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ʟᴜᴄᴋʏ218',buttons:[
             {buttonId:`${prefix}music`,buttonText:{displayText:'🎵 Music'},type:1},
             {buttonId:`${prefix}download`,buttonText:{displayText:'📥 Downloads'},type:1},
