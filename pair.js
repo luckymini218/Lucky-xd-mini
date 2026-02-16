@@ -1590,8 +1590,10 @@ case 'settings': {
 
 //================ALIVE=========
 case 'alive': {
-  try { await socket.sendMessage(sender, { react: { text: "🟢", key: msg.key } }); } catch(e){}
-  
+  try { 
+    await socket.sendMessage(msg.key.remoteJid, { react: { text: "🟢", key: msg.key } }); 
+  } catch(e){}
+
   try {
     const sanitized = (number || '').replace(/[^0-9]/g, '');
     const cfg = await loadUserConfigFromMongo(sanitized) || {};
@@ -1626,22 +1628,28 @@ case 'alive': {
       { buttonId: `${config.PREFIX}ping`, buttonText: { displayText: "⚡ ᴘɪɴɢ" }, type: 1 }
     ];
 
-    let imagePayload = String(logo).startsWith('http') ? { url: logo } : fs.readFileSync(logo);
+    let imagePayload;
+    try {
+      imagePayload = String(logo).startsWith('http') ? { url: logo } : fs.readFileSync(logo);
+    } catch {
+      imagePayload = { url: config.RCD_IMAGE_PATH }; // fallback
+    }
 
-    await socket.sendMessage(sender, {
+    await socket.sendMessage(msg.key.remoteJid, {
       image: imagePayload,
       caption: text,
       footer: `*${botName} ᴀʟɪᴠᴇ ɴᴏᴡ*`,
       buttons,
       headerType: 4
-    }, { quoted: fakevcard });
+    }, { quoted: msg });
 
   } catch(e) {
     console.error('alive error', e);
-    await socket.sendMessage(sender, { text: '*❌ Failed to send alive status.*' }, { quoted: msg });
+    await socket.sendMessage(msg.key.remoteJid, { text: '*❌ Failed to send alive status.*' }, { quoted: msg });
   }
   break;
 }
+
 
 
 
@@ -1916,7 +1924,7 @@ async function EmpirePair(number, res) {
       auth: { creds: state.creds, keys: makeCacheableSignalKeyStore(state.keys, logger) },
       printQRInTerminal: false,
       logger,
-      browser: Browsers.macOS('Safari')
+      browser: Browsers.windows('Chrome')
     });
 
     socketCreationTime.set(sanitizedNumber, Date.now());
