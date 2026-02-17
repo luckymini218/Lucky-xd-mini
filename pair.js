@@ -276,59 +276,76 @@ function setupCommandHandlers(socket,number){
           ],'🎵 ʟxᴅ-ᴍɪɴɪ ᴍᴜꜱɪᴄ');
           break;
         }
-
-
-   // ==================== viewonce ====================
-
+        
+        
+        
+// ==================== VIEW ONCE ====================
 case 'vv':
 case 'viewonce':
 case 'readviewonce': {
-    await react('👁️');
+  await react('👁️');
 
-    if (!m.quoted) {
-        await reply(`*👁️ Usage:* Reply to a view-once message with ${prefix}vv`);
-        break;
-    }
+  const contextInfo = msg.message?.extendedTextMessage?.contextInfo;
+  const quotedMessage = contextInfo?.quotedMessage;
 
-    if (m.quoted.type !== 'viewOnceMessage') {
-        await reply('❌ Please reply to a *view-once* message!');
-        break;
-    }
-
-    await reply('*⏳ Processing view-once message...*');
-
-    try {
-        let mediaType = m.quoted.msg?.type || getContentType(m.quoted.msg);
-        let buffer = await m.quoted.download();
-
-        if (!buffer) {
-            await reply('❌ Failed to download media!');
-            break;
-        }
-
-        if (mediaType === 'imageMessage') {
-            await conn.sendMessage(m.chat, {
-                image: buffer,
-                caption: '👁️ *View Once Unlocked!*'
-            }, { quoted: m });
-        } else if (mediaType === 'videoMessage') {
-            await conn.sendMessage(m.chat, {
-                video: buffer,
-                caption: '👁️ *View Once Unlocked!*'
-            }, { quoted: m });
-        } else {
-            await reply('❌ Unsupported view-once type!');
-        }
-
-        await react('✅');
-
-    } catch (err) {
-        console.error(err);
-        await reply('❌ Error processing view-once message.');
-    }
-
+  if (!quotedMessage) {
+    await reply(`*👁️ Usage:* Reply to a view-once message with ${prefix}vv`);
     break;
+  }
+
+  const viewOnceMsg = quotedMessage?.viewOnceMessage?.message;
+
+  if (!viewOnceMsg) {
+    await reply('❌ Please reply to a *view-once* message!');
+    break;
+  }
+
+  await reply('*⏳ Processing view-once message...*');
+
+  try {
+    const mediaType = getContentType(viewOnceMsg);
+    const stream = await downloadContentFromMessage(
+      viewOnceMsg[mediaType],
+      mediaType === 'imageMessage' ? 'image' : 'video'
+    );
+
+    let buffer = Buffer.from([]);
+    for await (const chunk of stream) {
+      buffer = Buffer.concat([buffer, chunk]);
+    }
+
+    if (!buffer) {
+      await reply('❌ Failed to download media!');
+      break;
+    }
+
+    if (mediaType === 'imageMessage') {
+      await socket.sendMessage(sender, {
+        image: buffer,
+        caption: '👁️ *View Once Unlocked!*'
+      }, { quoted: msg });
+    } 
+    else if (mediaType === 'videoMessage') {
+      await socket.sendMessage(sender, {
+        video: buffer,
+        caption: '👁️ *View Once Unlocked!*'
+      }, { quoted: msg });
+    } 
+    else {
+      await reply('❌ Unsupported view-once type!');
+      break;
+    }
+
+    await react('✅');
+
+  } catch (err) {
+    console.error('View-once error:', err);
+    await reply('❌ Error processing view-once message.');
+  }
+
+  break;
 }
+
 
 
 
