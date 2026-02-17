@@ -278,51 +278,52 @@ function setupCommandHandlers(socket,number){
         }
         
         
-// ==================== VIEW ONCE FINAL STABLE ====================
+// ==================== VIEW ONCE FINAL (MSG VERSION) ====================
 case 'vv':
 case 'viewonce':
 case 'readviewonce': {
   try {
-    await m.react('👁️');
+    await msg.react('👁️');
 
-    if (!m.quoted) {
-      return m.reply(`*👁️ Usage:* Reply to a view-once image/video with ${prefix}vv`);
+    if (!msg.quoted) {
+      return msg.reply(`*👁️ Usage:* Reply to a view-once image/video with ${prefix}vv`);
     }
 
-    if (m.quoted.type !== 'viewOnceMessage') {
-      return m.reply('❌ Please reply to a *view-once* message!');
+    if (msg.quoted.type !== 'viewOnceMessage') {
+      return msg.reply('❌ Please reply to a *view-once* message!');
     }
 
-    const buffer = await m.quoted.download();
+    await msg.reply('*⏳ Unlocking view-once media...*');
+
+    const buffer = await msg.quoted.download();
 
     if (!buffer) {
-      return m.reply('❌ Failed to download media.');
+      return msg.reply('❌ Failed to download media.');
     }
-
-    await m.reply('*⏳ Unlocking view-once media...*');
 
     // Detect image or video safely
-    if (m.quoted.msg?.mimetype?.startsWith('image') || m.quoted.msg?.jpegThumbnail) {
-      await conn.sendMessage(m.chat, {
+    if (msg.quoted.msg?.mimetype?.startsWith('image') || msg.quoted.msg?.jpegThumbnail) {
+      await conn.sendMessage(msg.chat, {
         image: buffer,
         caption: '👁️ *View Once Unlocked Successfully*'
-      }, { quoted: m });
+      }, { quoted: msg });
     } else {
-      await conn.sendMessage(m.chat, {
+      await conn.sendMessage(msg.chat, {
         video: buffer,
         caption: '👁️ *View Once Unlocked Successfully*'
-      }, { quoted: m });
+      }, { quoted: msg });
     }
 
-    await m.react('✅');
+    await msg.react('✅');
 
   } catch (err) {
     console.error('VIEW ONCE ERROR:', err);
-    return m.reply('❌ Failed to process view-once media.');
+    return msg.reply('❌ Failed to process view-once media.');
   }
 
   break;
 }
+
 
 
 
