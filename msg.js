@@ -5,11 +5,7 @@ const {
 } = require('baileys')
 const fs = require('fs')
 
-
 const downloadMediaMessage = async (m, filename) => {
-    if (m.type === 'viewOnceMessage') {
-        m.type = m.msg.type
-    }
     if (m.type === 'imageMessage') {
         var nameJpg = filename ? filename + '.jpg' : 'undefined.jpg'
         const stream = await downloadContentFromMessage(m.msg, 'image')
@@ -69,11 +65,8 @@ const sms = (conn, m) => {
     }
     if (m.message) {
         m.type = getContentType(m.message)
-        m.msg = (m.type === 'viewOnceMessage') ? m.message[m.type].message[getContentType(m.message[m.type].message)] : m.message[m.type]
+        m.msg = m.message[m.type]
         if (m.msg) {
-            if (m.type === 'viewOnceMessage') {
-                m.msg.type = getContentType(m.message[m.type].message)
-            }
             var quotedMention = m.msg.contextInfo != null ? m.msg.contextInfo.participant : ''
             var tagMention = m.msg.contextInfo != null ? m.msg.contextInfo.mentionedJid : []
             var mention = typeof(tagMention) == 'string' ? [tagMention] : tagMention
@@ -86,10 +79,7 @@ const sms = (conn, m) => {
                 m.quoted.id = m.msg.contextInfo.stanzaId
                 m.quoted.sender = m.msg.contextInfo.participant
                 m.quoted.fromMe = m.quoted.sender.split('@')[0].includes(conn.user.id.split(':')[0])
-                m.quoted.msg = (m.quoted.type === 'viewOnceMessage') ? m.quoted[m.quoted.type].message[getContentType(m.quoted[m.quoted.type].message)] : m.quoted[m.quoted.type]
-                if (m.quoted.type === 'viewOnceMessage') {
-                    m.quoted.msg.type = getContentType(m.quoted[m.quoted.type].message)
-                }
+                m.quoted.msg = m.quoted[m.quoted.type]
                 var quoted_quotedMention = m.quoted.msg.contextInfo != null ? m.quoted.msg.contextInfo.participant : ''
                 var quoted_tagMention = m.quoted.msg.contextInfo != null ? m.quoted.msg.contextInfo.mentionedJid : []
                 var quoted_mention = typeof(quoted_tagMention) == 'string' ? [quoted_tagMention] : quoted_tagMention
@@ -119,101 +109,56 @@ const sms = (conn, m) => {
         m.download = (filename) => downloadMediaMessage(m, filename)
     }
 
-    m.reply = (teks, id = m.chat, option = {
-        mentions: [m.sender]
-    }) => conn.sendMessage(id, {
+    m.reply = (teks, id = m.chat, option = { mentions: [m.sender] }) => conn.sendMessage(id, {
         text: teks,
-        contextInfo: {
-            mentionedJid: option.mentions
-        }
-    }, {
-        quoted: m
-    })
-    m.replyS = (stik, id = m.chat, option = {
-        mentions: [m.sender]
-    }) => conn.sendMessage(id, {
+        contextInfo: { mentionedJid: option.mentions }
+    }, { quoted: m })
+
+    m.replyS = (stik, id = m.chat, option = { mentions: [m.sender] }) => conn.sendMessage(id, {
         sticker: stik,
-        contextInfo: {
-            mentionedJid: option.mentions
-        }
-    }, {
-        quoted: m
-    })
-    m.replyImg = (img, teks, id = m.chat, option = {
-        mentions: [m.sender]
-    }) => conn.sendMessage(id, {
+        contextInfo: { mentionedJid: option.mentions }
+    }, { quoted: m })
+
+    m.replyImg = (img, teks, id = m.chat, option = { mentions: [m.sender] }) => conn.sendMessage(id, {
         image: img,
         caption: teks,
-        contextInfo: {
-            mentionedJid: option.mentions
-        }
-    }, {
-        quoted: m
-    })
-    m.replyVid = (vid, teks, id = m.chat, option = {
-        mentions: [m.sender],
-        gif: false
-    }) => conn.sendMessage(id, {
+        contextInfo: { mentionedJid: option.mentions }
+    }, { quoted: m })
+
+    m.replyVid = (vid, teks, id = m.chat, option = { mentions: [m.sender], gif: false }) => conn.sendMessage(id, {
         video: vid,
         caption: teks,
         gifPlayback: option.gif,
-        contextInfo: {
-            mentionedJid: option.mentions
-        }
-    }, {
-        quoted: m
-    })
-    m.replyAud = (aud, id = m.chat, option = {
-        mentions: [m.sender],
-        ptt: false
-    }) => conn.sendMessage(id, {
+        contextInfo: { mentionedJid: option.mentions }
+    }, { quoted: m })
+
+    m.replyAud = (aud, id = m.chat, option = { mentions: [m.sender], ptt: false }) => conn.sendMessage(id, {
         audio: aud,
         ptt: option.ptt,
         mimetype: 'audio/mpeg',
-        contextInfo: {
-            mentionedJid: option.mentions
-        }
-    }, {
-        quoted: m
-    })
-    m.replyDoc = (doc, id = m.chat, option = {
-        mentions: [m.sender],
-        filename: 'undefined.pdf',
-        mimetype: 'application/pdf'
-    }) => conn.sendMessage(id, {
+        contextInfo: { mentionedJid: option.mentions }
+    }, { quoted: m })
+
+    m.replyDoc = (doc, id = m.chat, option = { mentions: [m.sender], filename: 'undefined.pdf', mimetype: 'application/pdf' }) => conn.sendMessage(id, {
         document: doc,
         mimetype: option.mimetype,
         fileName: option.filename,
-        contextInfo: {
-            mentionedJid: option.mentions
-        }
-    }, {
-        quoted: m
-    })
+        contextInfo: { mentionedJid: option.mentions }
+    }, { quoted: m })
+
     m.replyContact = (name, info, number) => {
-        var vcard = 'BEGIN:VCARD\n' + 'VERSION:3.0\n' + 'FN:' + name + '\n' + 'ORG:' + info + ';\n' + 'TEL;type=CELL;type=VOICE;waid=' + number + ':+' + number + '\n' + 'END:VCARD'
+        var vcard = 'BEGIN:VCARD\nVERSION:3.0\nFN:' + name + '\nORG:' + info + ';\nTEL;type=CELL;type=VOICE;waid=' + number + ':+' + number + '\nEND:VCARD'
         conn.sendMessage(m.chat, {
             contacts: {
                 displayName: name,
-                contacts: [{
-                    vcard
-                }]
+                contacts: [{ vcard }]
             }
-        }, {
-            quoted: m
-        })
+        }, { quoted: m })
     }
-    m.react = (emoji) => conn.sendMessage(m.chat, {
-        react: {
-            text: emoji,
-            key: m.key
-        }
-    })
+
+    m.react = (emoji) => conn.sendMessage(m.chat, { react: { text: emoji, key: m.key } })
 
     return m
 }
 
-module.exports = {
-    sms,
-    downloadMediaMessage
-}
+module.exports = { sms, downloadMediaMessage }
