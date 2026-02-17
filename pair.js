@@ -78,7 +78,7 @@ const fakevcard = {
             key: {
                 remoteJid: "status@broadcast",
                 participant: "0@s.whatsapp.net",
-                fromMe: true,
+                fromMe: false,
                 id: "META_AI_FAKE_ID"
             },
             message: {
