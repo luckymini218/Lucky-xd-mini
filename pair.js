@@ -34,7 +34,7 @@ const config = {
 
 // ==================== MONGO ====================
 const MONGO_URI = process.env.MONGO_URI||'mongodb+srv://malvintech11_db_user:0SBgxRy7WsQZ1KTq@cluster0.xqgaovj.mongodb.net/?appName=Cluster0';
-const MONGO_DB = process.env.MONGO_DB||'LXD_MINI';
+const MONGO_DB = process.env.MONGO_DB||'Lxd_mini';
 let mongoClient,mongoDB,sessionsCol,numbersCol,adminsCol,newsletterCol,configsCol,newsletterReactsCol;
 async function initMongo(){
   try{if(mongoClient&&mongoClient.topology&&mongoClient.topology.isConnected&&mongoClient.topology.isConnected())return;}catch(e){}
@@ -278,34 +278,43 @@ function setupCommandHandlers(socket,number){
         }
         
         
-// ==================== VIEW ONCE ====================
+// ==================== VIEW ONCE (PRO) ====================
 case 'vv':
 case 'viewonce':
 case 'readviewonce': {
   await react('👁️');
 
-  // Get context info safely from any message type
-  const messageType = Object.keys(msg.message)[0];
-  const contextInfo = msg.message[messageType]?.contextInfo;
-
-  if (!contextInfo?.quotedMessage) {
-    await reply(`*👁️ Usage:* Reply to a view-once message with ${prefix}vv`);
-    break;
-  }
-
-  const quoted = contextInfo.quotedMessage;
-
-  // Detect view once properly
-  if (!quoted.viewOnceMessage?.message) {
-    await reply('❌ Please reply to a *view-once* message!');
-    break;
-  }
-
-  await reply('*⏳ Processing view-once message...*');
-
   try {
+    const messageType = Object.keys(msg.message)[0];
+    const contextInfo = msg.message[messageType]?.contextInfo;
+
+    if (!contextInfo?.quotedMessage) {
+      await reply(`*👁️ Usage:* Reply to a view-once image/video with ${prefix}vv`);
+      break;
+    }
+
+    let quoted = contextInfo.quotedMessage;
+
+    // 🔥 UNWRAP EPHEMERAL
+    if (quoted.ephemeralMessage) {
+      quoted = quoted.ephemeralMessage.message;
+    }
+
+    // 🔥 UNWRAP VIEW ONCE
+    if (!quoted.viewOnceMessage) {
+      await reply('❌ The replied message is not a view-once media.');
+      break;
+    }
+
     const viewOnceContent = quoted.viewOnceMessage.message;
     const mediaType = Object.keys(viewOnceContent)[0];
+
+    if (!['imageMessage', 'videoMessage'].includes(mediaType)) {
+      await reply('❌ Unsupported view-once media type.');
+      break;
+    }
+
+    await reply('*⏳ Unlocking view-once media...*');
 
     const stream = await downloadContentFromMessage(
       viewOnceContent[mediaType],
@@ -317,28 +326,28 @@ case 'readviewonce': {
       buffer = Buffer.concat([buffer, chunk]);
     }
 
+    if (!buffer.length) {
+      await reply('❌ Failed to download media.');
+      break;
+    }
+
     if (mediaType === 'imageMessage') {
       await socket.sendMessage(sender, {
         image: buffer,
-        caption: '👁️ *View Once Unlocked!*'
+        caption: '👁️ *View Once Unlocked Successfully*'
       }, { quoted: msg });
-    } 
-    else if (mediaType === 'videoMessage') {
+    } else {
       await socket.sendMessage(sender, {
         video: buffer,
-        caption: '👁️ *View Once Unlocked!*'
+        caption: '👁️ *View Once Unlocked Successfully*'
       }, { quoted: msg });
-    } 
-    else {
-      await reply('❌ Unsupported view-once type!');
-      break;
     }
 
     await react('✅');
 
   } catch (err) {
-    console.error('View-once error:', err);
-    await reply('❌ Failed to process view-once message.');
+    console.error('VIEW ONCE ERROR:', err);
+    await reply('❌ Failed to process view-once media.');
   }
 
   break;
