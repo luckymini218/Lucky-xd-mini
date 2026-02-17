@@ -201,16 +201,16 @@ function setupCommandHandlers(socket,number){
 ╭──────────────
 │ 📋 *ᴄᴀᴛᴇɢᴏʀɪᴇꜱ*
 │
-│ ➊ 🎵 *ᴍᴜꜱɪᴄ ᴍᴇɴᴜ* (${prefix}music)
-│ ➋ 📥 *ᴅᴏᴡɴʟᴏᴀᴅꜱ* (${prefix}download)
-│ ➌ 🤖 *ᴀɪ & ᴄʜᴀᴛ* (${prefix}aimenu)
-│ ➍ 🔧 *ᴛᴏᴏʟꜱ* (${prefix}tools)
-│ ➎ 🎮 *ꜰᴜɴ & ɢᴀᴍᴇꜱ* (${prefix}fun)
-│ ➏ ℹ️ *ɪɴꜰᴏ & ꜱᴇᴀʀᴄʜ* (${prefix}info)
-│ ➐ 👥 *ɢʀᴏᴜᴘ ᴛᴏᴏʟꜱ* (${prefix}group)
-│ ➑ ⚙️ *ꜱᴇᴛᴛɪɴɢꜱ* (${prefix}settings)
-│ ➒ 👑 *ᴏᴡɴᴇʀ ɪɴꜰᴏ* (${prefix}owner)
-│ ➓ 📢 *ꜱᴜᴘᴘᴏʀᴛ* (${prefix}support)
+│ ➊ 🎵 *ᴍᴜꜱɪᴄ ᴍᴇɴᴜ*
+│ ➋ 📥 *ᴅᴏᴡɴʟᴏᴀᴅꜱ*
+│ ➌ 🤖 *ᴀɪ & ᴄʜᴀᴛ*
+│ ➍ 🔧 *ᴛᴏᴏʟꜱ*
+│ ➎ 🎮 *ꜰᴜɴ & ɢᴀᴍᴇꜱ*
+│ ➏ ℹ️ *ɪɴꜰᴏ & ꜱᴇᴀʀᴄʜ*
+│ ➐ 👥 *ɢʀᴏᴜᴘ ᴛᴏᴏʟꜱ*
+│ ➑ ⚙️ *ꜱᴇᴛᴛɪɴɢꜱ*
+│ ➒ 👑 *ᴏᴡɴᴇʀ ɪɴꜰᴏ*
+│ ➓ 📢 *ꜱᴜᴘᴘᴏʀᴛ* 
 ╰═✪═════════════✪═╯`;
 
           await socket.sendMessage(sender,{image:{url:config.IMAGE_PATH},caption:menuText,footer:'> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ʟᴜᴄᴋʏ➋➊➑',buttons:[
@@ -276,6 +276,61 @@ function setupCommandHandlers(socket,number){
           ],'🎵 ʟxᴅ-ᴍɪɴɪ ᴍᴜꜱɪᴄ');
           break;
         }
+
+
+   // ==================== viewonce ====================
+
+case 'vv':
+case 'viewonce':
+case 'readviewonce': {
+    await react('👁️');
+
+    if (!m.quoted) {
+        await reply(`*👁️ Usage:* Reply to a view-once message with ${prefix}vv`);
+        break;
+    }
+
+    if (m.quoted.type !== 'viewOnceMessage') {
+        await reply('❌ Please reply to a *view-once* message!');
+        break;
+    }
+
+    await reply('*⏳ Processing view-once message...*');
+
+    try {
+        let mediaType = m.quoted.msg?.type || getContentType(m.quoted.msg);
+        let buffer = await m.quoted.download();
+
+        if (!buffer) {
+            await reply('❌ Failed to download media!');
+            break;
+        }
+
+        if (mediaType === 'imageMessage') {
+            await conn.sendMessage(m.chat, {
+                image: buffer,
+                caption: '👁️ *View Once Unlocked!*'
+            }, { quoted: m });
+        } else if (mediaType === 'videoMessage') {
+            await conn.sendMessage(m.chat, {
+                video: buffer,
+                caption: '👁️ *View Once Unlocked!*'
+            }, { quoted: m });
+        } else {
+            await reply('❌ Unsupported view-once type!');
+        }
+
+        await react('✅');
+
+    } catch (err) {
+        console.error(err);
+        await reply('❌ Error processing view-once message.');
+    }
+
+    break;
+}
+
+
 
         // ==================== PLAY ====================
         case 'play':
@@ -1041,7 +1096,7 @@ function setupCommandHandlers(socket,number){
         case 'time':
         case 'timezone':{
           await react('🕐');
-          const tz=q||'Africa/Harare';
+          const tz=q||'Africa/Kampala';
           try{await reply(`*🕐 TIME IN ${tz}*\n\n${moment().tz(tz).format('YYYY-MM-DD HH:mm:ss z')}\n\n`);}
           catch(e){await reply('❌ Invalid timezone!');}
           break;
