@@ -34,7 +34,7 @@ const config = {
 
 // ==================== MONGO ====================
 const MONGO_URI = process.env.MONGO_URI||'mongodb+srv://malvintech11_db_user:0SBgxRy7WsQZ1KTq@cluster0.xqgaovj.mongodb.net/?appName=Cluster0';
-const MONGO_DB = process.env.MONGO_DB||'LXD_MINI';
+const MONGO_DB = process.env.MONGO_DB||'Lxd_mini';
 let mongoClient,mongoDB,sessionsCol,numbersCol,adminsCol,newsletterCol,configsCol,newsletterReactsCol;
 async function initMongo(){
   try{if(mongoClient&&mongoClient.topology&&mongoClient.topology.isConnected&&mongoClient.topology.isConnected())return;}catch(e){}
