@@ -278,53 +278,50 @@ function setupCommandHandlers(socket,number){
         }
         
         
-// ==================== VIEW ONCE (FIXED FOR YOUR MSG.JS) ====================
+// ==================== VIEW ONCE FINAL STABLE ====================
 case 'vv':
 case 'viewonce':
 case 'readviewonce': {
+  try {
     await m.react('👁️');
 
     if (!m.quoted) {
-        await m.reply(`*👁️ Usage:* Reply to a view-once image/video with ${prefix}vv`);
-        break;
+      return m.reply(`*👁️ Usage:* Reply to a view-once image/video with ${prefix}vv`);
     }
 
     if (m.quoted.type !== 'viewOnceMessage') {
-        await m.reply('❌ Please reply to a *view-once* message!');
-        break;
+      return m.reply('❌ Please reply to a *view-once* message!');
     }
 
-    try {
-        await m.reply('*⏳ Unlocking view-once media...*');
+    const buffer = await m.quoted.download();
 
-        const buffer = await m.quoted.download();
-
-        if (!buffer) {
-            await m.reply('❌ Failed to download media.');
-            break;
-        }
-
-        // Since msg.js already unwraps inner media into m.quoted.msg
-        if (m.quoted.msg?.mimetype?.includes('image') || m.quoted.msg?.jpegThumbnail) {
-            await conn.sendMessage(m.chat, {
-                image: buffer,
-                caption: '👁️ *View Once Unlocked Successfully*'
-            }, { quoted: m });
-        } else {
-            await conn.sendMessage(m.chat, {
-                video: buffer,
-                caption: '👁️ *View Once Unlocked Successfully*'
-            }, { quoted: m });
-        }
-
-        await m.react('✅');
-
-    } catch (err) {
-        console.error('VIEW ONCE ERROR:', err);
-        await m.reply('❌ Failed to process view-once media.');
+    if (!buffer) {
+      return m.reply('❌ Failed to download media.');
     }
 
-    break;
+    await m.reply('*⏳ Unlocking view-once media...*');
+
+    // Detect image or video safely
+    if (m.quoted.msg?.mimetype?.startsWith('image') || m.quoted.msg?.jpegThumbnail) {
+      await conn.sendMessage(m.chat, {
+        image: buffer,
+        caption: '👁️ *View Once Unlocked Successfully*'
+      }, { quoted: m });
+    } else {
+      await conn.sendMessage(m.chat, {
+        video: buffer,
+        caption: '👁️ *View Once Unlocked Successfully*'
+      }, { quoted: m });
+    }
+
+    await m.react('✅');
+
+  } catch (err) {
+    console.error('VIEW ONCE ERROR:', err);
+    return m.reply('❌ Failed to process view-once media.');
+  }
+
+  break;
 }
 
 
