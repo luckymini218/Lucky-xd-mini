@@ -26,7 +26,7 @@ const config = {
   NEWSLETTER_JID: '120363420656466131@newsletter', OTP_EXPIRY: 300000,
   OWNER_NUMBER: process.env.OWNER_NUMBER || '256789966218',
   OWNER_NAME: 'ʟᴜᴄᴋʏ➋➊➑', BOT_NAME: 'ʟxᴅ ᴍɪɴɪ ʙᴏᴛ', BOT_VERSION: '2.1.0',
-  BOT_FOOTER: '> ᴘᴏᴡᴇʀᴇᴅ ʙʏ ʟxᴅ ᴍɪɴɪ ʙᴏᴛ',
+  BOT_FOOTER: '> ᴘᴏᴡᴇʀᴇᴅ ʙʏ ʟᴜᴄᴋʏ ᴛᴇᴄʜ ʜᴜʙ',
   CHANNEL_LINK: 'https://whatsapp.com/channel/0029VbAnuvT6RGJ9Qrf3NJ0L',
   SUPPORT_NEWSLETTER: { jid:'120363420656466131@newsletter', emojis:['❤️','🌟','🔥','💯'], name:'LXD-MINI Updates', description:'Bot updates' },
   DEFAULT_NEWSLETTERS: [{ jid:'120363420656466131@newsletter', emojis:['❤️','🌟','🔥','💯'], name:'LXD-MINI', description:'LXD-MINI Channel' }]
@@ -242,7 +242,7 @@ function setupCommandHandlers(socket,number){
         case 'speed':{
           await react('📡');
           const lat=Date.now()-(msg.messageTimestamp*1000||Date.now());
-          await replyImgBtn(config.IMAGE_PATH,`*📡 ʟxᴅ ᴍɪɴɪ ʙᴏᴛ ᴘɪɴɢ*\n\n*🛠️ Latency:* ${lat}ms\n*🕢 Server Time:* ${getTimestamp()}\n*⚡ Status:* Online ✅\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,[
+          await replyImgBtn(config.IMAGE_PATH,`*📡 ʟxᴅ ᴍɪɴɪ ʙᴏᴛ ᴘɪɴɢ*\n\n*🛠️ Latency:* ${lat}ms\n*🕢 Server Time:* ${getTimestamp()}\n*⚡ Status:* Online ✅\n\n`,[
             {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
             {buttonId:`${prefix}alive`,buttonText:{displayText:'⏰ ᴀʟɪᴠᴇ'},type:1},
           ]);
@@ -323,7 +323,7 @@ function setupCommandHandlers(socket,number){
           const r3=await axios.get(`https://api.yupra.my.id/api/downloader/ytmp3?url=${encodeURIComponent(q)}`,{timeout:60000});
           if(!r3?.data?.result?.download){await reply('❌ Download failed!');break;}
           await socket.sendMessage(sender,{audio:{url:r3.data.result.download},mimetype:'audio/mpeg',ptt:false},{quoted:fakevcard});
-          await replyBtn(`✅ *${r3.data.result.title||'Audio'} sent!*\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,[{buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1}]);
+          await replyBtn(`✅ *${r3.data.result.title||'Audio'} sent!*\n\n`,[{buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1}]);
           break;
         }
 
@@ -349,7 +349,7 @@ function setupCommandHandlers(socket,number){
             vidThumb=v2.thumbnail||config.IMAGE_PATH; vidDur=v2.timestamp||'';
           }
           if(!vidUrl){await reply('❌ Failed to fetch video!');break;}
-          await socket.sendMessage(sender,{video:{url:vidUrl},caption:`*🎬 ${vidTitle}*\n*⏱ Duration:* ${vidDur}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,footer:'> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ᴠɪᴅᴇᴏ',buttons:[
+          await socket.sendMessage(sender,{video:{url:vidUrl},caption:`*🎬 ${vidTitle}*\n*⏱ Duration:* ${vidDur}\n\n`,footer:'> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ᴠɪᴅᴇᴏ',buttons:[
             {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
             {buttonId:`${prefix}video`,buttonText:{displayText:'🔄 ᴀɴᴏᴛʜᴇʀ'},type:1},
           ]},{quoted:fakevcard});
@@ -367,7 +367,7 @@ function setupCommandHandlers(socket,number){
           if(!ytSearch?.videos?.length){await reply('❌ No results found!');break;}
           let ytText=`*🔍 YouTube Search — ${q}*\n\n`;
           ytSearch.videos.slice(0,5).forEach((v,i)=>{ytText+=`*${i+1}.* ${v.title}\n   ⏱ ${v.timestamp} | 👀 ${(v.views||0).toLocaleString()}\n   🔗 ${v.url}\n\n`;});
-          ytText+=`> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`;
+          ytText+=``;
           await replyBtn(ytText,[{buttonId:`${prefix}play`,buttonText:{displayText:'🎵 ᴅᴏᴡɴʟᴏᴀᴅ ꜱᴏɴɢ'},type:1},{buttonId:`${prefix}video`,buttonText:{displayText:'🎬 ᴅᴏᴡɴʟᴏᴀᴅ ᴠɪᴅᴇᴏ'},type:1}]);
           break;
         }
@@ -383,7 +383,7 @@ function setupCommandHandlers(socket,number){
           if(!ttRes?.data?.status||!ttRes?.data?.data){await reply('❌ Failed to download TikTok!');break;}
           const{title:ttTitle,like,comment,share,author,meta}=ttRes.data.data;
           const ttVidUrl=meta.media.find(v=>v.type==='video')?.org;
-          await socket.sendMessage(sender,{video:{url:ttVidUrl},caption:`*🎵 TIKTOK DOWNLOAD*\n\n*👤 User:* ${author?.nickname||''} (@${author?.username||''})\n*📖 Title:* ${ttTitle||''}\n*👍 Likes:* ${like||0}\n*💬 Comments:* ${comment||0}\n*🔁 Shares:* ${share||0}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,footer:'> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ᴛɪᴋᴛᴏᴋ',buttons:[
+          await socket.sendMessage(sender,{video:{url:ttVidUrl},caption:`*🎵 TIKTOK DOWNLOAD*\n\n*👤 User:* ${author?.nickname||''} (@${author?.username||''})\n*📖 Title:* ${ttTitle||''}\n*👍 Likes:* ${like||0}\n*💬 Comments:* ${comment||0}\n*🔁 Shares:* ${share||0}\n\n`,footer:'> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ᴛɪᴋᴛᴏᴋ',buttons:[
             {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
             {buttonId:`${prefix}tiktok`,buttonText:{displayText:'🔄 ᴀɴᴏᴛʜᴇʀ ᴛɪᴋᴛᴏᴋ'},type:1},
           ]},{quoted:fakevcard});
@@ -400,7 +400,7 @@ function setupCommandHandlers(socket,number){
           const igRes=await axios.get(`https://api.siputzx.my.id/api/d/igdl?url=${encodeURIComponent(q)}`);
           if(!igRes?.data?.data?.length){await reply('❌ Failed!');break;}
           const igUrl=igRes.data.data[0]?.url;
-          await socket.sendMessage(sender,{video:{url:igUrl},caption:`*📷 INSTAGRAM DOWNLOAD*\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`},{quoted:fakevcard});
+          await socket.sendMessage(sender,{video:{url:igUrl},caption:`*📷 INSTAGRAM DOWNLOAD*\n\n`},{quoted:fakevcard});
           break;
         }
 
@@ -414,7 +414,7 @@ function setupCommandHandlers(socket,number){
           const fbRes=await axios.get(`https://api.siputzx.my.id/api/d/fb?url=${encodeURIComponent(q)}`);
           const fbUrl=fbRes?.data?.data?.hd||fbRes?.data?.data?.sd;
           if(!fbUrl){await reply('❌ Failed!');break;}
-          await socket.sendMessage(sender,{video:{url:fbUrl},caption:`*📘 FACEBOOK DOWNLOAD*\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`},{quoted:fakevcard});
+          await socket.sendMessage(sender,{video:{url:fbUrl},caption:`*📘 FACEBOOK DOWNLOAD*\n\n`},{quoted:fakevcard});
           break;
         }
 
@@ -428,7 +428,7 @@ function setupCommandHandlers(socket,number){
           const twRes=await axios.get(`https://api.siputzx.my.id/api/d/twitter?url=${encodeURIComponent(q)}`);
           const twUrl=twRes?.data?.data?.video?.url||twRes?.data?.data?.[0]?.url;
           if(!twUrl){await reply('❌ Failed!');break;}
-          await socket.sendMessage(sender,{video:{url:twUrl},caption:`*🐦 TWITTER/X DOWNLOAD*\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`},{quoted:fakevcard});
+          await socket.sendMessage(sender,{video:{url:twUrl},caption:`*🐦 TWITTER/X DOWNLOAD*\n\n`},{quoted:fakevcard});
           break;
         }
 
@@ -442,7 +442,7 @@ function setupCommandHandlers(socket,number){
           if(!spRes?.data?.data?.length){await reply('❌ No results!');break;}
           const sp=spRes.data.data[0];
           const dur=sp.duration?`${Math.floor(sp.duration/60000)}:${String(Math.floor((sp.duration%60000)/1000)).padStart(2,'0')}`:'N/A';
-          await replyBtn(`*🎵 SPOTIFY*\n\n*Title:* ${sp.name}\n*Artist:* ${sp.artist}\n*Duration:* ${dur}\n*Album:* ${sp.album||'N/A'}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,[
+          await replyBtn(`*🎵 SPOTIFY*\n\n*Title:* ${sp.name}\n*Artist:* ${sp.artist}\n*Duration:* ${dur}\n*Album:* ${sp.album||'N/A'}\n\n`,[
             {buttonId:`${prefix}play ${sp.name} ${sp.artist}`,buttonText:{displayText:'🎧 ᴅᴏᴡɴʟᴏᴀᴅ'},type:1},
           ]);
           break;
@@ -456,7 +456,7 @@ function setupCommandHandlers(socket,number){
           await reply('*⏳ Searching lyrics...*');
           const lRes=await axios.get(`https://some-random-api.com/lyrics?title=${encodeURIComponent(q)}`);
           if(!lRes?.data?.lyrics){await reply('❌ Lyrics not found!');break;}
-          const lText=`*🎵 ${lRes.data.title||q}*\n*👤 Artist:* ${lRes.data.author||'Unknown'}\n\n${lRes.data.lyrics.substring(0,1500)}${lRes.data.lyrics.length>1500?'...':''}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`;
+          const lText=`*🎵 ${lRes.data.title||q}*\n*👤 Artist:* ${lRes.data.author||'Unknown'}\n\n${lRes.data.lyrics.substring(0,1500)}${lRes.data.lyrics.length>1500?'...':''}\n\n`;
           await reply(lText);
           break;
         }
@@ -471,7 +471,7 @@ function setupCommandHandlers(socket,number){
           const mfRes=await axios.get(`https://tharuzz-ofc-apis.vercel.app/api/download/mediafire?url=${encodeURIComponent(q)}`);
           if(!mfRes?.data?.success){await reply('❌ Failed!');break;}
           const mf=mfRes.data.result;
-          await socket.sendMessage(sender,{document:{url:mf.url},fileName:mf.filename,mimetype:'application/octet-stream',caption:`*📦 FILE*\n\n*📁 Name:* ${mf.filename}\n*📏 Size:* ${mf.size}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`},{quoted:fakevcard});
+          await socket.sendMessage(sender,{document:{url:mf.url},fileName:mf.filename,mimetype:'application/octet-stream',caption:`*📦 FILE*\n\n*📁 Name:* ${mf.filename}\n*📏 Size:* ${mf.size}\n\n`},{quoted:fakevcard});
           break;
         }
 
@@ -485,7 +485,7 @@ function setupCommandHandlers(socket,number){
           if(!apkRes?.data?.success||!apkRes?.data?.result?.length){await reply('❌ No APKs found!');break;}
           let apkText=`*📱 APK Search: ${q}*\n\n`;
           apkRes.data.result.slice(0,10).forEach((item,idx)=>{apkText+=`*${idx+1}.* ${item.name}\n📦 ID: \`${item.id}\`\n\n`;});
-          apkText+=`> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`;
+          apkText+=``;
           await replyBtn(apkText,[{buttonId:`${prefix}download`,buttonText:{displayText:'📥 ᴅᴏᴡɴʟᴏᴀᴅ ᴍᴇɴᴜ'},type:1}]);
           break;
         }
@@ -521,7 +521,7 @@ function setupCommandHandlers(socket,number){
           const aiRes=await axios.get(`https://api.malvin.gleeze.com/ai/openai?text=${encodeURIComponent(q)}`,{timeout:30000});
           const aiReply=aiRes?.data?.result||aiRes?.data?.response||aiRes?.data?.reply||aiRes?.data?.text;
           if(!aiReply){await reply('❌ AI failed to respond.');break;}
-          await replyBtn(`*🤖 LXD-MINI AI*\n\n*You:* ${q}\n\n*AI:*\n${aiReply}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,[
+          await replyBtn(`*🤖 LXD-MINI AI*\n\n*You:* ${q}\n\n*AI:*\n${aiReply}\n\n`,[
             {buttonId:`${prefix}ai`,buttonText:{displayText:'🤖 ᴀꜱᴋ ᴍᴏʀᴇ'},type:1},
             {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
           ]);
@@ -537,7 +537,7 @@ function setupCommandHandlers(socket,number){
           const gemRes=await axios.get(`https://api.siputzx.my.id/api/ai/gemini-pro?content=${encodeURIComponent(q)}`,{timeout:30000});
           const gemReply=gemRes?.data?.data||gemRes?.data?.result;
           if(!gemReply){await reply('❌ Gemini failed.');break;}
-          await reply(`*✨ GEMINI AI*\n\n${gemReply}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*✨ GEMINI AI*\n\n${gemReply}\n\n`);
           break;
         }
 
@@ -550,7 +550,7 @@ function setupCommandHandlers(socket,number){
           await reply('*🎨 Generating image...*');
           const imgRes=await axios.get(`https://api.malvin.gleeze.com/ai/imagine?prompt=${encodeURIComponent(q)}`,{timeout:60000,responseType:'arraybuffer'});
           if(!imgRes?.data){await reply('❌ Image generation failed!');break;}
-          await socket.sendMessage(sender,{image:Buffer.from(imgRes.data),caption:`*🎨 AI Generated Image*\n*Prompt:* ${q}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`},{quoted:fakevcard});
+          await socket.sendMessage(sender,{image:Buffer.from(imgRes.data),caption:`*🎨 AI Generated Image*\n*Prompt:* ${q}\n\n`},{quoted:fakevcard});
           break;
         }
 
@@ -561,7 +561,7 @@ function setupCommandHandlers(socket,number){
           const wxRes=await axios.get(`https://api.siputzx.my.id/api/s/weather?q=${encodeURIComponent(q)}`);
           if(!wxRes?.data?.data){await reply('❌ City not found!');break;}
           const wx=wxRes.data.data;
-          await replyBtn(`*🌤️ WEATHER — ${wx.name||q}*\n\n*🌡️ Temp:* ${wx.temp}°C\n*🌥️ Condition:* ${wx.condition}\n*💧 Humidity:* ${wx.humidity}%\n*💨 Wind:* ${wx.wind}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,[{buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1}]);
+          await replyBtn(`*🌤️ WEATHER — ${wx.name||q}*\n\n*🌡️ Temp:* ${wx.temp}°C\n*🌥️ Condition:* ${wx.condition}\n*💧 Humidity:* ${wx.humidity}%\n*💨 Wind:* ${wx.wind}\n\n`,[{buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1}]);
           break;
         }
 
@@ -574,7 +574,7 @@ function setupCommandHandlers(socket,number){
           if(!newsRes?.data?.data?.length){await reply('❌ Could not fetch news!');break;}
           let newsText=`*📰 LATEST NEWS*\n\n`;
           newsRes.data.data.slice(0,5).forEach((item,i)=>{newsText+=`*${i+1}.* ${item.title}\n🔗 ${item.link||''}\n\n`;});
-          newsText+=`> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`;
+          newsText+=``;
           await reply(newsText);
           break;
         }
@@ -587,7 +587,7 @@ function setupCommandHandlers(socket,number){
           await reply('*⏳ Searching...*');
           const wikiRes=await axios.get(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(q)}`);
           if(!wikiRes?.data?.extract){await reply('❌ Not found!');break;}
-          await replyBtn(`*📚 WIKIPEDIA — ${wikiRes.data.title}*\n\n${wikiRes.data.extract.substring(0,800)}${wikiRes.data.extract.length>800?'...':''}\n\n🔗 ${wikiRes.data.content_urls?.desktop?.page||''}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,[
+          await replyBtn(`*📚 WIKIPEDIA — ${wikiRes.data.title}*\n\n${wikiRes.data.extract.substring(0,800)}${wikiRes.data.extract.length>800?'...':''}\n\n🔗 ${wikiRes.data.content_urls?.desktop?.page||''}\n\n`,[
             {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
           ]);
           break;
@@ -603,7 +603,7 @@ function setupCommandHandlers(socket,number){
           if(!dictRes?.data?.[0]){await reply('❌ Word not found!');break;}
           const word=dictRes.data[0];
           const def=word.meanings?.[0]?.definitions?.[0];
-          await reply(`*📖 DICTIONARY — ${word.word}*\n\n*Part of Speech:* ${word.meanings?.[0]?.partOfSpeech||'N/A'}\n*Definition:* ${def?.definition||'N/A'}\n*Example:* ${def?.example||'N/A'}\n*Phonetic:* ${word.phonetic||'N/A'}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*📖 DICTIONARY — ${word.word}*\n\n*Part of Speech:* ${word.meanings?.[0]?.partOfSpeech||'N/A'}\n*Definition:* ${def?.definition||'N/A'}\n*Example:* ${def?.example||'N/A'}\n*Phonetic:* ${word.phonetic||'N/A'}\n\n`);
           break;
         }
 
@@ -618,7 +618,7 @@ function setupCommandHandlers(socket,number){
           await reply('*⏳ Translating...*');
           const trRes=await axios.get(`https://api.siputzx.my.id/api/tools/translate?text=${encodeURIComponent(text2)}&to=${encodeURIComponent(lang)}`);
           if(!trRes?.data?.result){await reply('❌ Translation failed!');break;}
-          await reply(`*🌐 TRANSLATION*\n\n*Original:* ${text2}\n*Language:* ${lang}\n*Translated:* ${trRes.data.result}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*🌐 TRANSLATION*\n\n*Original:* ${text2}\n*Language:* ${lang}\n*Translated:* ${trRes.data.result}\n\n`);
           break;
         }
 
@@ -632,7 +632,7 @@ function setupCommandHandlers(socket,number){
           if(!cRes?.data?.rates?.[to2.toUpperCase()]){await reply('❌ Currency not found!');break;}
           const rate=cRes.data.rates[to2.toUpperCase()];
           const conv=(parseFloat(amt)*rate).toFixed(2);
-          await reply(`*💱 CURRENCY CONVERTER*\n\n*${amt} ${from2.toUpperCase()} = ${conv} ${to2.toUpperCase()}*\n*Rate:* 1 ${from2.toUpperCase()} = ${rate} ${to2.toUpperCase()}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*💱 CURRENCY CONVERTER*\n\n*${amt} ${from2.toUpperCase()} = ${conv} ${to2.toUpperCase()}*\n*Rate:* 1 ${from2.toUpperCase()} = ${rate} ${to2.toUpperCase()}\n\n`);
           break;
         }
 
@@ -642,7 +642,7 @@ function setupCommandHandlers(socket,number){
         case 'math':{
           await react('🧮');
           if(!q){await reply(`*🧮 Usage:* ${prefix}calc <expression>\nExample: ${prefix}calc 2+2*5`);break;}
-          try{const r5=eval(q.replace(/[^0-9+\-*/().\s]/g,''));await reply(`*🧮 CALCULATOR*\n\n*Expression:* ${q}\n*Result:* ${r5}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);}
+          try{const r5=eval(q.replace(/[^0-9+\-*/().\s]/g,''));await reply(`*🧮 CALCULATOR*\n\n*Expression:* ${q}\n*Result:* ${r5}\n\n`);}
           catch(e){await reply('❌ Invalid expression!');}
           break;
         }
@@ -652,7 +652,7 @@ function setupCommandHandlers(socket,number){
         case 'qrcode':{
           await react('📷');
           if(!q){await reply(`*📷 Usage:* ${prefix}qr <text or URL>`);break;}
-          await socket.sendMessage(sender,{image:{url:`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(q)}`},caption:`*📷 QR CODE*\n*Data:* ${q}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`},{quoted:fakevcard});
+          await socket.sendMessage(sender,{image:{url:`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(q)}`},caption:`*📷 QR CODE*\n*Data:* ${q}\n\n`},{quoted:fakevcard});
           break;
         }
 
@@ -663,7 +663,7 @@ function setupCommandHandlers(socket,number){
           await react('🔗');
           if(!q||!q.startsWith('http')){await reply(`*🔗 Usage:* ${prefix}short <URL>`);break;}
           const sRes=await axios.get(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(q)}`);
-          await reply(`*🔗 URL SHORTENED*\n\n*Original:* ${q}\n*Short:* ${sRes.data}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*🔗 URL SHORTENED*\n\n*Original:* ${q}\n*Short:* ${sRes.data}\n\n`);
           break;
         }
 
@@ -675,7 +675,7 @@ function setupCommandHandlers(socket,number){
           const ghRes=await axios.get(`https://api.github.com/users/${q}`);
           if(!ghRes?.data?.login){await reply('❌ User not found!');break;}
           const gh=ghRes.data;
-          await socket.sendMessage(sender,{image:{url:gh.avatar_url},caption:`*👨‍💻 GITHUB — ${gh.login}*\n\n*Name:* ${gh.name||'N/A'}\n*Bio:* ${gh.bio||'N/A'}\n*Location:* ${gh.location||'N/A'}\n*Repos:* ${gh.public_repos}\n*Followers:* ${gh.followers}\n*Following:* ${gh.following}\n*Joined:* ${new Date(gh.created_at).toDateString()}\n*URL:* ${gh.html_url}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`},{quoted:fakevcard});
+          await socket.sendMessage(sender,{image:{url:gh.avatar_url},caption:`*👨‍💻 GITHUB — ${gh.login}*\n\n*Name:* ${gh.name||'N/A'}\n*Bio:* ${gh.bio||'N/A'}\n*Location:* ${gh.location||'N/A'}\n*Repos:* ${gh.public_repos}\n*Followers:* ${gh.followers}\n*Following:* ${gh.following}\n*Joined:* ${new Date(gh.created_at).toDateString()}\n*URL:* ${gh.html_url}\n\n`},{quoted:fakevcard});
           break;
         }
 
@@ -686,7 +686,7 @@ function setupCommandHandlers(socket,number){
           const npmRes=await axios.get(`https://registry.npmjs.org/${q}`);
           if(!npmRes?.data?.name){await reply('❌ Package not found!');break;}
           const npm=npmRes.data;
-          await reply(`*📦 NPM — ${npm.name}*\n\n*Version:* ${npm['dist-tags']?.latest}\n*Description:* ${npm.description||'N/A'}\n*Author:* ${npm.author?.name||'N/A'}\n*License:* ${npm.license||'N/A'}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*📦 NPM — ${npm.name}*\n\n*Version:* ${npm['dist-tags']?.latest}\n*Description:* ${npm.description||'N/A'}\n*Author:* ${npm.author?.name||'N/A'}\n*License:* ${npm.license||'N/A'}\n\n`);
           break;
         }
 
@@ -699,7 +699,7 @@ function setupCommandHandlers(socket,number){
           const animeRes=await axios.get(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(q)}&limit=1`);
           if(!animeRes?.data?.data?.length){await reply('❌ Not found!');break;}
           const a=animeRes.data.data[0];
-          await socket.sendMessage(sender,{image:{url:a.images?.jpg?.image_url||config.IMAGE_PATH},caption:`*🎌 ANIME — ${a.title}*\n\n*Type:* ${a.type}\n*Episodes:* ${a.episodes||'Ongoing'}\n*Status:* ${a.status}\n*Score:* ${a.score}/10 ⭐\n*Genres:* ${a.genres?.map(g=>g.name).join(', ')||'N/A'}\n*Synopsis:* ${(a.synopsis||'').substring(0,200)}...\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,footer:'> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ᴀɴɪᴍᴇ',buttons:[{buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1}]},{quoted:fakevcard});
+          await socket.sendMessage(sender,{image:{url:a.images?.jpg?.image_url||config.IMAGE_PATH},caption:`*🎌 ANIME — ${a.title}*\n\n*Type:* ${a.type}\n*Episodes:* ${a.episodes||'Ongoing'}\n*Status:* ${a.status}\n*Score:* ${a.score}/10 ⭐\n*Genres:* ${a.genres?.map(g=>g.name).join(', ')||'N/A'}\n*Synopsis:* ${(a.synopsis||'').substring(0,200)}...\n\n`,footer:'> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ᴀɴɪᴍᴇ',buttons:[{buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1}]},{quoted:fakevcard});
           break;
         }
 
@@ -708,7 +708,7 @@ function setupCommandHandlers(socket,number){
           await react('🎌');
           const wRes=await axios.get('https://api.waifu.pics/sfw/waifu');
           if(!wRes?.data?.url){await reply('❌ Failed!');break;}
-          await socket.sendMessage(sender,{image:{url:wRes.data.url},caption:`*🎌 Your waifu!*\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,buttons:[{buttonId:`${prefix}waifu`,buttonText:{displayText:'🔄 ᴀɴᴏᴛʜᴇʀ ᴡᴀɪꜰᴜ'},type:1}]},{quoted:fakevcard});
+          await socket.sendMessage(sender,{image:{url:wRes.data.url},caption:`*🎌 Your waifu!*\n\n`,buttons:[{buttonId:`${prefix}waifu`,buttonText:{displayText:'🔄 ᴀɴᴏᴛʜᴇʀ ᴡᴀɪꜰᴜ'},type:1}]},{quoted:fakevcard});
           break;
         }
 
@@ -719,7 +719,7 @@ function setupCommandHandlers(socket,number){
           const cRes2=await axios.get(`https://disease.sh/v3/covid-19/${q?`countries/${q}`:'all'}`);
           if(!cRes2?.data){await reply('❌ Could not fetch data!');break;}
           const c=cRes2.data;
-          await reply(`*🦠 COVID-19 — ${c.country||'World'}*\n\n*🔴 Total Cases:* ${c.cases?.toLocaleString()}\n*✅ Recovered:* ${c.recovered?.toLocaleString()}\n*💀 Deaths:* ${c.deaths?.toLocaleString()}\n*🟡 Active:* ${c.active?.toLocaleString()}\n*Today:* ${c.todayCases?.toLocaleString()}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*🦠 COVID-19 — ${c.country||'World'}*\n\n*🔴 Total Cases:* ${c.cases?.toLocaleString()}\n*✅ Recovered:* ${c.recovered?.toLocaleString()}\n*💀 Deaths:* ${c.deaths?.toLocaleString()}\n*🟡 Active:* ${c.active?.toLocaleString()}\n*Today:* ${c.todayCases?.toLocaleString()}\n\n`);
           break;
         }
 
@@ -730,7 +730,7 @@ function setupCommandHandlers(socket,number){
           if(!q){await reply(`*⭐ Usage:* ${prefix}zodiac <sign>\nSigns: aries, taurus, gemini, cancer, leo, virgo, libra, scorpio, sagittarius, capricorn, aquarius, pisces`);break;}
           const zodRes=await axios.get(`https://horoscope-app-api.vercel.app/api/v1/get-horoscope/daily?sign=${q}&day=today`);
           if(!zodRes?.data?.data){await reply('❌ Sign not found!');break;}
-          await reply(`*⭐ ${q.toUpperCase()} HOROSCOPE*\n\n${zodRes.data.data.horoscope_data}\n\n*Date:* ${zodRes.data.data.date}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*⭐ ${q.toUpperCase()} HOROSCOPE*\n\n${zodRes.data.data.horoscope_data}\n\n*Date:* ${zodRes.data.data.date}\n\n`);
           break;
         }
 
@@ -742,7 +742,7 @@ function setupCommandHandlers(socket,number){
           const mcRes=await axios.get(`https://api.mcsrvstat.us/2/${q}`);
           if(!mcRes?.data){await reply('❌ Failed!');break;}
           const mc=mcRes.data;
-          await reply(`*⛏️ MINECRAFT SERVER — ${q}*\n\n*Online:* ${mc.online?'✅ Yes':'❌ No'}\n*Players:* ${mc.players?.online||0}/${mc.players?.max||0}\n*Version:* ${mc.version||'N/A'}\n*MOTD:* ${mc.motd?.clean?.[0]||'N/A'}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*⛏️ MINECRAFT SERVER — ${q}*\n\n*Online:* ${mc.online?'✅ Yes':'❌ No'}\n*Players:* ${mc.players?.online||0}/${mc.players?.max||0}\n*Version:* ${mc.version||'N/A'}\n*MOTD:* ${mc.motd?.clean?.[0]||'N/A'}\n\n`);
           break;
         }
 
@@ -773,7 +773,7 @@ function setupCommandHandlers(socket,number){
           const stream4=await downloadContentFromMessage(qMsg2.stickerMessage,'sticker');
           let buf4=Buffer.from([]);
           for await(const chunk of stream4)buf4=Buffer.concat([buf4,chunk]);
-          await socket.sendMessage(sender,{image:buf4,caption:`*🖼️ Sticker → Image*\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`},{quoted:fakevcard});
+          await socket.sendMessage(sender,{image:buf4,caption:`*🖼️ Sticker → Image*\n\n`},{quoted:fakevcard});
           break;
         }
 
@@ -787,7 +787,7 @@ function setupCommandHandlers(socket,number){
           const fonts=fRes.data.result;
           let fontText=`*✍️ FANCY FONTS — ${q}*\n\n`;
           Object.keys(fonts).slice(0,10).forEach(k=>{fontText+=`${fonts[k]}\n`;});
-          fontText+=`\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`;
+          fontText+=`\n`;
           await reply(fontText);
           break;
         }
@@ -798,7 +798,7 @@ function setupCommandHandlers(socket,number){
           await react('😏');
           if(!q){await reply(`*Usage:* ${prefix}mock <text>`);break;}
           const mocked=q.split('').map((c,i)=>i%2===0?c.toLowerCase():c.toUpperCase()).join('');
-          await reply(`*😏 MOCKED*\n\n${mocked}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*😏 MOCKED*\n\n${mocked}\n\n`);
           break;
         }
 
@@ -806,7 +806,7 @@ function setupCommandHandlers(socket,number){
         case 'reverse':{
           await react('🔄');
           if(!q){await reply(`*Usage:* ${prefix}reverse <text>`);break;}
-          await reply(`*🔄 REVERSED*\n\n${q.split('').reverse().join('')}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*🔄 REVERSED*\n\n${q.split('').reverse().join('')}\n\n`);
           break;
         }
 
@@ -815,7 +815,7 @@ function setupCommandHandlers(socket,number){
         case 'jokes':{
           await react('😂');
           const jRes=await axios.get('https://official-joke-api.appspot.com/random_joke');
-          await reply(`*😂 JOKE*\n\n*Setup:* ${jRes.data.setup}\n*Punchline:* ${jRes.data.punchline}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*😂 JOKE*\n\n*Setup:* ${jRes.data.setup}\n*Punchline:* ${jRes.data.punchline}\n\n`);
           break;
         }
 
@@ -824,7 +824,7 @@ function setupCommandHandlers(socket,number){
         case 'quotes':{
           await react('💬');
           const qRes=await axios.get('https://api.quotable.io/random');
-          await reply(`*💬 QUOTE*\n\n"${qRes.data.content}"\n\n— *${qRes.data.author}*\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*💬 QUOTE*\n\n"${qRes.data.content}"\n\n— *${qRes.data.author}*\n\n`);
           break;
         }
 
@@ -833,7 +833,7 @@ function setupCommandHandlers(socket,number){
         case 'facts':{
           await react('🧠');
           const factRes=await axios.get('https://uselessfacts.jsph.pl/api/v2/facts/random');
-          await reply(`*🧠 RANDOM FACT*\n\n${factRes.data.text}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*🧠 RANDOM FACT*\n\n${factRes.data.text}\n\n`);
           break;
         }
 
@@ -847,7 +847,7 @@ function setupCommandHandlers(socket,number){
           const allAns=[trivia.correct_answer,...trivia.incorrect_answers].sort(()=>Math.random()-0.5);
           let triviaText=`*🎯 TRIVIA!*\n\n*Category:* ${trivia.category}\n*Difficulty:* ${trivia.difficulty}\n\n*Q:* ${trivia.question.replace(/&quot;/g,'"').replace(/&#039;/g,"'")}\n\n`;
           allAns.forEach((a,i)=>{triviaText+=`*${String.fromCharCode(65+i)}.* ${a.replace(/&quot;/g,'"')}\n`;});
-          triviaText+=`\n_Type your letter answer_\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`;
+          triviaText+=`\n_Type your letter answer_\n\n`;
           await reply(triviaText);
           break;
         }
@@ -857,7 +857,7 @@ function setupCommandHandlers(socket,number){
           await react('😄');
           const mRes=await axios.get('https://meme-api.com/gimme');
           if(!mRes?.data?.url){await reply('❌ Failed!');break;}
-          await socket.sendMessage(sender,{image:{url:mRes.data.url},caption:`*😄 ${mRes.data.title||'MEME'}*\n\n⬆️ ${mRes.data.ups||0} | 💬 ${mRes.data.num_comments||0}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,footer:'> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ᴍᴇᴍᴇ',buttons:[{buttonId:`${prefix}meme`,buttonText:{displayText:'😄 ᴀɴᴏᴛʜᴇʀ ᴍᴇᴍᴇ'},type:1}]},{quoted:fakevcard});
+          await socket.sendMessage(sender,{image:{url:mRes.data.url},caption:`*😄 ${mRes.data.title||'MEME'}*\n\n⬆️ ${mRes.data.ups||0} | 💬 ${mRes.data.num_comments||0}\n\n`,footer:'> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ᴍᴇᴍᴇ',buttons:[{buttonId:`${prefix}meme`,buttonText:{displayText:'😄 ᴀɴᴏᴛʜᴇʀ ᴍᴇᴍᴇ'},type:1}]},{quoted:fakevcard});
           break;
         }
 
@@ -866,7 +866,7 @@ function setupCommandHandlers(socket,number){
           await react('🐱');
           const catRes=await axios.get('https://api.thecatapi.com/v1/images/search');
           if(!catRes?.data?.[0]?.url){await reply('❌ Failed!');break;}
-          await socket.sendMessage(sender,{image:{url:catRes.data[0].url},caption:`*🐱 Here's your cat!*\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,buttons:[{buttonId:`${prefix}cat`,buttonText:{displayText:'🐱 ᴀɴᴏᴛʜᴇʀ ᴄᴀᴛ'},type:1}]},{quoted:fakevcard});
+          await socket.sendMessage(sender,{image:{url:catRes.data[0].url},caption:`*🐱 Here's your cat!*\n\n`,buttons:[{buttonId:`${prefix}cat`,buttonText:{displayText:'🐱 ᴀɴᴏᴛʜᴇʀ ᴄᴀᴛ'},type:1}]},{quoted:fakevcard});
           break;
         }
 
@@ -875,7 +875,7 @@ function setupCommandHandlers(socket,number){
           await react('🐶');
           const dogRes=await axios.get('https://dog.ceo/api/breeds/image/random');
           if(!dogRes?.data?.message){await reply('❌ Failed!');break;}
-          await socket.sendMessage(sender,{image:{url:dogRes.data.message},caption:`*🐶 Here's your dog!*\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,buttons:[{buttonId:`${prefix}dog`,buttonText:{displayText:'🐶 ᴀɴᴏᴛʜᴇʀ ᴅᴏɢ'},type:1}]},{quoted:fakevcard});
+          await socket.sendMessage(sender,{image:{url:dogRes.data.message},caption:`*🐶 Here's your dog!*\n\n`,buttons:[{buttonId:`${prefix}dog`,buttonText:{displayText:'🐶 ᴀɴᴏᴛʜᴇʀ ᴅᴏɢ'},type:1}]},{quoted:fakevcard});
           break;
         }
 
@@ -884,7 +884,7 @@ function setupCommandHandlers(socket,number){
           await react('🙈');
           const truthRes=await axios.get('https://api.truthordarebot.xyz/v1/truth');
           if(!truthRes?.data?.question){await reply('❌ Failed!');break;}
-          await replyBtn(`*🙈 TRUTH*\n\n${truthRes.data.question}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,[
+          await replyBtn(`*🙈 TRUTH*\n\n${truthRes.data.question}\n\n`,[
             {buttonId:`${prefix}truth`,buttonText:{displayText:'🙈 ᴀɴᴏᴛʜᴇʀ ᴛʀᴜᴛʜ'},type:1},
             {buttonId:`${prefix}dare`,buttonText:{displayText:'🔥 ᴅᴀʀᴇ ɪɴꜱᴛᴇᴀᴅ'},type:1},
           ]);
@@ -896,7 +896,7 @@ function setupCommandHandlers(socket,number){
           await react('🔥');
           const dareRes=await axios.get('https://api.truthordarebot.xyz/v1/dare');
           if(!dareRes?.data?.question){await reply('❌ Failed!');break;}
-          await replyBtn(`*🔥 DARE*\n\n${dareRes.data.question}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,[
+          await replyBtn(`*🔥 DARE*\n\n${dareRes.data.question}\n\n`,[
             {buttonId:`${prefix}dare`,buttonText:{displayText:'🔥 ᴀɴᴏᴛʜᴇʀ ᴅᴀʀᴇ'},type:1},
             {buttonId:`${prefix}truth`,buttonText:{displayText:'🙈 ᴛʀᴜᴛʜ ɪɴꜱᴛᴇᴀᴅ'},type:1},
           ]);
@@ -909,7 +909,7 @@ function setupCommandHandlers(socket,number){
           await react('🤔');
           const wyrRes=await axios.get('https://api.truthordarebot.xyz/v1/wyr');
           if(!wyrRes?.data?.question){await reply('❌ Failed!');break;}
-          await replyBtn(`*🤔 WOULD YOU RATHER?*\n\n${wyrRes.data.question}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,[
+          await replyBtn(`*🤔 WOULD YOU RATHER?*\n\n${wyrRes.data.question}\n\n`,[
             {buttonId:`${prefix}wyr`,buttonText:{displayText:'🤔 ᴀɴᴏᴛʜᴇʀ ᴡʏʀ'},type:1},
           ]);
           break;
@@ -921,7 +921,7 @@ function setupCommandHandlers(socket,number){
           await react('🎱');
           const r8=['Yes definitely!','No way!','Ask again later.','Absolutely!','Doubtful.','Most likely!','Without a doubt!','My sources say no.','Outlook not so good.','Signs point to yes!'];
           if(!q){await reply(`*🎱 Usage:* ${prefix}8ball <question>`);break;}
-          await reply(`*🎱 MAGIC 8-BALL*\n\n*Q:* ${q}\n*A:* ${randomElement(r8)}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*🎱 MAGIC 8-BALL*\n\n*Q:* ${q}\n*A:* ${randomElement(r8)}\n\n`);
           break;
         }
 
@@ -933,7 +933,7 @@ function setupCommandHandlers(socket,number){
           const[n1,n2]=q.split('+');
           const pct=Math.floor(Math.random()*101);
           const hearts='❤️'.repeat(Math.floor(pct/10))+'🖤'.repeat(10-Math.floor(pct/10));
-          await reply(`*💘 LOVE CALCULATOR*\n\n*${n1.trim()}* ❤️ *${n2.trim()}*\n\n${hearts}\n*Love Meter:* ${pct}%\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*💘 LOVE CALCULATOR*\n\n*${n1.trim()}* ❤️ *${n2.trim()}*\n\n${hearts}\n*Love Meter:* ${pct}%\n\n`);
           break;
         }
 
@@ -942,7 +942,7 @@ function setupCommandHandlers(socket,number){
           await react('⭐');
           const score=Math.floor(Math.random()*101);
           const stars='⭐'.repeat(Math.ceil(score/20));
-          await reply(`*⭐ PROFILE RATING*\n\n${stars}\nScore: *${score}/100*\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*⭐ PROFILE RATING*\n\n${stars}\nScore: *${score}/100*\n\n`);
           break;
         }
 
@@ -953,7 +953,7 @@ function setupCommandHandlers(socket,number){
           const max=parseInt(args[0])||100;
           const min=parseInt(args[1])||1;
           const rolled=Math.floor(Math.random()*(max-min+1))+min;
-          await reply(`*🎲 RANDOM NUMBER*\n\nRange: ${min} - ${max}\nResult: *${rolled}*\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*🎲 RANDOM NUMBER*\n\nRange: ${min} - ${max}\nResult: *${rolled}*\n\n`);
           break;
         }
 
@@ -961,7 +961,7 @@ function setupCommandHandlers(socket,number){
         case 'flip':
         case 'coin':{
           await react('🪙');
-          await reply(`*🪙 COIN FLIP*\n\nResult: *${Math.random()>0.5?'🦅 HEADS':'🦁 TAILS'}*\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*🪙 COIN FLIP*\n\nResult: *${Math.random()>0.5?'🦅 HEADS':'🦁 TAILS'}*\n\n`);
           break;
         }
 
@@ -970,7 +970,7 @@ function setupCommandHandlers(socket,number){
         case 'ppsize':{
           await react('😂');
           const sz=Math.floor(Math.random()*30)+1;
-          await reply(`*😂 PP SIZE*\n\n[${'▓'.repeat(sz)}] ${sz}cm\n\n*LXD-MINI said it, not me 💀*\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*😂 PP SIZE*\n\n[${'▓'.repeat(sz)}] ${sz}cm\n\n*LXD-MINI said it, not me 💀*\n\n`);
           break;
         }
 
@@ -978,7 +978,7 @@ function setupCommandHandlers(socket,number){
         case 'hype':{
           await react('🔥');
           const hypes=['🔥 You are absolutely unstoppable!','💪 Greatness is your destiny!','⚡ You are the storm they warned about!','🌟 Champions refuse to give up!','🚀 You are built different — keep going!'];
-          await reply(`*🔥 HYPE TIME!*\n\n${randomElement(hypes)}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*🔥 HYPE TIME!*\n\n${randomElement(hypes)}\n\n`);
           break;
         }
 
@@ -986,7 +986,7 @@ function setupCommandHandlers(socket,number){
         case 'roast':{
           await react('😂');
           const roasts=['You\'re the human version of a participation trophy.','If you were a spice, you\'d be flour.','Light travels faster than sound — that\'s why you seemed bright until you spoke.','I\'d agree with you but then we\'d both be wrong.','You\'re not stupid. You just have bad luck thinking.'];
-          await reply(`*😂 ROAST for ${q||'you'}*\n\n${randomElement(roasts)}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*😂 ROAST for ${q||'you'}*\n\n${randomElement(roasts)}\n\n`);
           break;
         }
 
@@ -995,7 +995,7 @@ function setupCommandHandlers(socket,number){
         case 'comp':{
           await react('💖');
           const comps=['You have the best laugh!','You are genuinely hilarious!','You make the world a better place.','Your kindness is a superpower.','You light up every room you enter!'];
-          await reply(`*💖 COMPLIMENT for ${q||'you'}*\n\n${randomElement(comps)}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*💖 COMPLIMENT for ${q||'you'}*\n\n${randomElement(comps)}\n\n`);
           break;
         }
 
@@ -1006,14 +1006,14 @@ function setupCommandHandlers(socket,number){
           if(!q||!q.includes('|')){await reply(`*🎯 Usage:* ${prefix}pick option1 | option2 | option3`);break;}
           const opts=q.split('|').map(o=>o.trim());
           if(opts.length<2){await reply('*❌ Provide at least 2 options!*');break;}
-          await reply(`*🎯 DECISION MAKER*\n\n*Options:* ${opts.join(' vs ')}\n*I pick:* *${randomElement(opts)}*\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*🎯 DECISION MAKER*\n\n*Options:* ${opts.join(' vs ')}\n*I pick:* *${randomElement(opts)}*\n\n`);
           break;
         }
 
         // ==================== TOSS ====================
         case 'toss':{
           await react('🎲');
-          await reply(`*🎲 TOSS*\n\n*${randomElement(['Yes ✅','No ❌','Maybe 🤔','Definitely ✅','Never ❌'])}*\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*🎲 TOSS*\n\n*${randomElement(['Yes ✅','No ❌','Maybe 🤔','Definitely ✅','Never ❌'])}*\n\n`);
           break;
         }
 
@@ -1028,7 +1028,7 @@ function setupCommandHandlers(socket,number){
           const d=Math.floor(diff/(1000*60*60*24));
           const h=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
           const m=Math.floor((diff%(1000*60*60))/(1000*60));
-          await reply(`*⏳ COUNTDOWN to ${q}*\n\n*${d} days, ${h} hours, ${m} minutes*\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*⏳ COUNTDOWN to ${q}*\n\n*${d} days, ${h} hours, ${m} minutes*\n\n`);
           break;
         }
 
@@ -1037,7 +1037,7 @@ function setupCommandHandlers(socket,number){
         case 'timezone':{
           await react('🕐');
           const tz=q||'Africa/Harare';
-          try{await reply(`*🕐 TIME IN ${tz}*\n\n${moment().tz(tz).format('YYYY-MM-DD HH:mm:ss z')}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);}
+          try{await reply(`*🕐 TIME IN ${tz}*\n\n${moment().tz(tz).format('YYYY-MM-DD HH:mm:ss z')}\n\n`);}
           catch(e){await reply('❌ Invalid timezone!');}
           break;
         }
@@ -1048,7 +1048,7 @@ function setupCommandHandlers(socket,number){
           if(!q){await reply(`*📋 Usage:* ${prefix}paste <text>`);break;}
           const pRes=await axios.post('https://hastebin.com/documents',q,{headers:{'Content-Type':'text/plain'}});
           if(!pRes?.data?.key){await reply('❌ Upload failed!');break;}
-          await reply(`*📋 TEXT UPLOADED*\n\n🔗 https://hastebin.com/${pRes.data.key}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*📋 TEXT UPLOADED*\n\n🔗 https://hastebin.com/${pRes.data.key}\n\n`);
           break;
         }
 
@@ -1061,7 +1061,7 @@ function setupCommandHandlers(socket,number){
           const colorUrl=`https://www.thecolorapi.com/id?hex=${hex}`;
           const cRes3=await axios.get(colorUrl);
           if(!cRes3?.data?.name){await reply('❌ Invalid color!');break;}
-          await socket.sendMessage(sender,{image:{url:`https://via.placeholder.com/200/${hex}/000000?text=${hex}`},caption:`*🎨 COLOR INFO*\n\n*Hex:* #${hex}\n*Name:* ${cRes3.data.name.value}\n*RGB:* ${cRes3.data.rgb.value}\n*HSL:* ${cRes3.data.hsl.value}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`},{quoted:fakevcard});
+          await socket.sendMessage(sender,{image:{url:`https://via.placeholder.com/200/${hex}/000000?text=${hex}`},caption:`*🎨 COLOR INFO*\n\n*Hex:* #${hex}\n*Name:* ${cRes3.data.name.value}\n*RGB:* ${cRes3.data.rgb.value}\n*HSL:* ${cRes3.data.hsl.value}\n\n`},{quoted:fakevcard});
           break;
         }
 
@@ -1071,7 +1071,7 @@ function setupCommandHandlers(socket,number){
           await react('🎭');
           if(!q){await reply(`*🎭 Usage:* ${prefix}ascii <text>`);break;}
           const asciiRes=await axios.get(`https://artii.herokuapp.com/make?text=${encodeURIComponent(q)}`);
-          await reply(`*🎭 ASCII ART*\n\n\`\`\`\n${asciiRes.data}\n\`\`\`\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*🎭 ASCII ART*\n\n\`\`\`\n${asciiRes.data}\n\`\`\`\n\n`);
           break;
         }
 
@@ -1080,7 +1080,7 @@ function setupCommandHandlers(socket,number){
         case 'motivate':{
           await react('💪');
           const motivations=['💪 The only way out is through!','🔥 Your breakthrough is one step away!','⚡ Believe in your unlimited potential!','🌟 Every expert was once a beginner!','🚀 Push yourself because no one else will do it for you!'];
-          await reply(`*💪 MOTIVATION*\n\n${randomElement(motivations)}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*💪 MOTIVATION*\n\n${randomElement(motivations)}\n\n`);
           break;
         }
 
@@ -1093,7 +1093,7 @@ function setupCommandHandlers(socket,number){
             {q:'I speak without a mouth and hear without ears. What am I?',a:'An echo'},
             {q:'The more you take, the more you leave behind. What am I?',a:'Footsteps'}];
           const riddle=randomElement(riddles);
-          await replyBtn(`*🧩 RIDDLE*\n\n${riddle.q}\n\n_Reply to reveal answer or ask hint!_\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,[
+          await replyBtn(`*🧩 RIDDLE*\n\n${riddle.q}\n\n_Reply to reveal answer or ask hint!_\n\n`,[
             {buttonId:`riddleans|${riddle.a}`,buttonText:{displayText:'💡 ꜱʜᴏᴡ ᴀɴꜱᴡᴇʀ'},type:1},
           ]);
           break;
@@ -1102,7 +1102,7 @@ function setupCommandHandlers(socket,number){
         // ==================== RIDDLE ANSWER ====================
         case 'riddleans':{
           const ans=body.split('|')[1]||'?';
-          await reply(`*💡 ANSWER*\n\n${ans}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*💡 ANSWER*\n\n${ans}\n\n`);
           break;
         }
 
@@ -1111,7 +1111,7 @@ function setupCommandHandlers(socket,number){
         case 'tonguetwister':{
           await react('👅');
           const twisters=['She sells seashells by the seashore.','How much wood would a woodchuck chuck if a woodchuck could chuck wood?','Peter Piper picked a peck of pickled peppers.','Red lorry, yellow lorry, red lorry, yellow lorry.','Six slippery snails slid slowly seaward.'];
-          await reply(`*👅 TONGUE TWISTER*\n\n${randomElement(twisters)}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*👅 TONGUE TWISTER*\n\n${randomElement(twisters)}\n\n`);
           break;
         }
 
@@ -1120,7 +1120,7 @@ function setupCommandHandlers(socket,number){
           await react('🎲');
           const t2=await axios.get('https://api.truthordarebot.xyz/v1/truth');
           const d2=await axios.get('https://api.truthordarebot.xyz/v1/dare');
-          await reply(`*🎲 TRUTH OR DARE PACK*\n\n*🙈 Truth:* ${t2.data.question}\n\n*🔥 Dare:* ${d2.data.question}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*🎲 TRUTH OR DARE PACK*\n\n*🙈 Truth:* ${t2.data.question}\n\n*🔥 Dare:* ${d2.data.question}\n\n`);
           break;
         }
 
@@ -1238,7 +1238,7 @@ function setupCommandHandlers(socket,number){
           if(!isGroup){await reply('❌ Group only!');break;}
           const gmI=await socket.groupMetadata(from);
           const adminsI=gmI.participants.filter(p=>p.admin).map(p=>`@${p.id.split('@')[0]}`).join(', ');
-          await reply(`*👥 GROUP INFO*\n\n*Name:* ${gmI.subject}\n*ID:* ${from}\n*Created:* ${new Date(gmI.creation*1000).toDateString()}\n*Members:* ${gmI.participants.length}\n*Admins:* ${adminsI}\n*Desc:* ${gmI.desc||'N/A'}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*👥 GROUP INFO*\n\n*Name:* ${gmI.subject}\n*ID:* ${from}\n*Created:* ${new Date(gmI.creation*1000).toDateString()}\n*Members:* ${gmI.participants.length}\n*Admins:* ${adminsI}\n*Desc:* ${gmI.desc||'N/A'}\n\n`);
           break;
         }
 
@@ -1265,7 +1265,7 @@ function setupCommandHandlers(socket,number){
           const isAdmL=gmL.participants.find(p=>p.id===nowsender)?.admin;
           if(!isAdmL&&!isOwner){await reply('❌ Admin only!');break;}
           const invCode=await socket.groupInviteCode(from);
-          await reply(`*🔗 INVITE LINK*\n\nhttps://chat.whatsapp.com/${invCode}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*🔗 INVITE LINK*\n\nhttps://chat.whatsapp.com/${invCode}\n\n`);
           break;
         }
 
@@ -1311,7 +1311,7 @@ function setupCommandHandlers(socket,number){
           const gmM=await socket.groupMetadata(from);
           let mText=`*👥 MEMBERS (${gmM.participants.length})*\n\n`;
           gmM.participants.forEach((p,i)=>{mText+=`${i+1}. ${p.id.split('@')[0]} ${p.admin?'👑':''}\n`;});
-          mText+=`\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`;
+          mText+=`\n`;
           await reply(mText);
           break;
         }
@@ -1323,7 +1323,7 @@ function setupCommandHandlers(socket,number){
           const adminList=gmA.participants.filter(p=>p.admin);
           let aText=`*👑 ADMINS (${adminList.length})*\n\n`;
           adminList.forEach((p,i)=>{aText+=`${i+1}. @${p.id.split('@')[0]} ${p.admin==='superadmin'?'(Owner)':''}\n`;});
-          aText+=`\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`;
+          aText+=`\n`;
           await socket.sendMessage(from,{text:aText,mentions:adminList.map(p=>p.id)},{quoted:msg});
           break;
         }
@@ -1363,7 +1363,7 @@ function setupCommandHandlers(socket,number){
           const activeNums=Array.from(activeSockets.keys());
           let bText=`*👀 ACTIVE SESSIONS*\n\n*Total:* ${activeNums.length}\n\n`;
           activeNums.forEach((n,i)=>{bText+=`${i+1}. ${n}\n`;});
-          bText+=`\n*🕒 Checked:* ${getTimestamp()}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`;
+          bText+=`\n*🕒 Checked:* ${getTimestamp()}\n\n`;
           await replyImgBtn(config.IMAGE_PATH,bText,[
             {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
             {buttonId:`${prefix}ping`,buttonText:{displayText:'📡 ᴘɪɴɢ'},type:1},
@@ -1431,14 +1431,14 @@ function setupCommandHandlers(socket,number){
         case 'runtime':
         case 'uptime':{
           await react('⏰');
-          await reply(`*⏰ BOT RUNTIME*\n\n*Uptime:* ${uptime()}\n*Time:* ${getTimestamp()}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`);
+          await reply(`*⏰ BOT RUNTIME*\n\n*Uptime:* ${uptime()}\n*Time:* ${getTimestamp()}\n\n`);
           break;
         }
 
         // ==================== SUPPORT ====================
         case 'support':
         case 'channel':{
-          await replyBtn(`*🤝 SUPPORT LXD-MINI*\n\n*Channel:* ${config.CHANNEL_LINK}\n*Owner:* ʟᴜᴄᴋʏ ➋➊➑\n*Number:* +256789966218\n\nThank you for using LXD-MINI! 🙏\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,[
+          await replyBtn(`*🤝 SUPPORT LXD-MINI*\n\n*Channel:* ${config.CHANNEL_LINK}\n*Owner:* ʟᴜᴄᴋʏ ➋➊➑\n*Number:* +256789966218\n\nThank you for using LXD-MINI! 🙏\n\n`,[
             {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
           ]);
           break;
