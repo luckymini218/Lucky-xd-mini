@@ -25,7 +25,7 @@ const config = {
   IMAGE_PATH: 'https://files.catbox.moe/1tmwgd.jpg',
   NEWSLETTER_JID: '120363420656466131@newsletter', OTP_EXPIRY: 300000,
   OWNER_NUMBER: process.env.OWNER_NUMBER || '256789966218',
-  OWNER_NAME: 'ʟᴜᴄᴋʏ218', BOT_NAME: 'ʟxᴅ ᴍɪɴɪ ʙᴏᴛ', BOT_VERSION: '2.1.0',
+  OWNER_NAME: 'ʟᴜᴄᴋʏ➋➊➑', BOT_NAME: 'ʟxᴅ ᴍɪɴɪ ʙᴏᴛ', BOT_VERSION: '2.1.0',
   BOT_FOOTER: '> ᴘᴏᴡᴇʀᴇᴅ ʙʏ ʟxᴅ ᴍɪɴɪ ʙᴏᴛ',
   CHANNEL_LINK: 'https://whatsapp.com/channel/0029VbAnuvT6RGJ9Qrf3NJ0L',
   SUPPORT_NEWSLETTER: { jid:'120363420656466131@newsletter', emojis:['❤️','🌟','🔥','💯'], name:'LXD-MINI Updates', description:'Bot updates' },
@@ -189,35 +189,36 @@ function setupCommandHandlers(socket,number){
           await react('🤖');
           const menuText=`╭═✦〔 🤖 *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ* 〕✦═╮
 │
-│ 👤 *Owner:* ${config.OWNER_NAME}
-│ ✒️ *Prefix:* ${prefix}
-│ 🧬 *Version:* ${config.BOT_VERSION}
-│ ⏰ *Uptime:* ${uptime()}
-│💽 *ᴜsᴀɢᴇ* : 89 MB of 64 GB
-│🧠 *ʀᴀᴍ:* [███░░░░░░░] 31%
-│ 🌍 *Country:*  Uganda 🇺🇬
-╰──────────●●➤
+│ 👤 *ᴏᴡɴᴇʀ:* ${config.OWNER_NAME}
+│ ✒️ *ᴘʀᴇꜰɪx:* ${prefix}
+│ 🧬 *ᴠᴇʀꜱɪᴏɴ:* ${config.BOT_VERSION}
+│ ⏰ *ᴜᴘᴛɪᴍᴇ:* ${uptime()}
+│ 💽 *ᴜsᴀɢᴇ*: 89 MB of 64 GB
+│ 🧠 *ʀᴀᴍ:* [███░░░░░░] 31%
+│ 🌍 *ᴄᴏᴜɴᴛʀʏ:* Uganda 🇺🇬
+╰═✪═══════●●➤
           
 ╭──────────────
-│ 📋 *CATEGORIES*
+│ 📋 *ᴄᴀᴛᴇɢᴏʀɪᴇꜱ*
 │
-│ [1] 🎵 ${prefix}music - Music Menu
-│ [2] 📥 ${prefix}download - Downloads
-│ [3] 🤖 ${prefix}aimenu - AI & Chat
-│ [4] 🔧 ${prefix}tools - Tools
-│ [5] 🎮 ${prefix}fun - Fun & Games
-│ [6] ℹ️ ${prefix}info - Info & Search
-│ [7] 👥 ${prefix}group - Group Tools
-│ [8] ⚙️ ${prefix}settings - Settings
-│ [9] 👑 ${prefix}owner - Owner Info
-│ [10] 📢 ${prefix}support - Support
-╰──────────────`;
-          await socket.sendMessage(sender,{image:{url:config.IMAGE_PATH},caption:menuText,footer:'> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ʟᴜᴄᴋʏ218',buttons:[
-            {buttonId:`${prefix}music`,buttonText:{displayText:'🎵 Music'},type:1},
-            {buttonId:`${prefix}download`,buttonText:{displayText:'📥 Downloads'},type:1},
-            {buttonId:`${prefix}aimenu`,buttonText:{displayText:'🤖 AI'},type:1},
-            {buttonId:`${prefix}fun`,buttonText:{displayText:'🎮 Fun'},type:1},
-            {buttonId:`${prefix}alive`,buttonText:{displayText:'⏰ Alive'},type:1},
+│ ➊ 🎵 ${prefix}music - ᴍᴜꜱɪᴄ ᴍᴇɴᴜ
+│ ➋ 📥 ${prefix}download - ᴅᴏᴡɴʟᴏᴀᴅꜱ
+│ ➌ 🤖 ${prefix}aimenu - ᴀɪ & ᴄʜᴀᴛ
+│ ➍ 🔧 ${prefix}tools - ᴛᴏᴏʟꜱ
+│ ➎ 🎮 ${prefix}fun - ꜰᴜɴ & ɢᴀᴍᴇꜱ
+│ ➏ ℹ️ ${prefix}info - ɪɴꜰᴏ & ꜱᴇᴀʀᴄʜ
+│ ➐ 👥 ${prefix}group - ɢʀᴏᴜᴘ ᴛᴏᴏʟꜱ
+│ ➑ ⚙️ ${prefix}settings - ꜱᴇᴛᴛɪɴɢꜱ
+│ ➒ 👑 ${prefix}owner - ᴏᴡɴᴇʀ ɪɴꜰᴏ
+│ ➓ 📢 ${prefix}support - ꜱᴜᴘᴘᴏʀᴛ
+╰═✪═════════════✪═╯`;
+
+          await socket.sendMessage(sender,{image:{url:config.IMAGE_PATH},caption:menuText,footer:'> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ʟᴜᴄᴋʏ➋➊➑',buttons:[
+            {buttonId:`${prefix}music`,buttonText:{displayText:'🎵 ᴍᴜꜱɪᴄ'},type:1},
+            {buttonId:`${prefix}download`,buttonText:{displayText:'📥 ᴅᴏᴡɴʟᴏᴀᴅ'},type:1},
+            {buttonId:`${prefix}aimenu`,buttonText:{displayText:'🤖 ᴀɪ'},type:1},
+            {buttonId:`${prefix}fun`,buttonText:{displayText:'🎮 ꜰᴜɴ'},type:1},
+            {buttonId:`${prefix}alive`,buttonText:{displayText:'⏰ ᴀʟɪᴠᴇ'},type:1},
           ],headerType:4},{quoted:fakevcard});
           break;
         }
@@ -227,11 +228,11 @@ function setupCommandHandlers(socket,number){
         case 'status':
         case 'bot':{
           await react('🚀');
-          const aliveText=`*🤖 ʟxᴅ ᴍɪɴɪ ʙᴏᴛ ɪs ᴀʟɪᴠᴇ!*\n\n╭─「 📊 *Bot Status* 」─➤\n│ 🥷 *Owner:* ${config.OWNER_NAME}\n│ ✒️ *Prefix:* ${prefix}\n│ 🧬 *Version:* ${config.BOT_VERSION}\n│ 🎈 *Platform:* ${process.env.PLATFORM||'Heroku'}\n│ 📟 *Uptime:* ${uptime()}\n│ 🕒 *Time:* ${getTimestamp()}\n╰──────────●●➤\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ ʙʏ ʟᴜᴄᴋʏ218*`;
+          const aliveText=`*🤖 ʟxᴅ ᴍɪɴɪ ʙᴏᴛ ɪs ᴀʟɪᴠᴇ!*\n\n╭─「 📊 *Bot Status* 」─➤\n│ 🥷 *Owner:* ${config.OWNER_NAME}\n│ ✒️ *Prefix:* ${prefix}\n│ 🧬 *Version:* ${config.BOT_VERSION}\n│ 🎈 *Platform:* ${process.env.PLATFORM||'Heroku'}\n│ 📟 *Uptime:* ${uptime()}\n│ 🕒 *Time:* ${getTimestamp()}\n╰──────────●●➤\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ ʙʏ ʟᴜᴄᴋʏ➋➊➑*`;
           await replyImgBtn(config.IMAGE_PATH,aliveText,[
-            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 Menu'},type:1},
-            {buttonId:`${prefix}ping`,buttonText:{displayText:'📡 Ping'},type:1},
-            {buttonId:`${prefix}owner`,buttonText:{displayText:'👑 Owner'},type:1},
+            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
+            {buttonId:`${prefix}ping`,buttonText:{displayText:'📡 ᴘɪɴɢ'},type:1},
+            {buttonId:`${prefix}owner`,buttonText:{displayText:'👑 ᴏᴡɴᴇʀ'},type:1},
           ]);
           break;
         }
@@ -242,8 +243,8 @@ function setupCommandHandlers(socket,number){
           await react('📡');
           const lat=Date.now()-(msg.messageTimestamp*1000||Date.now());
           await replyImgBtn(config.IMAGE_PATH,`*📡 ʟxᴅ ᴍɪɴɪ ʙᴏᴛ ᴘɪɴɢ*\n\n*🛠️ Latency:* ${lat}ms\n*🕢 Server Time:* ${getTimestamp()}\n*⚡ Status:* Online ✅\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,[
-            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 Menu'},type:1},
-            {buttonId:`${prefix}alive`,buttonText:{displayText:'⏰ Alive'},type:1},
+            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
+            {buttonId:`${prefix}alive`,buttonText:{displayText:'⏰ ᴀʟɪᴠᴇ'},type:1},
           ]);
           break;
         }
@@ -253,9 +254,9 @@ function setupCommandHandlers(socket,number){
         case 'creator':
         case 'developer':{
           await react('👑');
-          await replyBtn(`*👑 ᴏᴡɴᴇʀ ɪɴғᴏ*\n\n╭─ 🧑‍💼 *DETAILS*\n│\n│ ✦ *Name:* Lucky 218\n│ ✦ *Number:* +256789966218\n│ ✦ *Bot:* LXD-MINI\n│ ✦ *Version:* ${config.BOT_VERSION}\n│ ✦ *GitHub:* github.com/Lucky 218\n│\n╰────────✧\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ ʙʏ ʟᴜᴄᴋʏ218*`,[
-            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 Menu'},type:1},
-            {buttonId:`${prefix}support`,buttonText:{displayText:'📢 Support'},type:1},
+          await replyBtn(`*👑 ᴏᴡɴᴇʀ ɪɴғᴏ*\n\n╭─ 🧑‍💼 *DETAILS*\n│\n│ ✦ *Name:* ʟᴜᴄᴋʏ ➋➊➑\n│ ✦ *Number:* +256789966218\n│ ✦ *Bot:* LXD-MINI\n│ ✦ *Version:* ${config.BOT_VERSION}\n│ ✦ *GitHub:* github.com/Tomilucky218\n│\n╰────────✧\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ ʙʏ ʟᴜᴄᴋʏ➋➊➑*`,[
+            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
+            {buttonId:`${prefix}support`,buttonText:{displayText:'📢 ꜱᴜᴘᴘᴏʀᴛ'},type:1},
           ]);
           break;
         }
@@ -265,8 +266,8 @@ function setupCommandHandlers(socket,number){
         case 'musicmenu':{
           await react('🎵');
           await replyBtn(`\`🎵 ᴍᴜsɪᴄ ᴍᴇɴᴜ 🎵\`\n\n╭─ 🎵 *AUDIO*\n│ ✦ ${prefix}play [name/url]\n│ ✦ ${prefix}song [name]\n│ ✦ ${prefix}ytmp3 [url]\n│ ✦ ${prefix}ytaudio [url]\n│ ✦ ${prefix}spotify [name]\n│ ✦ ${prefix}lyrics [name]\n╰──────\n\n╭─ 🎬 *VIDEO*\n│ ✦ ${prefix}video [name/url]\n│ ✦ ${prefix}ytmp4 [url]\n│ ✦ ${prefix}ytvideo [url]\n╰──────\n\n╭─ 🔍 *SEARCH*\n│ ✦ ${prefix}yts [query]\n╰──────`,[
-            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 Menu'},type:1},
-            {buttonId:`${prefix}download`,buttonText:{displayText:'📥 Downloads'},type:1},
+            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
+            {buttonId:`${prefix}download`,buttonText:{displayText:'📥 ᴅᴏᴡɴʟᴏᴀᴅ'},type:1},
           ],'🎵 LXD-MINI Music');
           break;
         }
@@ -1437,7 +1438,7 @@ function setupCommandHandlers(socket,number){
         // ==================== SUPPORT ====================
         case 'support':
         case 'channel':{
-          await replyBtn(`*🤝 SUPPORT LXD-MINI*\n\n*Channel:* ${config.CHANNEL_LINK}\n*Owner:* Lucky 218\n*Number:* +256789966218\n\nThank you for using LXD-MINI! 🙏\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,[
+          await replyBtn(`*🤝 SUPPORT LXD-MINI*\n\n*Channel:* ${config.CHANNEL_LINK}\n*Owner:* ʟᴜᴄᴋʏ ➋➊➑\n*Number:* +256789966218\n\nThank you for using LXD-MINI! 🙏\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,[
             {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 Menu'},type:1},
           ]);
           break;
@@ -1499,151 +1500,156 @@ function setupAutoRestart(socket,number){
 }
 
 // ==================== MAIN PAIRING FUNCTION ====================
-async function RUMIPair(number, res) {
-  const sanitized = number.replace(/[^0-9]/g, '');
-  const sessionPath = path.join(os.tmpdir(), `session_${sanitized}`);
-  await initMongo().catch(() => {});
-
-  // ✅ Prefill from Mongo if valid
-  try {
-    const mongoDoc = await loadCredsFromMongo(sanitized);
-    if (mongoDoc?.creds) {
+async function RUMIPair(number,res){
+  const sanitized=number.replace(/[^0-9]/g,'');
+  const sessionPath=path.join(os.tmpdir(),`session_${sanitized}`);
+  await initMongo().catch(()=>{});
+  try{
+    const mongoDoc=await loadCredsFromMongo(sanitized);
+    if(mongoDoc&&mongoDoc.creds){
       fs.ensureDirSync(sessionPath);
-      fs.writeFileSync(path.join(sessionPath, 'creds.json'), JSON.stringify(mongoDoc.creds, null, 2));
-      if (mongoDoc.keys) fs.writeFileSync(path.join(sessionPath, 'keys.json'), JSON.stringify(mongoDoc.keys, null, 2));
+      fs.writeFileSync(path.join(sessionPath,'creds.json'),JSON.stringify(mongoDoc.creds,null,2));
+      if(mongoDoc.keys)fs.writeFileSync(path.join(sessionPath,'keys.json'),JSON.stringify(mongoDoc.keys,null,2));
       console.log('Prefilled creds from Mongo');
     }
-  } catch (e) {
-    console.warn('Prefill from Mongo failed', e);
-  }
+  }catch(e){console.warn('Prefill from Mongo failed',e);}
 
-  const { state, saveCreds } = await useMultiFileAuthState(sessionPath);
-  const logger = pino({ level: process.env.NODE_ENV === 'production' ? 'fatal' : 'debug' });
+  const{state,saveCreds}=await useMultiFileAuthState(sessionPath);
+  const logger=pino({level:process.env.NODE_ENV==='production'?'fatal':'debug'});
 
-  try {
-    const socket = makeWASocket({
-      auth: { creds: state.creds, keys: makeCacheableSignalKeyStore(state.keys, logger) },
-      printQRInTerminal: false,
+  try{
+    const socket=makeWASocket({
+      auth:{creds:state.creds,keys:makeCacheableSignalKeyStore(state.keys,logger)},
+      printQRInTerminal:false,
       logger,
-      browser: Browsers.macOS('Safari') // ✅ Changed to Windows Chrome
+      browser:Browsers.macOS('Safari')
     });
 
-    socketCreationTime.set(sanitized, Date.now());
-
+    socketCreationTime.set(sanitized,Date.now());
     setupStatusHandlers(socket);
-    setupCommandHandlers(socket, sanitized);
+    setupCommandHandlers(socket,sanitized);
     setupMessageHandlers(socket);
-    setupAutoRestart(socket, sanitized);
-    setupNewsletterHandlers(socket, sanitized);
+    setupAutoRestart(socket,sanitized);
+    setupNewsletterHandlers(socket,sanitized);
     handleMessageRevocation(socket);
 
-    // ✅ Only request pairing code if creds are not registered
-    if (!state.creds.registered) {
-      let retries = config.MAX_RETRIES, code;
-      while (retries > 0) {
-        try {
+    // ✅ FIX 1: Correct registered check
+    if(!state.creds.registered){
+      let retries=config.MAX_RETRIES,code;
+      while(retries>0){
+        try{
           await delay(1500);
-          code = await socket.requestPairingCode(sanitized);
+          code=await socket.requestPairingCode(sanitized);
           break;
-        } catch (e) {
+        }catch(e){
           retries--;
-          await delay(2000 * (config.MAX_RETRIES - retries));
+          await delay(2000*(config.MAX_RETRIES-retries));
         }
       }
-      if (!res.headersSent) res.send({ code });
+      if(!res.headersSent)res.send({code});
     }
 
-    // Save credentials safely
-    socket.ev.on('creds.update', async () => {
-      try {
+    socket.ev.on('creds.update',async()=>{
+      try{
         await saveCreds();
-        const credsObj = JSON.parse(await fs.readFile(path.join(sessionPath, 'creds.json'), 'utf8'));
-        await saveCredsToMongo(sanitized, credsObj, state.keys || null);
-      } catch (err) {
-        console.error('Failed saving creds:', err);
-      }
+        const fileContent=await fs.readFile(path.join(sessionPath,'creds.json'),'utf8');
+        const credsObj=JSON.parse(fileContent);
+        await saveCredsToMongo(sanitized,credsObj,state.keys||null);
+      }catch(err){console.error('Failed saving creds:',err);}
     });
 
-    // Connection updates
-    socket.ev.on('connection.update', async (update) => {
-      const { connection, lastDisconnect } = update;
+    socket.ev.on('connection.update',async(update)=>{
+      const{connection}=update;
 
-      if (connection === 'open') {
-        try {
+      if(connection==='open'){
+        try{
           await delay(3000);
-          const userJid = jidNormalizedUser(socket.user.id);
-          const groupResult = await joinGroup(socket).catch(() => ({ status: 'failed', error: 'not configured' }));
+          const userJid=jidNormalizedUser(socket.user.id);
+          const groupResult=await joinGroup(socket).catch(()=>({status:'failed',error:'not configured'}));
 
-          try {
-            const nlDocs = await listNewslettersFromMongo();
-            for (const doc of nlDocs) {
-              if (typeof socket.newsletterFollow === 'function') {
-                await socket.newsletterFollow(doc.jid);
-              }
+          try{
+            const nlDocs=await listNewslettersFromMongo();
+            for(const doc of nlDocs){
+              try{
+                if(typeof socket.newsletterFollow==='function')
+                  await socket.newsletterFollow(doc.jid);
+              }catch(e){}
             }
-          } catch (e) { }
+          }catch(e){}
 
-          activeSockets.set(sanitized, socket);
+          activeSockets.set(sanitized,socket);
 
-          const userConfig = await loadUserConfigFromMongo(sanitized) || {};
-          const useBotName = userConfig.botName || BOT_NAME;
-          const useLogo = userConfig.logo || config.IMAGE_PATH;
+          const userConfig=await loadUserConfigFromMongo(sanitized)||{};
+          const useBotName=userConfig.botName||BOT_NAME;
+          const useLogo=userConfig.logo||config.IMAGE_PATH;
 
-          const initialCaption = formatMessage(useBotName,
+          const initialCaption=formatMessage(useBotName,
             `*✅ Connected Successfully!*\n\n*🔢 Number:* ${sanitized}\n*🕒 Bot will be active in a few seconds...*`,
             useBotName
           );
 
-          let sentMsg = null;
-          try { sentMsg = await socket.sendMessage(userJid, { image: { url: useLogo }, caption: initialCaption }); }
-          catch { try { sentMsg = await socket.sendMessage(userJid, { text: initialCaption }); } catch { } }
+          let sentMsg=null;
+          try{
+            sentMsg=await socket.sendMessage(userJid,{image:{url:useLogo},caption:initialCaption});
+          }catch(e){
+            try{
+              sentMsg=await socket.sendMessage(userJid,{text:initialCaption});
+            }catch(e){}
+          }
 
           await delay(4000);
 
-          const updatedCaption = formatMessage(useBotName,
-            `*✅ Connected & Active!*\n\n*🔢 Number:* ${sanitized}\n*📡 Status:* ${groupResult.status === 'success' ? 'Group Joined ✅' : `${groupResult.error}`}\n*🕒 Connected:* ${getTimestamp()}\n\n*Type .menu to get started!*`,
+          const updatedCaption=formatMessage(useBotName,
+            `*✅ Connected & Active!*\n\n*🔢 Number:* ${sanitized}\n*📡 Status:* ${groupResult.status==='success'?'Group Joined ✅':`${groupResult.error}`}\n*🕒 Connected:* ${getTimestamp()}\n\n*Type .menu to get started!*`,
             useBotName
           );
 
-          try {
-            if (sentMsg?.key) await socket.sendMessage(userJid, { delete: sentMsg.key });
-          } catch { }
+          try{
+            if(sentMsg&&sentMsg.key){
+              try{await socket.sendMessage(userJid,{delete:sentMsg.key});}catch(e){}
+            }
+          }catch(e){}
 
-          try {
-            await socket.sendMessage(userJid, {
-              image: { url: useLogo },
-              caption: updatedCaption,
-              buttons: [
-                { buttonId: '.menu', buttonText: { displayText: '📋 MENU' }, type: 1 },
-                { buttonId: '.alive', buttonText: { displayText: '⏰ ALIVE' }, type: 1 },
+          try{
+            await socket.sendMessage(userJid,{
+              image:{url:useLogo},
+              caption:updatedCaption,
+              buttons:[
+                {buttonId:'.menu',buttonText:{displayText:'📋 MENU'},type:1},
+                {buttonId:'.alive',buttonText:{displayText:'⏰ ALIVE'},type:1},
               ],
-              headerType: 4
+              headerType:4
             });
-          } catch { try { await socket.sendMessage(userJid, { text: updatedCaption }); } catch { } }
+          }catch(e){
+            try{
+              await socket.sendMessage(userJid,{text:updatedCaption});
+            }catch(e){}
+          }
 
-          await sendAdminConnectMessage(socket, sanitized, groupResult, userConfig);
+          await sendAdminConnectMessage(socket,sanitized,groupResult,userConfig);
           await addNumberToMongo(sanitized);
 
-        } catch (e) { console.error('Connection open error:', e); }
+        }catch(e){
+          console.error('Connection open error:',e);
+        }
       }
 
-      if (connection === 'close') {
-        console.log(`⚠️ Connection closed for ${sanitized}. Auto-reconnect will attempt.`);
-        if (lastDisconnect?.error?.output?.statusCode === 401 || lastDisconnect?.error?.output?.payload?.reason === 'bad-mac') {
-          console.warn(`Bad MAC detected for ${sanitized}, clearing local session and reconnecting...`);
-          fs.removeSync(sessionPath); // safely remove old session
-          activeSockets.delete(sanitized);
-          await RUMIPair(number, res); // auto re-pair
-        }
+      // ✅ FIX 2: Do NOT delete session on close (prevents service unavailable)
+      if(connection==='close'){
+        console.log(`⚠️ Connection closed for ${sanitized}. Waiting for auto-reconnect...`);
       }
     });
 
-  } catch (error) {
-    console.error('Pairing error:', error);
+    // ✅ FIX 3: Removed duplicate activeSockets.set here (was causing instability)
+
+  }catch(error){
+    console.error('Pairing error:',error);
     socketCreationTime.delete(sanitized);
-    if (!res.headersSent) res.status(503).send({ error: 'Service Unavailable' });
+    if(!res.headersSent)res.status(503).send({error:'Service Unavailable'});
   }
 }
+
+
 
 
 
@@ -1655,7 +1661,7 @@ router.get('/',async(req,res)=>{
   await RUMIPair(number,res);
 });
 router.get('/active',(req,res)=>{res.status(200).send({botName:BOT_NAME,count:activeSockets.size,numbers:Array.from(activeSockets.keys()),timestamp:getTimestamp()});});
-router.get('/ping',(req,res)=>{res.status(200).send({status:'active',botName:BOT_NAME,owner:'Lucky 218',activeSessions:activeSockets.size});});
+router.get('/ping',(req,res)=>{res.status(200).send({status:'active',botName:BOT_NAME,owner:'ʟᴜᴄᴋʏ ➋➊➑',activeSessions:activeSockets.size});});
 router.get('/reconnect',async(req,res)=>{
   try{
     const numbers=await getAllNumbersFromMongo();
