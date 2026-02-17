@@ -218,7 +218,12 @@ function setupCommandHandlers(socket,number){
             {buttonId:`${prefix}download`,buttonText:{displayText:'📥 ᴅᴏᴡɴʟᴏᴀᴅ'},type:1},
             {buttonId:`${prefix}aimenu`,buttonText:{displayText:'🤖 ᴀɪ'},type:1},
             {buttonId:`${prefix}fun`,buttonText:{displayText:'🎮 ꜰᴜɴ'},type:1},
-            {buttonId:`${prefix}alive`,buttonText:{displayText:'⏰ ᴀʟɪᴠᴇ'},type:1},
+            {buttonId:`${prefix}tools`,buttonText:{displayText:'🔧 ᴛᴏᴏʟꜱ'},type:1},
+            {buttonId:`${prefix}info`,buttonText:{displayText:'ℹ️ ɪɴꜰᴏ & ꜱᴇᴀʀᴄʜ'},type:1},
+            {buttonId:`${prefix}group`,buttonText:{displayText:'👥 ɢʀᴏᴜᴘ ᴛᴏᴏʟꜱ'},type:1},
+            {buttonId:`${prefix}settings`,buttonText:{displayText:'⚙️ ꜱᴇᴛᴛɪɴɢꜱ'},type:1},
+            {buttonId:`${prefix}owner`,buttonText:{displayText:'👑 ᴏᴡɴᴇʀ ɪɴꜰᴏ'},type:1},
+            {buttonId:`${prefix}support`,buttonText:{displayText:'📢 ꜱᴜᴘᴘᴏʀᴛ'},type:1},
           ],headerType:4},{quoted:fakevcard});
           break;
         }
@@ -268,7 +273,7 @@ function setupCommandHandlers(socket,number){
           await replyBtn(`\`🎵 ᴍᴜsɪᴄ ᴍᴇɴᴜ 🎵\`\n\n╭─ 🎵 *AUDIO*\n│ ✦ ${prefix}play [name/url]\n│ ✦ ${prefix}song [name]\n│ ✦ ${prefix}ytmp3 [url]\n│ ✦ ${prefix}ytaudio [url]\n│ ✦ ${prefix}spotify [name]\n│ ✦ ${prefix}lyrics [name]\n╰──────\n\n╭─ 🎬 *VIDEO*\n│ ✦ ${prefix}video [name/url]\n│ ✦ ${prefix}ytmp4 [url]\n│ ✦ ${prefix}ytvideo [url]\n╰──────\n\n╭─ 🔍 *SEARCH*\n│ ✦ ${prefix}yts [query]\n╰──────`,[
             {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
             {buttonId:`${prefix}download`,buttonText:{displayText:'📥 ᴅᴏᴡɴʟᴏᴀᴅ'},type:1},
-          ],'🎵 LXD-MINI Music');
+          ],'🎵 ʟxᴅ-ᴍɪɴɪ ᴍᴜꜱɪᴄ');
           break;
         }
 
@@ -278,7 +283,7 @@ function setupCommandHandlers(socket,number){
         case 'mp3':{
           await react('🎵');
           const yts=require('yt-search');
-          if(!q){await replyBtn(`*🎵 Usage:* ${prefix}play <song name or YouTube URL>`,[{buttonId:`${prefix}music`,buttonText:{displayText:'🎵 Music Menu'},type:1}]);break;}
+          if(!q){await replyBtn(`*🎵 Usage:* ${prefix}play <song name or YouTube URL>`,[{buttonId:`${prefix}music`,buttonText:{displayText:'🎵 ᴍᴜꜱɪᴄ ᴍᴇɴᴜ'},type:1}]);break;}
           await reply('*⏳ Searching...*');
           const search=await yts(q);
           if(!search?.videos?.length){await reply('❌ No results found!');break;}
@@ -377,7 +382,7 @@ function setupCommandHandlers(socket,number){
         case 'tt':
         case 'ttdl':{
           await react('🎵');
-          if(!q||!q.includes('tiktok.com')){await replyBtn(`*🚫 Provide a valid TikTok URL!*\n\nUsage: ${prefix}tiktok <url>`,[{buttonId:`${prefix}download`,buttonText:{displayText:'📥 DL Menu'},type:1}]);break;}
+          if(!q||!q.includes('tiktok.com')){await replyBtn(`*🚫 Provide a valid TikTok URL!*\n\nUsage: ${prefix}tiktok <url>`,[{buttonId:`${prefix}download`,buttonText:{displayText:'📥 ᴅᴏᴡɴʟᴏᴀᴅ ᴍᴇɴᴜ'},type:1}]);break;}
           await reply('*⏳ Downloading TikTok...*');
           const ttRes=await axios.get(`https://delirius-apiofc.vercel.app/download/tiktok?url=${encodeURIComponent(q)}`);
           if(!ttRes?.data?.status||!ttRes?.data?.data){await reply('❌ Failed to download TikTok!');break;}
