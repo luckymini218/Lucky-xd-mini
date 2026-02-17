@@ -754,9 +754,17 @@ body {
       <div style="color:deepskyblue;font-weight:bold;">
         CODE: <span id="pairCode" style="color:white;">${code}</span>
       </div>
+
       <button 
+        id="copyBtn"
         onclick="copyCode()" 
-        style="margin-top:8px;padding:6px 12px;background:deepskyblue;border:none;border-radius:5px;color:white;cursor:pointer;">
+        style="margin-top:8px;padding:6px 14px;
+               background:deepskyblue;
+               border:none;
+               border-radius:6px;
+               color:white;
+               cursor:pointer;
+               transition:0.3s;">
         Copy Code
       </button>
     </div>
@@ -776,17 +784,27 @@ body {
 
 function copyCode() {
   const codeText = document.getElementById("pairCode").textContent;
+  const btn = document.getElementById("copyBtn");
 
   if (!codeText || codeText === "Service Unavailable") return;
 
   navigator.clipboard.writeText(codeText)
     .then(() => {
-      alert("Code copied successfully!");
+      const originalText = btn.innerText;
+
+      btn.innerText = "Copied ✓";
+      btn.style.background = "green";
+
+      setTimeout(() => {
+        btn.innerText = originalText;
+        btn.style.background = "deepskyblue";
+      }, 2000);
     })
     .catch(err => {
       console.error("Copy failed:", err);
     });
 }
+
 
 
 
