@@ -278,79 +278,53 @@ function setupCommandHandlers(socket,number){
         }
         
         
-// ==================== VIEW ONCE (PRO) ====================
+// ==================== VIEW ONCE (FIXED FOR YOUR MSG.JS) ====================
 case 'vv':
 case 'viewonce':
 case 'readviewonce': {
-  await react('👁️');
+    await m.react('👁️');
 
-  try {
-    const messageType = Object.keys(msg.message)[0];
-    const contextInfo = msg.message[messageType]?.contextInfo;
-
-    if (!contextInfo?.quotedMessage) {
-      await reply(`*👁️ Usage:* Reply to a view-once image/video with ${prefix}vv`);
-      break;
+    if (!m.quoted) {
+        await m.reply(`*👁️ Usage:* Reply to a view-once image/video with ${prefix}vv`);
+        break;
     }
 
-    let quoted = contextInfo.quotedMessage;
-
-    // 🔥 UNWRAP EPHEMERAL
-    if (quoted.ephemeralMessage) {
-      quoted = quoted.ephemeralMessage.message;
+    if (m.quoted.type !== 'viewOnceMessage') {
+        await m.reply('❌ Please reply to a *view-once* message!');
+        break;
     }
 
-    // 🔥 UNWRAP VIEW ONCE
-    if (!quoted.viewOnceMessage) {
-      await reply('❌ The replied message is not a view-once media.');
-      break;
+    try {
+        await m.reply('*⏳ Unlocking view-once media...*');
+
+        const buffer = await m.quoted.download();
+
+        if (!buffer) {
+            await m.reply('❌ Failed to download media.');
+            break;
+        }
+
+        // Since msg.js already unwraps inner media into m.quoted.msg
+        if (m.quoted.msg?.mimetype?.includes('image') || m.quoted.msg?.jpegThumbnail) {
+            await conn.sendMessage(m.chat, {
+                image: buffer,
+                caption: '👁️ *View Once Unlocked Successfully*'
+            }, { quoted: m });
+        } else {
+            await conn.sendMessage(m.chat, {
+                video: buffer,
+                caption: '👁️ *View Once Unlocked Successfully*'
+            }, { quoted: m });
+        }
+
+        await m.react('✅');
+
+    } catch (err) {
+        console.error('VIEW ONCE ERROR:', err);
+        await m.reply('❌ Failed to process view-once media.');
     }
 
-    const viewOnceContent = quoted.viewOnceMessage.message;
-    const mediaType = Object.keys(viewOnceContent)[0];
-
-    if (!['imageMessage', 'videoMessage'].includes(mediaType)) {
-      await reply('❌ Unsupported view-once media type.');
-      break;
-    }
-
-    await reply('*⏳ Unlocking view-once media...*');
-
-    const stream = await downloadContentFromMessage(
-      viewOnceContent[mediaType],
-      mediaType === 'imageMessage' ? 'image' : 'video'
-    );
-
-    let buffer = Buffer.from([]);
-    for await (const chunk of stream) {
-      buffer = Buffer.concat([buffer, chunk]);
-    }
-
-    if (!buffer.length) {
-      await reply('❌ Failed to download media.');
-      break;
-    }
-
-    if (mediaType === 'imageMessage') {
-      await socket.sendMessage(sender, {
-        image: buffer,
-        caption: '👁️ *View Once Unlocked Successfully*'
-      }, { quoted: msg });
-    } else {
-      await socket.sendMessage(sender, {
-        video: buffer,
-        caption: '👁️ *View Once Unlocked Successfully*'
-      }, { quoted: msg });
-    }
-
-    await react('✅');
-
-  } catch (err) {
-    console.error('VIEW ONCE ERROR:', err);
-    await reply('❌ Failed to process view-once media.');
-  }
-
-  break;
+    break;
 }
 
 
