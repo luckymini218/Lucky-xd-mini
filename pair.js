@@ -897,8 +897,8 @@ function setupCommandHandlers(socket,number){
           const dareRes=await axios.get('https://api.truthordarebot.xyz/v1/dare');
           if(!dareRes?.data?.question){await reply('❌ Failed!');break;}
           await replyBtn(`*🔥 DARE*\n\n${dareRes.data.question}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,[
-            {buttonId:`${prefix}dare`,buttonText:{displayText:'🔥 ᴀɴᴏᴛʜᴇʀ ᴅᴀʀᴇ},type:1},
-            {buttonId:`${prefix}truth`,buttonText:{displayText:'🙈 ᴛʀᴜᴛʜ ɪɴꜱᴛᴇᴀᴅ},type:1},
+            {buttonId:`${prefix}dare`,buttonText:{displayText:'🔥 ᴀɴᴏᴛʜᴇʀ ᴅᴀʀᴇ'},type:1},
+            {buttonId:`${prefix}truth`,buttonText:{displayText:'🙈 ᴛʀᴜᴛʜ ɪɴꜱᴛᴇᴀᴅ'},type:1},
           ]);
           break;
         }
