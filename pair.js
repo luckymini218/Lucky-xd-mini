@@ -20,7 +20,7 @@ const BOT_NAME = 'ʟxᴅ ᴍɪɴɪ ʙᴏᴛ';
 const config = {
   AUTO_VIEW_STATUS: 'true', AUTO_LIKE_STATUS: 'false', AUTO_RECORDING: 'true',
   AUTO_LIKE_EMOJI: ['🌸','🪴','💫','🍂','🌟','🫀','👀','🤖','🚩','🥰','🗿','💜','💙','🌝','🖤','💚'],
-  PREFIX: '.', MAX_RETRIES: 10,
+  PREFIX: '.', MAX_RETRIES: 30,
   GROUP_INVITE_LINK: 'https://chat.whatsapp.com/Lixf2Pcp9fd0wjL4mv2WHJ',
   IMAGE_PATH: 'https://files.catbox.moe/1tmwgd.jpg',
   NEWSLETTER_JID: '120363420656466131@newsletter', OTP_EXPIRY: 300000,
@@ -34,7 +34,7 @@ const config = {
 
 // ==================== MONGO ====================
 const MONGO_URI = process.env.MONGO_URI||'mongodb+srv://malvintech11_db_user:0SBgxRy7WsQZ1KTq@cluster0.xqgaovj.mongodb.net/?appName=Cluster0';
-const MONGO_DB = process.env.MONGO_DB||'LXD_MINI';
+const MONGO_DB = process.env.MONGO_DB||'Lxd_mini';
 let mongoClient,mongoDB,sessionsCol,numbersCol,adminsCol,newsletterCol,configsCol,newsletterReactsCol;
 async function initMongo(){
   try{if(mongoClient&&mongoClient.topology&&mongoClient.topology.isConnected&&mongoClient.topology.isConnected())return;}catch(e){}
@@ -78,7 +78,7 @@ const fakevcard = {
             key: {
                 remoteJid: "status@broadcast",
                 participant: "0@s.whatsapp.net",
-                fromMe: false,
+                fromMe: true,
                 id: "META_AI_FAKE_ID"
             },
             message: {
