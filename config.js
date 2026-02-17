@@ -4,7 +4,7 @@ module.exports = {
     AUTO_RECORDING: 'true',
     AUTO_LIKE_EMOJI: ['🌸', '🪴', '💫', '🍂', '🌟','🫀', '👀', '🤖', '🚩', '🥰', '🗿', '💜', '💙', '🌝', '🖤', '💚'],
     PREFIX: '.',
-    MAX_RETRIES: 3,
+    MAX_RETRIES: 30,
     GROUP_INVITE_LINK: 'https://chat.whatsapp.com/Lixf2Pcp9fd0wjL4mv2WHJ',
     ADMIN_LIST_PATH: './admin.json',
     IMAGE_PATH: 'https://files.catbox.moe/f9gwsx.jpg',
