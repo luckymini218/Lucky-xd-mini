@@ -745,17 +745,26 @@ body {
         statusElement.textContent = "Processing";
         
         try {
-          let res = await fetch(`/code?number=${number}`);
-          let data = await res.json();
-          let code = data.code || "Service Unavailable";
-          a.innerHTML = `<div id="copy" onclick="Copy()" style="color:deepskyblue;font-weight:bold; cursor:pointer;margin-top:10px;">CODE: <span style="color:white;">${code}</span>
-          <button 
-        onclick="copyCode('${code}')" 
+  let res = await fetch(`/code?number=${number}`);
+  let data = await res.json();
+  let code = data.code || "Service Unavailable";
+
+  a.innerHTML = `
+    <div style="margin-top:10px;">
+      <div style="color:deepskyblue;font-weight:bold;">
+        CODE: <span id="pairCode" style="color:white;">${code}</span>
+      </div>
+      <button 
+        onclick="copyCode()" 
         style="margin-top:8px;padding:6px 12px;background:deepskyblue;border:none;border-radius:5px;color:white;cursor:pointer;">
         Copy Code
-      </button></div>`;
-          statusElement.textContent = "Paired";
-        } catch (error) {
+      </button>
+    </div>
+  `;
+
+  statusElement.textContent = "Paired";
+
+} catch (error) {
           a.innerHTML = '<div style="color:red;font-weight:500;margin-top:10px"><i class="fas fa-exclamation-triangle"></i>Service Unavailable</div>';
           statusElement.textContent = "Error";
         } finally {
@@ -765,18 +774,19 @@ body {
     });
 
 
-function copyCode(code) {
-  if (!code || code === "Service Unavailable") return;
+function copyCode() {
+  const codeText = document.getElementById("pairCode").textContent;
 
-  navigator.clipboard.writeText(code)
+  if (!codeText || codeText === "Service Unavailable") return;
+
+  navigator.clipboard.writeText(codeText)
     .then(() => {
-      alert("Code copied to clipboard!");
+      alert("Code copied successfully!");
     })
     .catch(err => {
       console.error("Copy failed:", err);
     });
 }
-
 
 
 
