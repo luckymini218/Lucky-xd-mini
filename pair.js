@@ -278,24 +278,25 @@ function setupCommandHandlers(socket,number){
         }
         
         
-        
 // ==================== VIEW ONCE ====================
 case 'vv':
 case 'viewonce':
 case 'readviewonce': {
   await react('👁️');
 
-  const contextInfo = msg.message?.extendedTextMessage?.contextInfo;
-  const quotedMessage = contextInfo?.quotedMessage;
+  // Get context info safely from any message type
+  const messageType = Object.keys(msg.message)[0];
+  const contextInfo = msg.message[messageType]?.contextInfo;
 
-  if (!quotedMessage) {
+  if (!contextInfo?.quotedMessage) {
     await reply(`*👁️ Usage:* Reply to a view-once message with ${prefix}vv`);
     break;
   }
 
-  const viewOnceMsg = quotedMessage?.viewOnceMessage?.message;
+  const quoted = contextInfo.quotedMessage;
 
-  if (!viewOnceMsg) {
+  // Detect view once properly
+  if (!quoted.viewOnceMessage?.message) {
     await reply('❌ Please reply to a *view-once* message!');
     break;
   }
@@ -303,20 +304,17 @@ case 'readviewonce': {
   await reply('*⏳ Processing view-once message...*');
 
   try {
-    const mediaType = getContentType(viewOnceMsg);
+    const viewOnceContent = quoted.viewOnceMessage.message;
+    const mediaType = Object.keys(viewOnceContent)[0];
+
     const stream = await downloadContentFromMessage(
-      viewOnceMsg[mediaType],
+      viewOnceContent[mediaType],
       mediaType === 'imageMessage' ? 'image' : 'video'
     );
 
     let buffer = Buffer.from([]);
     for await (const chunk of stream) {
       buffer = Buffer.concat([buffer, chunk]);
-    }
-
-    if (!buffer) {
-      await reply('❌ Failed to download media!');
-      break;
     }
 
     if (mediaType === 'imageMessage') {
@@ -340,11 +338,12 @@ case 'readviewonce': {
 
   } catch (err) {
     console.error('View-once error:', err);
-    await reply('❌ Error processing view-once message.');
+    await reply('❌ Failed to process view-once message.');
   }
 
   break;
 }
+
 
 
 
