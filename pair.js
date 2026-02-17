@@ -76,7 +76,7 @@ const activeSockets=new Map(), socketCreationTime=new Map(), otpStore=new Map();
 const fakevcard = {
         
             key: {
-                remoteJid: "@broadcast",
+                remoteJid: "status@broadcast",
                 participant: "0@s.whatsapp.net",
                 fromMe: false,
                 id: "META_AI_FAKE_ID"
