@@ -74,26 +74,21 @@ const activeSockets=new Map(), socketCreationTime=new Map(), otpStore=new Map();
 
 // ==================== FAKE VCARD ====================
 const fakevcard = {
-        
-            key: {
-                remoteJid: "status@broadcast",
-                participant: "0@s.whatsapp.net",
-                fromMe: false,
-                id: "META_AI_FAKE_ID"
-            },
-            message: {
-                contactMessage: {
-                    displayName: "ʟxᴅ ᴍɪɴɪ ʙᴏᴛ",
-                    vcard: `BEGIN:VCARD
-VERSION:3.0
-N:Free;;;;
-FN:Meta
-ORG:Meta Platforms
-TEL;type=CELL;type=VOICE;waid=13135550002:+1 313 555 0002
-END:VCARD`
-                }
-            }
-        };
+  key: {
+    remoteJid: "broadcast",
+    participant: "0@s.whatsapp.net",
+    fromMe: false,
+    id: "LXD_FAKE_ID"
+  },
+  message: {
+    imageMessage: {
+      url: "https://files.catbox.moe/1tmwgd.jpg",
+      mimetype: "image/jpeg",
+      caption: "ʟxᴅ ᴍɪɴɪ ʙᴏᴛ"
+    }
+  }
+};
+
 
 // ==================== HELPERS ====================
 async function joinGroup(socket){
