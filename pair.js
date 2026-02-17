@@ -190,27 +190,27 @@ function setupCommandHandlers(socket,number){
           const menuText=`╭═✦〔 🤖 *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ* 〕✦═╮
 │
 │ 👤 *ᴏᴡɴᴇʀ:* ${config.OWNER_NAME}
-│ ✒️ *ᴘʀᴇꜰɪx:* ${prefix}
+│ ✒️ *ᴘʀᴇꜰɪx:* [${prefix}]
 │ 🧬 *ᴠᴇʀꜱɪᴏɴ:* ${config.BOT_VERSION}
 │ ⏰ *ᴜᴘᴛɪᴍᴇ:* ${uptime()}
 │ 💽 *ᴜsᴀɢᴇ*: 89 MB of 64 GB
 │ 🧠 *ʀᴀᴍ:* [███░░░░░░] 31%
 │ 🌍 *ᴄᴏᴜɴᴛʀʏ:* Uganda 🇺🇬
-╰═✪═══════●●➤
+╰═✪═════════●●➤
           
 ╭──────────────
 │ 📋 *ᴄᴀᴛᴇɢᴏʀɪᴇꜱ*
 │
-│ ➊ 🎵 ${prefix}music - ᴍᴜꜱɪᴄ ᴍᴇɴᴜ
-│ ➋ 📥 ${prefix}download - ᴅᴏᴡɴʟᴏᴀᴅꜱ
-│ ➌ 🤖 ${prefix}aimenu - ᴀɪ & ᴄʜᴀᴛ
-│ ➍ 🔧 ${prefix}tools - ᴛᴏᴏʟꜱ
-│ ➎ 🎮 ${prefix}fun - ꜰᴜɴ & ɢᴀᴍᴇꜱ
-│ ➏ ℹ️ ${prefix}info - ɪɴꜰᴏ & ꜱᴇᴀʀᴄʜ
-│ ➐ 👥 ${prefix}group - ɢʀᴏᴜᴘ ᴛᴏᴏʟꜱ
-│ ➑ ⚙️ ${prefix}settings - ꜱᴇᴛᴛɪɴɢꜱ
-│ ➒ 👑 ${prefix}owner - ᴏᴡɴᴇʀ ɪɴꜰᴏ
-│ ➓ 📢 ${prefix}support - ꜱᴜᴘᴘᴏʀᴛ
+│ ➊ 🎵 *ᴍᴜꜱɪᴄ ᴍᴇɴᴜ* (${prefix}music)
+│ ➋ 📥 *ᴅᴏᴡɴʟᴏᴀᴅꜱ* (${prefix}download)
+│ ➌ 🤖 *ᴀɪ & ᴄʜᴀᴛ* (${prefix}aimenu)
+│ ➍ 🔧 *ᴛᴏᴏʟꜱ* (${prefix}tools)
+│ ➎ 🎮 *ꜰᴜɴ & ɢᴀᴍᴇꜱ* (${prefix}fun)
+│ ➏ ℹ️ *ɪɴꜰᴏ & ꜱᴇᴀʀᴄʜ* (${prefix}info)
+│ ➐ 👥 *ɢʀᴏᴜᴘ ᴛᴏᴏʟꜱ* (${prefix}group)
+│ ➑ ⚙️ *ꜱᴇᴛᴛɪɴɢꜱ* (${prefix}settings)
+│ ➒ 👑 *ᴏᴡɴᴇʀ ɪɴꜰᴏ* (${prefix}owner)
+│ ➓ 📢 *ꜱᴜᴘᴘᴏʀᴛ* (${prefix}support)
 ╰═✪═════════════✪═╯`;
 
           await socket.sendMessage(sender,{image:{url:config.IMAGE_PATH},caption:menuText,footer:'> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ʟᴜᴄᴋʏ➋➊➑',buttons:[
@@ -292,8 +292,8 @@ function setupCommandHandlers(socket,number){
             caption:`*🎧 SONG FOUND!*\n\n*🎵 Title:* ${songTitle}\n*⏱ Duration:* ${vid.timestamp}\n*👀 Views:* ${(vid.views||0).toLocaleString()}\n*📅 Uploaded:* ${vid.ago||'N/A'}\n\n*👇 Choose your format:*`,
             footer:'> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ᴍᴜsɪᴄ',
             buttons:[
-              {buttonId:`play_audio|${dlUrl}|${songTitle}`,buttonText:{displayText:'🎧 Send as Audio'},type:1},
-              {buttonId:`play_doc|${dlUrl}|${songTitle}`,buttonText:{displayText:'📄 Send as Document'},type:1},
+              {buttonId:`play_audio|${dlUrl}|${songTitle}`,buttonText:{displayText:'🎧 ꜱᴇɴᴅ ᴀꜱ ᴀᴜᴅɪᴏ'},type:1},
+              {buttonId:`play_doc|${dlUrl}|${songTitle}`,buttonText:{displayText:'📄 ꜱᴇɴᴅ ᴀꜱ ᴅᴏᴄᴜᴍᴇɴᴛ'},type:1},
             ],headerType:4
           },{quoted:fakevcard});
           break;
@@ -323,7 +323,7 @@ function setupCommandHandlers(socket,number){
           const r3=await axios.get(`https://api.yupra.my.id/api/downloader/ytmp3?url=${encodeURIComponent(q)}`,{timeout:60000});
           if(!r3?.data?.result?.download){await reply('❌ Download failed!');break;}
           await socket.sendMessage(sender,{audio:{url:r3.data.result.download},mimetype:'audio/mpeg',ptt:false},{quoted:fakevcard});
-          await replyBtn(`✅ *${r3.data.result.title||'Audio'} sent!*\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,[{buttonId:`${prefix}menu`,buttonText:{displayText:'📋 Menu'},type:1}]);
+          await replyBtn(`✅ *${r3.data.result.title||'Audio'} sent!*\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,[{buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1}]);
           break;
         }
 
@@ -350,8 +350,8 @@ function setupCommandHandlers(socket,number){
           }
           if(!vidUrl){await reply('❌ Failed to fetch video!');break;}
           await socket.sendMessage(sender,{video:{url:vidUrl},caption:`*🎬 ${vidTitle}*\n*⏱ Duration:* ${vidDur}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,footer:'> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ᴠɪᴅᴇᴏ',buttons:[
-            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 Menu'},type:1},
-            {buttonId:`${prefix}video`,buttonText:{displayText:'🔄 Another'},type:1},
+            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
+            {buttonId:`${prefix}video`,buttonText:{displayText:'🔄 ᴀɴᴏᴛʜᴇʀ'},type:1},
           ]},{quoted:fakevcard});
           break;
         }
@@ -368,7 +368,7 @@ function setupCommandHandlers(socket,number){
           let ytText=`*🔍 YouTube Search — ${q}*\n\n`;
           ytSearch.videos.slice(0,5).forEach((v,i)=>{ytText+=`*${i+1}.* ${v.title}\n   ⏱ ${v.timestamp} | 👀 ${(v.views||0).toLocaleString()}\n   🔗 ${v.url}\n\n`;});
           ytText+=`> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`;
-          await replyBtn(ytText,[{buttonId:`${prefix}play`,buttonText:{displayText:'🎵 Download Song'},type:1},{buttonId:`${prefix}video`,buttonText:{displayText:'🎬 Download Video'},type:1}]);
+          await replyBtn(ytText,[{buttonId:`${prefix}play`,buttonText:{displayText:'🎵 ᴅᴏᴡɴʟᴏᴀᴅ ꜱᴏɴɢ'},type:1},{buttonId:`${prefix}video`,buttonText:{displayText:'🎬 ᴅᴏᴡɴʟᴏᴀᴅ ᴠɪᴅᴇᴏ'},type:1}]);
           break;
         }
 
@@ -384,8 +384,8 @@ function setupCommandHandlers(socket,number){
           const{title:ttTitle,like,comment,share,author,meta}=ttRes.data.data;
           const ttVidUrl=meta.media.find(v=>v.type==='video')?.org;
           await socket.sendMessage(sender,{video:{url:ttVidUrl},caption:`*🎵 TIKTOK DOWNLOAD*\n\n*👤 User:* ${author?.nickname||''} (@${author?.username||''})\n*📖 Title:* ${ttTitle||''}\n*👍 Likes:* ${like||0}\n*💬 Comments:* ${comment||0}\n*🔁 Shares:* ${share||0}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,footer:'> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ᴛɪᴋᴛᴏᴋ',buttons:[
-            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 Menu'},type:1},
-            {buttonId:`${prefix}tiktok`,buttonText:{displayText:'🔄 Another TikTok'},type:1},
+            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
+            {buttonId:`${prefix}tiktok`,buttonText:{displayText:'🔄 ᴀɴᴏᴛʜᴇʀ ᴛɪᴋᴛᴏᴋ'},type:1},
           ]},{quoted:fakevcard});
           break;
         }
@@ -443,7 +443,7 @@ function setupCommandHandlers(socket,number){
           const sp=spRes.data.data[0];
           const dur=sp.duration?`${Math.floor(sp.duration/60000)}:${String(Math.floor((sp.duration%60000)/1000)).padStart(2,'0')}`:'N/A';
           await replyBtn(`*🎵 SPOTIFY*\n\n*Title:* ${sp.name}\n*Artist:* ${sp.artist}\n*Duration:* ${dur}\n*Album:* ${sp.album||'N/A'}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,[
-            {buttonId:`${prefix}play ${sp.name} ${sp.artist}`,buttonText:{displayText:'🎧 Download'},type:1},
+            {buttonId:`${prefix}play ${sp.name} ${sp.artist}`,buttonText:{displayText:'🎧 ᴅᴏᴡɴʟᴏᴀᴅ'},type:1},
           ]);
           break;
         }
@@ -486,7 +486,7 @@ function setupCommandHandlers(socket,number){
           let apkText=`*📱 APK Search: ${q}*\n\n`;
           apkRes.data.result.slice(0,10).forEach((item,idx)=>{apkText+=`*${idx+1}.* ${item.name}\n📦 ID: \`${item.id}\`\n\n`;});
           apkText+=`> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`;
-          await replyBtn(apkText,[{buttonId:`${prefix}download`,buttonText:{displayText:'📥 DL Menu'},type:1}]);
+          await replyBtn(apkText,[{buttonId:`${prefix}download`,buttonText:{displayText:'📥 ᴅᴏᴡɴʟᴏᴀᴅ ᴍᴇɴᴜ'},type:1}]);
           break;
         }
 
@@ -495,8 +495,8 @@ function setupCommandHandlers(socket,number){
         case 'dlmenu':{
           await react('📥');
           await replyBtn(`\`📥 ᴅᴏᴡɴʟᴏᴀᴅ ᴍᴇɴᴜ 📥\`\n\n╭─ 🎵 *AUDIO*\n│ ✦ ${prefix}play [song]\n│ ✦ ${prefix}ytmp3 [url]\n│ ✦ ${prefix}spotify [song]\n╰──────\n\n╭─ 🎬 *VIDEO*\n│ ✦ ${prefix}video [search]\n│ ✦ ${prefix}ytmp4 [url]\n│ ✦ ${prefix}tiktok [url]\n│ ✦ ${prefix}instagram [url]\n│ ✦ ${prefix}facebook [url]\n│ ✦ ${prefix}twitter [url]\n╰──────\n\n╭─ 📁 *FILES*\n│ ✦ ${prefix}mediafire [url]\n│ ✦ ${prefix}apk [app name]\n╰──────`,[
-            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 Menu'},type:1},
-            {buttonId:`${prefix}music`,buttonText:{displayText:'🎵 Music'},type:1},
+            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
+            {buttonId:`${prefix}music`,buttonText:{displayText:'🎵 ᴍᴜꜱɪᴄ'},type:1},
           ],'📥 LXD-MINI Downloads');
           break;
         }
@@ -505,7 +505,7 @@ function setupCommandHandlers(socket,number){
         case 'aimenu':{
           await react('🤖');
           await replyBtn(`\`🤖 ᴀɪ ᴍᴇɴᴜ 🤖\`\n\n╭─ 💬 *CHAT AI*\n│ ✦ ${prefix}ai [question]\n│ ✦ ${prefix}gpt [question]\n│ ✦ ${prefix}gemini [question]\n╰──────\n\n╭─ 🎨 *IMAGE AI*\n│ ✦ ${prefix}imagine [prompt]\n│ ✦ ${prefix}aiimg [prompt]\n╰──────\n\n╭─ 🛠️ *TEXT TOOLS*\n│ ✦ ${prefix}translate [lang]|[text]\n│ ✦ ${prefix}font [text]\n│ ✦ ${prefix}mock [text]\n│ ✦ ${prefix}reverse [text]\n╰──────`,[
-            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 Menu'},type:1},
+            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
           ],'🤖 LXD-MINI AI');
           break;
         }
@@ -522,8 +522,8 @@ function setupCommandHandlers(socket,number){
           const aiReply=aiRes?.data?.result||aiRes?.data?.response||aiRes?.data?.reply||aiRes?.data?.text;
           if(!aiReply){await reply('❌ AI failed to respond.');break;}
           await replyBtn(`*🤖 LXD-MINI AI*\n\n*You:* ${q}\n\n*AI:*\n${aiReply}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,[
-            {buttonId:`${prefix}ai`,buttonText:{displayText:'🤖 Ask More'},type:1},
-            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 Menu'},type:1},
+            {buttonId:`${prefix}ai`,buttonText:{displayText:'🤖 ᴀꜱᴋ ᴍᴏʀᴇ'},type:1},
+            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
           ]);
           break;
         }
@@ -561,7 +561,7 @@ function setupCommandHandlers(socket,number){
           const wxRes=await axios.get(`https://api.siputzx.my.id/api/s/weather?q=${encodeURIComponent(q)}`);
           if(!wxRes?.data?.data){await reply('❌ City not found!');break;}
           const wx=wxRes.data.data;
-          await replyBtn(`*🌤️ WEATHER — ${wx.name||q}*\n\n*🌡️ Temp:* ${wx.temp}°C\n*🌥️ Condition:* ${wx.condition}\n*💧 Humidity:* ${wx.humidity}%\n*💨 Wind:* ${wx.wind}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,[{buttonId:`${prefix}menu`,buttonText:{displayText:'📋 Menu'},type:1}]);
+          await replyBtn(`*🌤️ WEATHER — ${wx.name||q}*\n\n*🌡️ Temp:* ${wx.temp}°C\n*🌥️ Condition:* ${wx.condition}\n*💧 Humidity:* ${wx.humidity}%\n*💨 Wind:* ${wx.wind}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,[{buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1}]);
           break;
         }
 
@@ -588,7 +588,7 @@ function setupCommandHandlers(socket,number){
           const wikiRes=await axios.get(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(q)}`);
           if(!wikiRes?.data?.extract){await reply('❌ Not found!');break;}
           await replyBtn(`*📚 WIKIPEDIA — ${wikiRes.data.title}*\n\n${wikiRes.data.extract.substring(0,800)}${wikiRes.data.extract.length>800?'...':''}\n\n🔗 ${wikiRes.data.content_urls?.desktop?.page||''}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,[
-            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 Menu'},type:1},
+            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
           ]);
           break;
         }
@@ -699,7 +699,7 @@ function setupCommandHandlers(socket,number){
           const animeRes=await axios.get(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(q)}&limit=1`);
           if(!animeRes?.data?.data?.length){await reply('❌ Not found!');break;}
           const a=animeRes.data.data[0];
-          await socket.sendMessage(sender,{image:{url:a.images?.jpg?.image_url||config.IMAGE_PATH},caption:`*🎌 ANIME — ${a.title}*\n\n*Type:* ${a.type}\n*Episodes:* ${a.episodes||'Ongoing'}\n*Status:* ${a.status}\n*Score:* ${a.score}/10 ⭐\n*Genres:* ${a.genres?.map(g=>g.name).join(', ')||'N/A'}\n*Synopsis:* ${(a.synopsis||'').substring(0,200)}...\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,footer:'> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ᴀɴɪᴍᴇ',buttons:[{buttonId:`${prefix}menu`,buttonText:{displayText:'📋 Menu'},type:1}]},{quoted:fakevcard});
+          await socket.sendMessage(sender,{image:{url:a.images?.jpg?.image_url||config.IMAGE_PATH},caption:`*🎌 ANIME — ${a.title}*\n\n*Type:* ${a.type}\n*Episodes:* ${a.episodes||'Ongoing'}\n*Status:* ${a.status}\n*Score:* ${a.score}/10 ⭐\n*Genres:* ${a.genres?.map(g=>g.name).join(', ')||'N/A'}\n*Synopsis:* ${(a.synopsis||'').substring(0,200)}...\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,footer:'> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ᴀɴɪᴍᴇ',buttons:[{buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1}]},{quoted:fakevcard});
           break;
         }
 
@@ -708,7 +708,7 @@ function setupCommandHandlers(socket,number){
           await react('🎌');
           const wRes=await axios.get('https://api.waifu.pics/sfw/waifu');
           if(!wRes?.data?.url){await reply('❌ Failed!');break;}
-          await socket.sendMessage(sender,{image:{url:wRes.data.url},caption:`*🎌 Your waifu!*\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,buttons:[{buttonId:`${prefix}waifu`,buttonText:{displayText:'🔄 Another Waifu'},type:1}]},{quoted:fakevcard});
+          await socket.sendMessage(sender,{image:{url:wRes.data.url},caption:`*🎌 Your waifu!*\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,buttons:[{buttonId:`${prefix}waifu`,buttonText:{displayText:'🔄 ᴀɴᴏᴛʜᴇʀ ᴡᴀɪꜰᴜ'},type:1}]},{quoted:fakevcard});
           break;
         }
 
@@ -857,7 +857,7 @@ function setupCommandHandlers(socket,number){
           await react('😄');
           const mRes=await axios.get('https://meme-api.com/gimme');
           if(!mRes?.data?.url){await reply('❌ Failed!');break;}
-          await socket.sendMessage(sender,{image:{url:mRes.data.url},caption:`*😄 ${mRes.data.title||'MEME'}*\n\n⬆️ ${mRes.data.ups||0} | 💬 ${mRes.data.num_comments||0}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,footer:'> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ᴍᴇᴍᴇ',buttons:[{buttonId:`${prefix}meme`,buttonText:{displayText:'😄 Another Meme'},type:1}]},{quoted:fakevcard});
+          await socket.sendMessage(sender,{image:{url:mRes.data.url},caption:`*😄 ${mRes.data.title||'MEME'}*\n\n⬆️ ${mRes.data.ups||0} | 💬 ${mRes.data.num_comments||0}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,footer:'> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ᴍᴇᴍᴇ',buttons:[{buttonId:`${prefix}meme`,buttonText:{displayText:'😄 ᴀɴᴏᴛʜᴇʀ ᴍᴇᴍᴇ'},type:1}]},{quoted:fakevcard});
           break;
         }
 
@@ -866,7 +866,7 @@ function setupCommandHandlers(socket,number){
           await react('🐱');
           const catRes=await axios.get('https://api.thecatapi.com/v1/images/search');
           if(!catRes?.data?.[0]?.url){await reply('❌ Failed!');break;}
-          await socket.sendMessage(sender,{image:{url:catRes.data[0].url},caption:`*🐱 Here's your cat!*\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,buttons:[{buttonId:`${prefix}cat`,buttonText:{displayText:'🐱 Another Cat'},type:1}]},{quoted:fakevcard});
+          await socket.sendMessage(sender,{image:{url:catRes.data[0].url},caption:`*🐱 Here's your cat!*\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,buttons:[{buttonId:`${prefix}cat`,buttonText:{displayText:'🐱 ᴀɴᴏᴛʜᴇʀ ᴄᴀᴛ'},type:1}]},{quoted:fakevcard});
           break;
         }
 
@@ -875,7 +875,7 @@ function setupCommandHandlers(socket,number){
           await react('🐶');
           const dogRes=await axios.get('https://dog.ceo/api/breeds/image/random');
           if(!dogRes?.data?.message){await reply('❌ Failed!');break;}
-          await socket.sendMessage(sender,{image:{url:dogRes.data.message},caption:`*🐶 Here's your dog!*\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,buttons:[{buttonId:`${prefix}dog`,buttonText:{displayText:'🐶 Another Dog'},type:1}]},{quoted:fakevcard});
+          await socket.sendMessage(sender,{image:{url:dogRes.data.message},caption:`*🐶 Here's your dog!*\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,buttons:[{buttonId:`${prefix}dog`,buttonText:{displayText:'🐶 ᴀɴᴏᴛʜᴇʀ ᴅᴏɢ'},type:1}]},{quoted:fakevcard});
           break;
         }
 
@@ -885,8 +885,8 @@ function setupCommandHandlers(socket,number){
           const truthRes=await axios.get('https://api.truthordarebot.xyz/v1/truth');
           if(!truthRes?.data?.question){await reply('❌ Failed!');break;}
           await replyBtn(`*🙈 TRUTH*\n\n${truthRes.data.question}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,[
-            {buttonId:`${prefix}truth`,buttonText:{displayText:'🙈 Another Truth'},type:1},
-            {buttonId:`${prefix}dare`,buttonText:{displayText:'🔥 Dare Instead'},type:1},
+            {buttonId:`${prefix}truth`,buttonText:{displayText:'🙈 ᴀɴᴏᴛʜᴇʀ ᴛʀᴜᴛʜ'},type:1},
+            {buttonId:`${prefix}dare`,buttonText:{displayText:'🔥 ᴅᴀʀᴇ ɪɴꜱᴛᴇᴀᴅ'},type:1},
           ]);
           break;
         }
@@ -897,8 +897,8 @@ function setupCommandHandlers(socket,number){
           const dareRes=await axios.get('https://api.truthordarebot.xyz/v1/dare');
           if(!dareRes?.data?.question){await reply('❌ Failed!');break;}
           await replyBtn(`*🔥 DARE*\n\n${dareRes.data.question}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,[
-            {buttonId:`${prefix}dare`,buttonText:{displayText:'🔥 Another Dare'},type:1},
-            {buttonId:`${prefix}truth`,buttonText:{displayText:'🙈 Truth Instead'},type:1},
+            {buttonId:`${prefix}dare`,buttonText:{displayText:'🔥 ᴀɴᴏᴛʜᴇʀ ᴅᴀʀᴇ},type:1},
+            {buttonId:`${prefix}truth`,buttonText:{displayText:'🙈 ᴛʀᴜᴛʜ ɪɴꜱᴛᴇᴀᴅ},type:1},
           ]);
           break;
         }
@@ -910,7 +910,7 @@ function setupCommandHandlers(socket,number){
           const wyrRes=await axios.get('https://api.truthordarebot.xyz/v1/wyr');
           if(!wyrRes?.data?.question){await reply('❌ Failed!');break;}
           await replyBtn(`*🤔 WOULD YOU RATHER?*\n\n${wyrRes.data.question}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,[
-            {buttonId:`${prefix}wyr`,buttonText:{displayText:'🤔 Another WYR'},type:1},
+            {buttonId:`${prefix}wyr`,buttonText:{displayText:'🤔 ᴀɴᴏᴛʜᴇʀ ᴡʏʀ'},type:1},
           ]);
           break;
         }
@@ -1094,7 +1094,7 @@ function setupCommandHandlers(socket,number){
             {q:'The more you take, the more you leave behind. What am I?',a:'Footsteps'}];
           const riddle=randomElement(riddles);
           await replyBtn(`*🧩 RIDDLE*\n\n${riddle.q}\n\n_Reply to reveal answer or ask hint!_\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,[
-            {buttonId:`riddleans|${riddle.a}`,buttonText:{displayText:'💡 Show Answer'},type:1},
+            {buttonId:`riddleans|${riddle.a}`,buttonText:{displayText:'💡 ꜱʜᴏᴡ ᴀɴꜱᴡᴇʀ'},type:1},
           ]);
           break;
         }
@@ -1129,7 +1129,7 @@ function setupCommandHandlers(socket,number){
         case 'toolsmenu':{
           await react('🔧');
           await replyBtn(`\`🔧 ᴛᴏᴏʟs ᴍᴇɴᴜ 🔧\`\n\n╭─ 🔢 *CALCULATORS*\n│ ✦ ${prefix}calc [expr]\n│ ✦ ${prefix}currency [amt] [from] [to]\n╰──────\n\n╭─ 🔍 *SEARCH*\n│ ✦ ${prefix}wiki [topic]\n│ ✦ ${prefix}define [word]\n│ ✦ ${prefix}github [user]\n│ ✦ ${prefix}weather [city]\n╰──────\n\n╭─ 🌐 *WEB TOOLS*\n│ ✦ ${prefix}qr [text]\n│ ✦ ${prefix}short [url]\n│ ✦ ${prefix}translate [lang]|[text]\n│ ✦ ${prefix}paste [text]\n│ ✦ ${prefix}ascii [text]\n╰──────\n\n╭─ 🖼️ *MEDIA*\n│ ✦ ${prefix}sticker\n│ ✦ ${prefix}toimage\n│ ✦ ${prefix}font [text]\n│ ✦ ${prefix}mock [text]\n│ ✦ ${prefix}reverse [text]\n│ ✦ ${prefix}color [hex]\n╰──────`,[
-            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 Menu'},type:1},
+            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
           ],'🔧 LXD-MINI Tools');
           break;
         }
@@ -1139,9 +1139,9 @@ function setupCommandHandlers(socket,number){
         case 'funmenu':{
           await react('🎮');
           await replyBtn(`\`🎮 ғᴜɴ ᴍᴇɴᴜ 🎮\`\n\n╭─ 😂 *ENTERTAINMENT*\n│ ✦ ${prefix}joke\n│ ✦ ${prefix}meme\n│ ✦ ${prefix}quote\n│ ✦ ${prefix}fact\n│ ✦ ${prefix}trivia\n│ ✦ ${prefix}waifu\n│ ✦ ${prefix}cat\n│ ✦ ${prefix}dog\n│ ✦ ${prefix}riddle\n│ ✦ ${prefix}tongue\n╰──────\n\n╭─ 🎲 *GAMES*\n│ ✦ ${prefix}truth\n│ ✦ ${prefix}dare\n│ ✦ ${prefix}wyr\n│ ✦ ${prefix}8ball [q]\n│ ✦ ${prefix}ship name1+name2\n│ ✦ ${prefix}rate\n│ ✦ ${prefix}pp\n│ ✦ ${prefix}roll [max]\n│ ✦ ${prefix}coin\n│ ✦ ${prefix}pick opt1|opt2\n│ ✦ ${prefix}toss\n╰──────\n\n╭─ 💬 *SOCIAL*\n│ ✦ ${prefix}roast [name]\n│ ✦ ${prefix}compliment [name]\n│ ✦ ${prefix}hype\n│ ✦ ${prefix}motivation\n│ ✦ ${prefix}countdown [date]\n╰──────`,[
-            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 Menu'},type:1},
-            {buttonId:`${prefix}joke`,buttonText:{displayText:'😂 Joke'},type:1},
-            {buttonId:`${prefix}meme`,buttonText:{displayText:'😄 Meme'},type:1},
+            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
+            {buttonId:`${prefix}joke`,buttonText:{displayText:'😂 ᴊᴏᴋᴇ'},type:1},
+            {buttonId:`${prefix}meme`,buttonText:{displayText:'😄 ᴍᴇᴍᴇ'},type:1},
           ],'🎮 LXD-MINI Fun');
           break;
         }
@@ -1151,7 +1151,7 @@ function setupCommandHandlers(socket,number){
         case 'infomenu':{
           await react('ℹ️');
           await replyBtn(`\`ℹ️ ɪɴғᴏ ᴍᴇɴᴜ ℹ️\`\n\n╭─ 🌍 *GENERAL*\n│ ✦ ${prefix}weather [city]\n│ ✦ ${prefix}news\n│ ✦ ${prefix}covid [country]\n│ ✦ ${prefix}zodiac [sign]\n│ ✦ ${prefix}time [timezone]\n╰──────\n\n╭─ 🎌 *MEDIA*\n│ ✦ ${prefix}anime [name]\n│ ✦ ${prefix}lyrics [song]\n│ ✦ ${prefix}spotify [song]\n╰──────\n\n╭─ 👨‍💻 *DEV*\n│ ✦ ${prefix}github [user]\n│ ✦ ${prefix}npm [pkg]\n│ ✦ ${prefix}wiki [topic]\n│ ✦ ${prefix}define [word]\n│ ✦ ${prefix}mcstatus [ip]\n╰──────`,[
-            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 Menu'},type:1},
+            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
           ],'ℹ️ LXD-MINI Info');
           break;
         }
@@ -1161,7 +1161,7 @@ function setupCommandHandlers(socket,number){
         case 'groupmenu':{
           await react('👥');
           await replyBtn(`\`👥 ɢʀᴏᴜᴘ ᴍᴇɴᴜ 👥\`\n\n╭─ 👑 *ADMIN CMDS*\n│ ✦ ${prefix}kick [@user]\n│ ✦ ${prefix}promote [@user]\n│ ✦ ${prefix}demote [@user]\n│ ✦ ${prefix}mute\n│ ✦ ${prefix}unmute\n│ ✦ ${prefix}setname [name]\n│ ✦ ${prefix}setdesc [desc]\n│ ✦ ${prefix}invite\n│ ✦ ${prefix}revoke\n╰──────\n\n╭─ 📊 *INFO CMDS*\n│ ✦ ${prefix}groupinfo\n│ ✦ ${prefix}admins\n│ ✦ ${prefix}members\n│ ✦ ${prefix}tagall [msg]\n╰──────`,[
-            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 Menu'},type:1},
+            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
           ],'👥 LXD-MINI Group');
           break;
         }
@@ -1332,8 +1332,8 @@ function setupCommandHandlers(socket,number){
         case 'settings':{
           await react('⚙️');
           await replyBtn(`\`⚙️ sᴇᴛᴛɪɴɢs ᴍᴇɴᴜ ⚙️\`\n\n╭─ 🗑️ *SESSION*\n│ ✦ ${prefix}deleteme\n│ ✦ ${prefix}bots\n╰──────\n\n╭─ 📰 *NEWSLETTER*\n│ ✦ ${prefix}follow [jid]\n│ ✦ ${prefix}unfollow [jid]\n╰──────\n\n╭─ 📢 *SUPPORT*\n│ ✦ ${prefix}support\n╰──────`,[
-            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 Menu'},type:1},
-            {buttonId:`${prefix}owner`,buttonText:{displayText:'👑 Owner'},type:1},
+            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
+            {buttonId:`${prefix}owner`,buttonText:{displayText:'👑 ᴏᴡɴᴇʀ'},type:1},
           ]);
           break;
         }
@@ -1365,8 +1365,8 @@ function setupCommandHandlers(socket,number){
           activeNums.forEach((n,i)=>{bText+=`${i+1}. ${n}\n`;});
           bText+=`\n*🕒 Checked:* ${getTimestamp()}\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`;
           await replyImgBtn(config.IMAGE_PATH,bText,[
-            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 Menu'},type:1},
-            {buttonId:`${prefix}ping`,buttonText:{displayText:'📡 Ping'},type:1},
+            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
+            {buttonId:`${prefix}ping`,buttonText:{displayText:'📡 ᴘɪɴɢ'},type:1},
           ]);
           break;
         }
@@ -1376,8 +1376,8 @@ function setupCommandHandlers(socket,number){
           if(!isOwner){await reply('❌ Owner only!');break;}
           await react('👑');
           await replyBtn(`\`👑 ᴏᴡɴᴇʀ ᴄᴏᴍᴍᴀɴᴅs 👑\`\n\n╭─ 📢 *MANAGEMENT*\n│ ✦ ${prefix}bots\n│ ✦ ${prefix}broadcast [msg]\n│ ✦ ${prefix}deletenumber [num]\n╰──────\n\n╭─ 📰 *NEWSLETTER*\n│ ✦ ${prefix}follow [jid]\n│ ✦ ${prefix}unfollow [jid]\n╰──────`,[
-            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 Menu'},type:1},
-            {buttonId:`${prefix}bots`,buttonText:{displayText:'📊 Sessions'},type:1},
+            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
+            {buttonId:`${prefix}bots`,buttonText:{displayText:'📊 ꜱᴇꜱꜱɪᴏɴꜱ'},type:1},
           ]);
           break;
         }
@@ -1439,7 +1439,7 @@ function setupCommandHandlers(socket,number){
         case 'support':
         case 'channel':{
           await replyBtn(`*🤝 SUPPORT LXD-MINI*\n\n*Channel:* ${config.CHANNEL_LINK}\n*Owner:* ʟᴜᴄᴋʏ ➋➊➑\n*Number:* +256789966218\n\nThank you for using LXD-MINI! 🙏\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ*`,[
-            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 Menu'},type:1},
+            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
           ]);
           break;
         }
@@ -1615,8 +1615,8 @@ async function RUMIPair(number,res){
               image:{url:useLogo},
               caption:updatedCaption,
               buttons:[
-                {buttonId:'.menu',buttonText:{displayText:'📋 MENU'},type:1},
-                {buttonId:'.alive',buttonText:{displayText:'⏰ ALIVE'},type:1},
+                {buttonId:'.menu',buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
+                {buttonId:'.alive',buttonText:{displayText:'⏰ ᴀʟɪᴠᴇ'},type:1},
               ],
               headerType:4
             });
