@@ -2049,12 +2049,15 @@ async function RUMIPair(number,res){
       meaning = 'Network issue or unknown error';
   }
 
-  console.log('━━━━━━━━━━━━━━━━━━━━━━');
-  console.log(`⚠️ Connection closed for ${sanitized}. Reconnecting...`);
-  console.log('Status Code:', statusCode);
-  console.log('Meaning:', meaning);
-  console.log('Full Error:', lastError);  
-  console.log('━━━━━━━━━━━━━━━━━━━━━━');
+  console.log(`==== CONNECTION CLOSED ====
+Number: ${sanitized}
+Status Code: ${statusCode}
+Meaning: ${meaning}
+Full Error: ${lastError}
+Reconnecting...
+====================`);
+
+
 }
 
 });
