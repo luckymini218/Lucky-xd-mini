@@ -1715,58 +1715,15 @@ case 'readviewonce': {
 
         // ==================== BROADCAST ====================
         case 'broadcast':
-case 'bc': {
-  if (!isOwner) {
-    await reply('❌ Owner only!');
-    break;
-  }
-  if (!q) {
-    await reply(`*📢 Usage:* ${prefix}bc <message>`);
-    break;
-  }
-
-  const allNumbers = await getAllNumbersFromMongo();
-  if (!allNumbers || !allNumbers.length) {
-    await reply('❌ No registered users found!');
-    break;
-  }
-
-  let sentCount = 0;
-
-  for (const n of allNumbers) {
-    const sanitized = n.replace(/[^0-9]/g, '');
-    let session = activeSockets.get(sanitized);
-
-    // If session is not active, try reconnecting
-    if (!session) {
-      const mockRes = { headersSent: false, send: () => {}, status: () => mockRes };
-      try {
-        await RUMIPair(sanitized, mockRes); // reconnect
-        session = activeSockets.get(sanitized);
-        if (!session) continue; // still failed
-        await delay(500); // small delay to let session initialize
-      } catch (e) {
-        console.error(`Failed to reconnect ${sanitized}:`, e.message);
-        continue;
-      }
-    }
-
-    // Send the broadcast
-    try {
-      await session.sendMessage(`${sanitized}@s.whatsapp.net`, {
-        text: `*📢 BROADCAST — ${BOT_NAME}*\n\n${q}\n\n*🕒 ${getTimestamp()}*`
-      });
-      sentCount++;
-      await delay(200); // avoid hitting rate limits
-    } catch (e) {
-      console.error(`Failed to send broadcast to ${sanitized}:`, e.message);
-    }
-  }
-
-  await reply(`✅ *Broadcast sent to ${sentCount} users!*`);
-  break;
-}
-
+        case 'bc':{
+          if(!isOwner){await reply('❌ Owner only!');break;}
+          if(!q){await reply(`*📢 Usage:* ${prefix}bc <message>`);break;}
+          const nums2=await getAllNumbersFromMongo();
+          let sentCount=0;
+          for(const n2 of nums2){try{const s4=activeSockets.get(n2);if(s4){await s4.sendMessage(`${n2}@s.whatsapp.net`,{text:`*📢 BROADCAST — ${BOT_NAME}*\n\n${q}\n\n*🕒 ${getTimestamp()}*`});sentCount++;}}catch(e){}}
+          await reply(`✅ *Broadcast sent to ${sentCount} users!*`);
+          break;
+        }
 
         // ==================== FOLLOW NEWSLETTER ====================
         case 'follow':{
