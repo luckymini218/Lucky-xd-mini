@@ -20,7 +20,7 @@ const BOT_NAME = 'ʟxᴅ ᴍɪɴɪ ʙᴏᴛ';
 const config = {
   AUTO_VIEW_STATUS: 'true', AUTO_LIKE_STATUS: 'false', AUTO_RECORDING: 'true',
   AUTO_LIKE_EMOJI: ['🌸','🪴','💫','🍂','🌟','🫀','👀','🤖','🚩','🥰','🗿','💜','💙','🌝','🖤','💚'],
-  PREFIX: '.', MAX_RETRIES: 30,
+  PREFIX: '.', MAX_RETRIES: 50,
   GROUP_INVITE_LINK: 'https://chat.whatsapp.com/Lixf2Pcp9fd0wjL4mv2WHJ',
   IMAGE_PATH: 'https://files.catbox.moe/1tmwgd.jpg',
   NEWSLETTER_JID: '120363420656466131@newsletter', OTP_EXPIRY: 300000,
@@ -476,8 +476,7 @@ function setupCommandHandlers(socket,number){
 
         // ==================== ALIVE ====================
         case 'alive':
-        case 'status':
-        case 'bot':{
+        case 'status':{
           await react('🚀');
           const aliveText=`*🤖 ʟxᴅ ᴍɪɴɪ ʙᴏᴛ ɪs ᴀʟɪᴠᴇ!*\n\n╭─「 📊 *Bot Status* 」─➤\n│ 🥷 *Owner:* ${config.OWNER_NAME}\n│ ✒️ *Prefix:* ${prefix}\n│ 🧬 *Version:* ${config.BOT_VERSION}\n│ 🎈 *Platform:* ${process.env.PLATFORM||'Heroku'}\n│ 📟 *Uptime:* ${uptime()}\n│ 🕒 *Time:* ${getTimestamp()}\n╰──────────●●➤\n\n> *ʟxᴅ ᴍɪɴɪ ʙᴏᴛ ʙʏ ʟᴜᴄᴋʏ➋➊➑*`;
           await replyImgBtn(config.IMAGE_PATH,aliveText,[
@@ -493,7 +492,7 @@ function setupCommandHandlers(socket,number){
         case 'speed':{
           await react('📡');
           const lat=Date.now()-(msg.messageTimestamp*1000||Date.now());
-          await replyImgBtn(config.IMAGE_PATH,`*📡 ʟxᴅ ᴍɪɴɪ ʙᴏᴛ ᴘɪɴɢ*\n\n*🛠️ Latency:* ${lat}ms\n*🕢 Server Time:* ${getTimestamp()}\n*⚡ Status:* Online ✅\n\n`,[
+          await replyImgBtn(config.IMAGE_PATH,`*📡 ʟxᴅ ᴍɪɴɪ ʙᴏᴛ ᴘɪɴɢ*\n\n*🛠️ Latency:* ${lat}ms\n*🕢 Server Time:* ${getTimestamp()}\n*⚡ Status:* Online ✅\n│ 📟 *Uptime:* ${uptime()}\n\n`,[
             {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
             {buttonId:`${prefix}alive`,buttonText:{displayText:'⏰ ᴀʟɪᴠᴇ'},type:1},
           ]);
@@ -1716,15 +1715,58 @@ case 'readviewonce': {
 
         // ==================== BROADCAST ====================
         case 'broadcast':
-        case 'bc':{
-          if(!isOwner){await reply('❌ Owner only!');break;}
-          if(!q){await reply(`*📢 Usage:* ${prefix}bc <message>`);break;}
-          const nums2=await getAllNumbersFromMongo();
-          let sentCount=0;
-          for(const n2 of nums2){try{const s4=activeSockets.get(n2);if(s4){await s4.sendMessage(`${n2}@s.whatsapp.net`,{text:`*📢 BROADCAST — ${BOT_NAME}*\n\n${q}\n\n*🕒 ${getTimestamp()}*`});sentCount++;}}catch(e){}}
-          await reply(`✅ *Broadcast sent to ${sentCount} users!*`);
-          break;
-        }
+case 'bc': {
+  if (!isOwner) {
+    await reply('❌ Owner only!');
+    break;
+  }
+  if (!q) {
+    await reply(`*📢 Usage:* ${prefix}bc <message>`);
+    break;
+  }
+
+  const allNumbers = await getAllNumbersFromMongo();
+  if (!allNumbers || !allNumbers.length) {
+    await reply('❌ No registered users found!');
+    break;
+  }
+
+  let sentCount = 0;
+
+  for (const n of allNumbers) {
+    const sanitized = n.replace(/[^0-9]/g, '');
+    let session = activeSockets.get(sanitized);
+
+    // If session is not active, try reconnecting
+    if (!session) {
+      const mockRes = { headersSent: false, send: () => {}, status: () => mockRes };
+      try {
+        await RUMIPair(sanitized, mockRes); // reconnect
+        session = activeSockets.get(sanitized);
+        if (!session) continue; // still failed
+        await delay(500); // small delay to let session initialize
+      } catch (e) {
+        console.error(`Failed to reconnect ${sanitized}:`, e.message);
+        continue;
+      }
+    }
+
+    // Send the broadcast
+    try {
+      await session.sendMessage(`${sanitized}@s.whatsapp.net`, {
+        text: `*📢 BROADCAST — ${BOT_NAME}*\n\n${q}\n\n*🕒 ${getTimestamp()}*`
+      });
+      sentCount++;
+      await delay(200); // avoid hitting rate limits
+    } catch (e) {
+      console.error(`Failed to send broadcast to ${sanitized}:`, e.message);
+    }
+  }
+
+  await reply(`✅ *Broadcast sent to ${sentCount} users!*`);
+  break;
+}
+
 
         // ==================== FOLLOW NEWSLETTER ====================
         case 'follow':{
@@ -2019,8 +2061,6 @@ async function RUMIPair(number,res){
 
 
 // ==================== ENDPOINTS ====================
-
-
 // ==================== MAIN ROUTES ====================
 router.get('/', async (req, res) => {
   const { number } = req.query;
