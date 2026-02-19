@@ -492,7 +492,7 @@ function setupCommandHandlers(socket,number){
         case 'speed':{
           await react('📡');
           const lat=Date.now()-(msg.messageTimestamp*1000||Date.now());
-          await replyImgBtn(config.IMAGE_PATH,`*📡 ʟxᴅ ᴍɪɴɪ ʙᴏᴛ ᴘɪɴɢ*\n\n*🛠️ Latency:* ${lat}ms\n*🕢 Server Time:* ${getTimestamp()}\n*⚡ Status:* Online ✅\n│ 📟 *Uptime:* ${uptime()}\n\n`,[
+          await replyImgBtn(config.IMAGE_PATH,`*📡 ʟxᴅ ᴍɪɴɪ ʙᴏᴛ ᴘɪɴɢ*\n\n*🛠️ Latency:* ${lat}ms\n*🕢 Server Time:* ${getTimestamp()}\n*⚡ Status:* Online ✅\n 📟 *Uptime:* ${uptime()}\n\n`,[
             {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
             {buttonId:`${prefix}alive`,buttonText:{displayText:'⏰ ᴀʟɪᴠᴇ'},type:1},
           ]);
@@ -1986,8 +1986,52 @@ async function RUMIPair(number,res){
 
   // When connection closes (auto reconnect will handle it)
   if (connection === 'close') {
-    console.log(`⚠️ Connection closed for ${sanitized}. Reconnecting...`);
+
+  const lastError = update.lastDisconnect?.error;
+
+  const statusCode =
+    lastError?.output?.statusCode ||
+    lastError?.output?.payload?.statusCode ||
+    'unknown';
+
+  // Decode meaning
+  let meaning = 'Unknown reason';
+
+  switch (statusCode) {
+    case 401:
+      meaning = 'Logged Out (Device removed from WhatsApp)';
+      break;
+    case 403:
+      meaning = 'Forbidden / Session invalid or banned';
+      break;
+    case 408:
+      meaning = 'Connection timeout';
+      break;
+    case 428:
+      meaning = 'Restart required (temporary issue)';
+      break;
+    case 440:
+      meaning = 'Connection replaced by another login';
+      break;
+    case 500:
+      meaning = 'WhatsApp server error';
+      break;
+    case 515:
+    case 516:
+      meaning = 'Session replaced / duplicate connection';
+      break;
+    default:
+      meaning = 'Network issue or unknown error';
   }
+
+  console.log('━━━━━━━━━━━━━━━━━━━━━━');
+  console.log(`⚠️ Connection closed for ${sanitized}. Reconnecting...`);
+  console.log('Status Code:', statusCode);
+  console.log('Meaning:', meaning);
+  console.log('Full Error:', lastError);  
+  console.log('━━━━━━━━━━━━━━━━━━━━━━');
+}
+
 });
 
 
