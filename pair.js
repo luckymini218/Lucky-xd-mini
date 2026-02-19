@@ -35,7 +35,8 @@ const config = {
 // ==================== MONGO ====================
 
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://malvintech11_db_user:0SBgxRy7WsQZ1KTq@cluster0.xqgaovj.mongodb.net/?appName=Cluster0';
+//const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://malvintech11_db_user:0SBgxRy7WsQZ1KTq@cluster0.xqgaovj.mongodb.net/?appName=Cluster0';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://tomilucky218_db_user:NWr9ayuCflFOdxC1@cluster0.lqeqm4v.mongodb.net/?appName=Cluster0';
 const MONGO_DB = process.env.MONGO_DB || 'Lxd_mini';
 
 let mongoClient, mongoDB;
