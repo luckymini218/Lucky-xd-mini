@@ -459,47 +459,18 @@ function setupCommandHandlers(socket,number){
 │ ➓ 📢 *ꜱᴜᴘᴘᴏʀᴛ* 
 ╰═✪═════════════✪═╯`;
 
-          function chunkArray(arr, size) {
-  const chunks = [];
-  for (let i = 0; i < arr.length; i += size) {
-    chunks.push(arr.slice(i, i + size));
-  }
-  return chunks;
-}
-
-// All buttons
-const menuButtons = [
-  { buttonId: `${prefix}music`, buttonText: { displayText: '🎵 ᴍᴜꜱɪᴄ' }, type: 1 },
-  { buttonId: `${prefix}download`, buttonText: { displayText: '📥 ᴅᴏᴡɴʟᴏᴀᴅ' }, type: 1 },
-  { buttonId: `${prefix}aimenu`, buttonText: { displayText: '🤖 ᴀɪ' }, type: 1 },
-
-  { buttonId: `${prefix}fun`, buttonText: { displayText: '🎮 ꜰᴜɴ' }, type: 1 },
-  { buttonId: `${prefix}tools`, buttonText: { displayText: '🔧 ᴛᴏᴏʟꜱ' }, type: 1 },
-  { buttonId: `${prefix}info`, buttonText: { displayText: 'ℹ️ ɪɴꜰᴏ & ꜱᴇᴀʀᴄʜ' }, type: 1 },
-
-  { buttonId: `${prefix}group`, buttonText: { displayText: '👥 ɢʀᴏᴜᴘ ᴛᴏᴏʟꜱ' }, type: 1 },
-  { buttonId: `${prefix}settings`, buttonText: { displayText: '⚙️ ꜱᴇᴛᴛɪɴɢꜱ' }, type: 1 },
-  { buttonId: `${prefix}owner`, buttonText: { displayText: '👑 ᴏᴡɴᴇʀ ɪɴꜰᴏ' }, type: 1 },
-
-  { buttonId: `${prefix}support`, buttonText: { displayText: '📢 ꜱᴜᴘᴘᴏʀᴛ' }, type: 1 },
-];
-
-// Split into rows of 3
-const buttonRows = chunkArray(menuButtons, 3);
-
-for (let i = 0; i < buttonRows.length; i++) {
-  const buttons = buttonRows[i];
-  const caption = i === 0 ? menuText : '> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ʟᴜᴄᴋʏ➋➊➑';
-  
-  await socket.sendMessage(sender, {
-    image: { url: config.IMAGE_PATH },
-    caption: caption,
-    footer: '> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ʟᴜᴄᴋʏ➋➊➑',
-    buttons: buttons,
-    headerType: 4
-  }, { quoted: fakevcard });
-}
-
+          await socket.sendMessage(sender,{image:{url:config.IMAGE_PATH},caption:menuText,footer:'> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ʟᴜᴄᴋʏ➋➊➑',buttons:[
+            {buttonId:`${prefix}music`,buttonText:{displayText:'🎵 ᴍᴜꜱɪᴄ'},type:1},
+            {buttonId:`${prefix}download`,buttonText:{displayText:'📥 ᴅᴏᴡɴʟᴏᴀᴅ'},type:1},
+            {buttonId:`${prefix}aimenu`,buttonText:{displayText:'🤖 ᴀɪ'},type:1},
+            {buttonId:`${prefix}fun`,buttonText:{displayText:'🎮 ꜰᴜɴ'},type:1},
+            {buttonId:`${prefix}tools`,buttonText:{displayText:'🔧 ᴛᴏᴏʟꜱ'},type:1},
+            {buttonId:`${prefix}info`,buttonText:{displayText:'ℹ️ ɪɴꜰᴏ & ꜱᴇᴀʀᴄʜ'},type:1},
+            {buttonId:`${prefix}group`,buttonText:{displayText:'👥 ɢʀᴏᴜᴘ ᴛᴏᴏʟꜱ'},type:1},
+            {buttonId:`${prefix}settings`,buttonText:{displayText:'⚙️ ꜱᴇᴛᴛɪɴɢꜱ'},type:1},
+            {buttonId:`${prefix}owner`,buttonText:{displayText:'👑 ᴏᴡɴᴇʀ ɪɴꜰᴏ'},type:1},
+            {buttonId:`${prefix}support`,buttonText:{displayText:'📢 ꜱᴜᴘᴘᴏʀᴛ'},type:1},
+          ],headerType:4},{quoted:fakevcard});
           break;
         }
 
