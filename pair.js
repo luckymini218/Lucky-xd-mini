@@ -1913,14 +1913,39 @@ async function RUMIPair(number,res){
       if(!res.headersSent)res.send({code});
     }
 
-    socket.ev.on('creds.update',async()=>{
-      try{
-        await saveCreds();
-        const fileContent=await fs.readFile(path.join(sessionPath,'creds.json'),'utf8');
-        const credsObj=JSON.parse(fileContent);
-        await saveCredsToMongo(sanitized,credsObj,state.keys||null);
-      }catch(err){console.error('Failed saving creds:',err);}
-    });
+    socket.ev.on('creds.update', async () => {
+  try {
+    await saveCreds();
+
+    const credsPath = path.join(sessionPath, 'creds.json');
+    let fileContent = '';
+
+    // Read the file safely
+    try {
+      fileContent = await fs.readFile(credsPath, 'utf8');
+    } catch (e) {
+      console.warn(`⚠️ Could not read creds.json for ${sanitized}:`, e.message);
+    }
+
+    let credsObj = {};
+    if (fileContent && fileContent.trim() !== '') {
+      try {
+        credsObj = JSON.parse(fileContent);
+      } catch (e) {
+        console.warn(`⚠️ Invalid creds JSON for ${sanitized}, skipping save to Mongo.`);
+        credsObj = {};
+      }
+    } else {
+      console.warn(`⚠️ Empty creds.json for ${sanitized}, skipping save to Mongo.`);
+    }
+
+    await saveCredsToMongo(sanitized, credsObj, state.keys || null);
+
+  } catch (err) {
+    console.error('Failed saving creds:', err);
+  }
+});
+
 
     socket.ev.on('connection.update', async (update) => {
   const { connection, lastDisconnect } = update;
