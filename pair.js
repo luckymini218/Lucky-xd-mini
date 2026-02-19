@@ -395,54 +395,48 @@ async function handleMessageRevocation(socket) {
 
 // ==================== COMMAND HANDLER ====================
 function setupCommandHandlers(socket, number) {
+  socket.ev.on('messages.upsert', async ({ messages, type }) => {
+    if (type !== 'notify') return;
 
-  socket.ev.on('messages.upsert', async (m) => {
-
-    if (m.type !== 'notify') return;
-
-    const msg = m.messages[0];
+    const msg = messages[0];
     if (!msg || !msg.message) return;
-    if (msg.key.remoteJid === 'status@broadcast') return;
+    if (msg.key && msg.key.remoteJid === 'status@broadcast') return;
 
+    // Properly unwrap ephemeral messages
     let message = msg.message;
-
-    // unwrap ephemeral properly
-    if (message?.ephemeralMessage) {
+    if (message.ephemeralMessage) {
       message = message.ephemeralMessage.message;
     }
-
-    const type = getContentType(message);
 
     const from = msg.key.remoteJid;
     const sender = from;
 
+    const isGroup = from.endsWith('@g.us');
+
     const senderJid = msg.key.participant || msg.key.remoteJid;
-    const senderNumber = senderJid.split('@')[0];
+    const senderNumber = (senderJid || '').split('@')[0];
 
     const isOwner =
-      senderNumber === config.OWNER_NUMBER.replace(/[^0-9]/g,'');
+      senderNumber === config.OWNER_NUMBER.replace(/[^0-9]/g, '');
 
-    const isGroup = from.endsWith('@g.us');
+    // Get message type AFTER unwrapping
+    const msgType = getContentType(message);
 
     let body = '';
 
-    if (type === 'conversation') {
+    if (msgType === 'conversation') {
       body = message.conversation;
-    } 
-    else if (type === 'extendedTextMessage') {
+    } else if (msgType === 'extendedTextMessage') {
       body = message.extendedTextMessage?.text;
-    }
-    else if (type === 'imageMessage') {
+    } else if (msgType === 'imageMessage') {
       body = message.imageMessage?.caption;
-    }
-    else if (type === 'videoMessage') {
+    } else if (msgType === 'videoMessage') {
       body = message.videoMessage?.caption;
-    }
-    else if (type === 'buttonsResponseMessage') {
+    } else if (msgType === 'buttonsResponseMessage') {
       body = message.buttonsResponseMessage?.selectedButtonId;
-    }
-    else if (type === 'listResponseMessage') {
-      body = message.listResponseMessage?.singleSelectReply?.selectedRowId;
+    } else if (msgType === 'listResponseMessage') {
+      body =
+        message.listResponseMessage?.singleSelectReply?.selectedRowId;
     }
 
     if (!body || typeof body !== 'string') return;
@@ -450,25 +444,40 @@ function setupCommandHandlers(socket, number) {
     const prefix = config.PREFIX || '.';
     if (!body.startsWith(prefix)) return;
 
-    const command = body.slice(prefix.length).trim().split(/\s+/)[0].toLowerCase();
+    const command = body
+      .slice(prefix.length)
+      .trim()
+      .split(/\s+/)[0]
+      .toLowerCase();
+
     const args = body.trim().split(/\s+/).slice(1);
     const q = args.join(' ').trim();
 
-    async function reply(text){
-      await socket.sendMessage(sender,{text},{quoted:msg});
+    async function reply(text) {
+      await socket.sendMessage(sender, { text }, { quoted: msg });
     }
 
-  
+    async function react(emoji) {
+      try {
+        await socket.sendMessage(sender, {
+          react: { text: emoji, key: msg.key }
+        });
+      } catch {}
+    }
 
-       
+    function uptime() {
+      const start =
+        socketCreationTime.get(number) || Date.now();
+      const u = Math.floor((Date.now() - start) / 1000);
+      return `${Math.floor(u / 3600)}h ${Math.floor(
+        (u % 3600) / 60
+      )}m ${u % 60}s`;
+    }
+
+
 
     try{
       switch(command){
-      
-      
-      case 'hi':
-          await reply('🏓 hello!');
-          break;
 
         // ==================== MENU ====================
         case 'menu':
