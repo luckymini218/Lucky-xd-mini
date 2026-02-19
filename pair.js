@@ -2064,12 +2064,7 @@ async function RUMIPair(number,res){
 
 
 // ==================== ENDPOINTS ====================
-const express = require('express');
-const router = express.Router();
-const path = require('path');
-const fs = require('fs-extra');
-const os = require('os');
-const { exec } = require('child_process');
+
 
 // ==================== MAIN ROUTES ====================
 router.get('/', async (req, res) => {
