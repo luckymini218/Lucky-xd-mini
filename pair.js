@@ -360,90 +360,30 @@ case 'readviewonce': {
 
         // ==================== PLAY ====================
         case 'play':
-case 'song':
-case 'mp3': {
-  try {
-
-    await react('🎵')
-    const yts = require('yt-search')
-
-    if (!q) {
-      await replyBtn(
-        `*🎵 Usage:* ${prefix}play <song name or YouTube URL>`,
-        [{ buttonId: `${prefix}music`, buttonText: { displayText: '🎵 ᴍᴜꜱɪᴄ ᴍᴇɴᴜ' }, type: 1 }]
-      )
-      break
-    }
-
-    await reply('*⏳ Searching...*')
-
-    const search = await yts(q).catch(() => null)
-    if (!search?.videos?.length) {
-      await reply('❌ No results found!')
-      break
-    }
-
-    const vid = search.videos[0]
-
-    let apiRes
-    try {
-      apiRes = await axios.get(
-        `https://api.yupra.my.id/api/downloader/ytmp3?url=${encodeURIComponent(vid.url)}`,
-        { timeout: 60000 }
-      )
-    } catch (apiErr) {
-      console.log("YTMP3 API ERROR:", apiErr.message)
-      await reply('❌ Audio server unavailable. Try again later.')
-      break
-    }
-
-    const dlUrl = apiRes?.data?.result?.download
-    if (!dlUrl) {
-      await reply('❌ Failed to get download link!')
-      break
-    }
-
-    const songTitle = apiRes?.data?.result?.title || vid.title
-
-    await socket.sendMessage(
-      sender,
-      {
-        image: { url: vid.thumbnail || config.IMAGE_PATH },
-        caption:
-`*🎧 SONG FOUND!*
-
-*🎵 Title:* ${songTitle}
-*⏱ Duration:* ${vid.timestamp}
-*👀 Views:* ${(vid.views || 0).toLocaleString()}
-*📅 Uploaded:* ${vid.ago || 'N/A'}
-
-*👇 Choose your format:*`,
-        footer: '> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ᴍᴜsɪᴄ',
-        buttons: [
-          {
-            buttonId: `play_audio|${dlUrl}|${songTitle}`,
-            buttonText: { displayText: '🎧 ꜱᴇɴᴅ ᴀꜱ ᴀᴜᴅɪᴏ' },
-            type: 1
-          },
-          {
-            buttonId: `play_doc|${dlUrl}|${songTitle}`,
-            buttonText: { displayText: '📄 ꜱᴇɴᴅ ᴀꜱ ᴅᴏᴄᴜᴍᴇɴᴛ' },
-            type: 1
-          }
-        ],
-        headerType: 4
-      },
-      { quoted: fakevcard }
-    )
-
-  } catch (err) {
-    console.log("PLAY COMMAND ERROR:", err.message)
-    await reply('❌ Failed to process request.')
-  }
-
-  break
-}
-
+        case 'song':
+        case 'mp3':{
+          await react('🎵');
+          const yts=require('yt-search');
+          if(!q){await replyBtn(`*🎵 Usage:* ${prefix}play <song name or YouTube URL>`,[{buttonId:`${prefix}music`,buttonText:{displayText:'🎵 ᴍᴜꜱɪᴄ ᴍᴇɴᴜ'},type:1}]);break;}
+          await reply('*⏳ Searching...*');
+          const search=await yts(q);
+          if(!search?.videos?.length){await reply('❌ No results found!');break;}
+          const vid=search.videos[0];
+          const apiRes=await axios.get(`https://api.yupra.my.id/api/downloader/ytmp3?url=${encodeURIComponent(vid.url)}`,{timeout:60000});
+          if(!apiRes?.data?.result?.download){await reply('❌ API failed! Try again.');break;}
+          const dlUrl=apiRes.data.result.download;
+          const songTitle=apiRes.data.result.title||vid.title;
+          await socket.sendMessage(sender,{
+            image:{url:vid.thumbnail},
+            caption:`*🎧 SONG FOUND!*\n\n*🎵 Title:* ${songTitle}\n*⏱ Duration:* ${vid.timestamp}\n*👀 Views:* ${(vid.views||0).toLocaleString()}\n*📅 Uploaded:* ${vid.ago||'N/A'}\n\n*👇 Choose your format:*`,
+            footer:'> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ᴍᴜsɪᴄ',
+            buttons:[
+              {buttonId:`play_audio|${dlUrl}|${songTitle}`,buttonText:{displayText:'🎧 ꜱᴇɴᴅ ᴀꜱ ᴀᴜᴅɪᴏ'},type:1},
+              {buttonId:`play_doc|${dlUrl}|${songTitle}`,buttonText:{displayText:'📄 ꜱᴇɴᴅ ᴀꜱ ᴅᴏᴄᴜᴍᴇɴᴛ'},type:1},
+            ],headerType:4
+          },{quoted:fakevcard});
+          break;
+        }
 
         // ==================== PLAY BUTTON CALLBACKS ====================
         case 'play_audio':
@@ -462,171 +402,45 @@ case 'mp3': {
 
         // ==================== YOUTUBE MP3 ====================
         case 'ytmp3':
-case 'ytaudio': {
-  try {
-
-    await react('🎵')
-
-    if (!q) {
-      await reply(`*🎵 Usage:* ${prefix}ytmp3 <YouTube URL>`)
-      break
-    }
-
-    await reply('*⏳ Downloading audio...*')
-
-    let r3
-    try {
-      r3 = await axios.get(
-        `https://api.yupra.my.id/api/downloader/ytmp3?url=${encodeURIComponent(q)}`,
-        { timeout: 60000 }
-      )
-    } catch (apiErr) {
-      console.log("YTMP3 API ERROR:", apiErr.message)
-      await reply('❌ Audio server unavailable. Try again later.')
-      break
-    }
-
-    const downloadUrl = r3?.data?.result?.download
-    if (!downloadUrl) {
-      await reply('❌ Download failed!')
-      break
-    }
-
-    const title = r3?.data?.result?.title || 'Audio'
-
-    await socket.sendMessage(
-      sender,
-      {
-        audio: { url: downloadUrl },
-        mimetype: 'audio/mpeg',
-        ptt: false
-      },
-      { quoted: fakevcard }
-    )
-
-    await replyBtn(
-      `✅ *${title} sent!* 🎶\n\n`,
-      [{
-        buttonId: `${prefix}menu`,
-        buttonText: { displayText: '📋 ᴍᴇɴᴜ' },
-        type: 1
-      }]
-    )
-
-  } catch (err) {
-    console.log("YTMP3 COMMAND ERROR:", err.message)
-    await reply('❌ Failed to process request.')
-  }
-
-  break
-}
-
+        case 'ytaudio':{
+          await react('🎵');
+          if(!q){await reply(`*🎵 Usage:* ${prefix}ytmp3 <YouTube URL>`);break;}
+          await reply('*⏳ Downloading audio...*');
+          const r3=await axios.get(`https://api.yupra.my.id/api/downloader/ytmp3?url=${encodeURIComponent(q)}`,{timeout:60000});
+          if(!r3?.data?.result?.download){await reply('❌ Download failed!');break;}
+          await socket.sendMessage(sender,{audio:{url:r3.data.result.download},mimetype:'audio/mpeg',ptt:false},{quoted:fakevcard});
+          await replyBtn(`✅ *${r3.data.result.title||'Audio'} sent!*\n\n`,[{buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1}]);
+          break;
+        }
 
         // ==================== VIDEO ====================
         case 'video':
-case 'ytmp4':
-case 'ytvideo': {
-  try {
-
-    await react('🎬')
-    const yts2 = require('yt-search')
-
-    if (!q) {
-      await reply(`*🎬 Usage:* ${prefix}video <title or YouTube URL>`)
-      break
-    }
-
-    await reply('*⏳ Searching & downloading...*')
-
-    let vidUrl, vidTitle, vidThumb, vidDur
-
-    // If direct YouTube URL
-    if (q.includes('youtube.com') || q.includes('youtu.be')) {
-
-      let r4
-      try {
-        r4 = await axios.get(
-          `https://api.yupra.my.id/api/downloader/ytmp4?url=${encodeURIComponent(q)}`,
-          { timeout: 60000 }
-        )
-      } catch (apiErr) {
-        console.log("YTMP4 API ERROR:", apiErr.message)
-        await reply('❌ Video server unavailable. Try again later.')
-        break
-      }
-
-      vidUrl   = r4?.data?.result?.download
-      vidTitle = r4?.data?.result?.title || 'Video'
-      vidThumb = r4?.data?.result?.thumbnail || config.IMAGE_PATH
-      vidDur   = r4?.data?.result?.duration || ''
-
-    } else {
-
-      // Search YouTube
-      const s2 = await yts2(q).catch(() => null)
-      if (!s2?.videos?.length) {
-        await reply('❌ No results found!')
-        break
-      }
-
-      const v2 = s2.videos[0]
-
-      let r4
-      try {
-        r4 = await axios.get(
-          `https://api.yupra.my.id/api/downloader/ytmp4?url=${encodeURIComponent(v2.url)}`,
-          { timeout: 60000 }
-        )
-      } catch (apiErr) {
-        console.log("YTMP4 API ERROR:", apiErr.message)
-        await reply('❌ Video server unavailable. Try again later.')
-        break
-      }
-
-      vidUrl   = r4?.data?.result?.download
-      vidTitle = r4?.data?.result?.title || v2.title
-      vidThumb = v2.thumbnail || config.IMAGE_PATH
-      vidDur   = v2.timestamp || ''
-    }
-
-    if (!vidUrl) {
-      await reply('❌ Failed to fetch video!')
-      break
-    }
-
-    await socket.sendMessage(
-      sender,
-      {
-        video: { url: vidUrl },
-        caption:
-`*🎬 ${vidTitle}*
-*⏱ Duration:* ${vidDur}
-`,
-        footer: '> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ᴠɪᴅᴇᴏ',
-        buttons: [
-          {
-            buttonId: `${prefix}menu`,
-            buttonText: { displayText: '📋 ᴍᴇɴᴜ' },
-            type: 1
-          },
-          {
-            buttonId: `${prefix}video`,
-            buttonText: { displayText: '🔄 ᴀɴᴏᴛʜᴇʀ' },
-            type: 1
+        case 'ytmp4':
+        case 'ytvideo':{
+          await react('🎬');
+          const yts2=require('yt-search');
+          if(!q){await reply(`*🎬 Usage:* ${prefix}video <title or YouTube URL>`);break;}
+          await reply('*⏳ Searching & downloading...*');
+          let vidUrl,vidTitle,vidThumb,vidDur;
+          if(q.includes('youtube.com')||q.includes('youtu.be')){
+            const r4=await axios.get(`https://api.yupra.my.id/api/downloader/ytmp4?url=${encodeURIComponent(q)}`,{timeout:60000});
+            vidUrl=r4?.data?.result?.download; vidTitle=r4?.data?.result?.title||'Video';
+            vidThumb=r4?.data?.result?.thumbnail||config.IMAGE_PATH; vidDur=r4?.data?.result?.duration||'';
+          }else{
+            const s2=await yts2(q);
+            if(!s2?.videos?.length){await reply('❌ No results found!');break;}
+            const v2=s2.videos[0];
+            const r4=await axios.get(`https://api.yupra.my.id/api/downloader/ytmp4?url=${encodeURIComponent(v2.url)}`,{timeout:60000});
+            vidUrl=r4?.data?.result?.download; vidTitle=r4?.data?.result?.title||v2.title;
+            vidThumb=v2.thumbnail||config.IMAGE_PATH; vidDur=v2.timestamp||'';
           }
-        ]
-      },
-      { quoted: fakevcard }
-    )
-
-  } catch (err) {
-    console.log("VIDEO COMMAND ERROR:", err.message)
-    await reply('❌ Failed to process request.')
-  }
-
-  break
-}
-
+          if(!vidUrl){await reply('❌ Failed to fetch video!');break;}
+          await socket.sendMessage(sender,{video:{url:vidUrl},caption:`*🎬 ${vidTitle}*\n*⏱ Duration:* ${vidDur}\n\n`,footer:'> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ᴠɪᴅᴇᴏ',buttons:[
+            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
+            {buttonId:`${prefix}video`,buttonText:{displayText:'🔄 ᴀɴᴏᴛʜᴇʀ'},type:1},
+          ]},{quoted:fakevcard});
+          break;
+        }
 
         // ==================== YOUTUBE SEARCH ====================
         case 'yts':
@@ -646,425 +460,121 @@ case 'ytvideo': {
 
         // ==================== TIKTOK ====================
         case 'tiktok':
-case 'tt':
-case 'ttdl': {
-  try {
-    await react('🎵')
-
-    if (!q || !q.includes('tiktok.com')) {
-      await replyBtn(
-        `*🚫 Provide a valid TikTok URL!*\n\nUsage: ${prefix}tiktok <url>`,
-        [{ buttonId: `${prefix}download`, buttonText: { displayText: '📥 ᴅᴏᴡɴʟᴏᴀᴅ ᴍᴇɴᴜ' }, type: 1 }]
-      )
-      break
-    }
-
-    await reply('*⏳ Downloading TikTok...*')
-
-    let ttRes
-    try {
-      ttRes = await axios.get(
-        `https://delirius-apiofc.vercel.app/download/tiktok?url=${encodeURIComponent(q)}`,
-        { timeout: 60000 }
-      )
-    } catch (e) {
-      console.log("TIKTOK API ERROR:", e.message)
-      await reply('❌ TikTok server unavailable.')
-      break
-    }
-
-    if (!ttRes?.data?.status || !ttRes?.data?.data) {
-      await reply('❌ Failed to download TikTok!')
-      break
-    }
-
-    const { title, like, comment, share, author, meta } = ttRes.data.data
-
-    const ttVidUrl = meta?.media?.find(v => v.type === 'video')?.org
-
-    if (!ttVidUrl) {
-      await reply('❌ Video not found!')
-      break
-    }
-
-    await socket.sendMessage(sender, {
-      video: { url: ttVidUrl },
-      caption:
-`*🎵 TIKTOK DOWNLOAD*
-
-*👤 User:* ${author?.nickname || ''} (@${author?.username || ''})
-*📖 Title:* ${title || ''}
-*👍 Likes:* ${like || 0}
-*💬 Comments:* ${comment || 0}
-*🔁 Shares:* ${share || 0}
-`,
-      footer: '> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ᴛɪᴋᴛᴏᴋ'
-    }, { quoted: fakevcard })
-
-  } catch (err) {
-    console.log("TIKTOK CMD ERROR:", err.message)
-    await reply('❌ Something went wrong.')
-  }
-  break
-}
-
+        case 'tt':
+        case 'ttdl':{
+          await react('🎵');
+          if(!q||!q.includes('tiktok.com')){await replyBtn(`*🚫 Provide a valid TikTok URL!*\n\nUsage: ${prefix}tiktok <url>`,[{buttonId:`${prefix}download`,buttonText:{displayText:'📥 ᴅᴏᴡɴʟᴏᴀᴅ ᴍᴇɴᴜ'},type:1}]);break;}
+          await reply('*⏳ Downloading TikTok...*');
+          const ttRes=await axios.get(`https://delirius-apiofc.vercel.app/download/tiktok?url=${encodeURIComponent(q)}`);
+          if(!ttRes?.data?.status||!ttRes?.data?.data){await reply('❌ Failed to download TikTok!');break;}
+          const{title:ttTitle,like,comment,share,author,meta}=ttRes.data.data;
+          const ttVidUrl=meta.media.find(v=>v.type==='video')?.org;
+          await socket.sendMessage(sender,{video:{url:ttVidUrl},caption:`*🎵 TIKTOK DOWNLOAD*\n\n*👤 User:* ${author?.nickname||''} (@${author?.username||''})\n*📖 Title:* ${ttTitle||''}\n*👍 Likes:* ${like||0}\n*💬 Comments:* ${comment||0}\n*🔁 Shares:* ${share||0}\n\n`,footer:'> ʟxᴅ ᴍɪɴɪ ʙᴏᴛ | ᴛɪᴋᴛᴏᴋ',buttons:[
+            {buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
+            {buttonId:`${prefix}tiktok`,buttonText:{displayText:'🔄 ᴀɴᴏᴛʜᴇʀ ᴛɪᴋᴛᴏᴋ'},type:1},
+          ]},{quoted:fakevcard});
+          break;
+        }
 
         // ==================== INSTAGRAM ====================
-     case 'ig':
-case 'instagram':
-case 'igdl': {
-  try {
-    await react('📷')
-
-    if (!q || !q.includes('instagram.com')) {
-      await reply(`*📷 Usage:* ${prefix}ig <Instagram URL>`)
-      break
-    }
-
-    await reply('*⏳ Downloading Instagram...*')
-
-    let igRes
-    try {
-      igRes = await axios.get(
-        `https://api.siputzx.my.id/api/d/igdl?url=${encodeURIComponent(q)}`,
-        { timeout: 60000 }
-      )
-    } catch (e) {
-      console.log("IG API ERROR:", e.message)
-      await reply('❌ Instagram server unavailable.')
-      break
-    }
-
-    const igUrl = igRes?.data?.data?.[0]?.url
-
-    if (!igUrl) {
-      await reply('❌ Failed!')
-      break
-    }
-
-    await socket.sendMessage(sender, {
-      video: { url: igUrl },
-      caption: '*📷 INSTAGRAM DOWNLOAD*'
-    }, { quoted: fakevcard })
-
-  } catch (err) {
-    console.log("IG CMD ERROR:", err.message)
-    await reply('❌ Something went wrong.')
-  }
-  break
-}
-
-
-     // ==================== FACEBOOK ====================
-case 'fb':
-case 'facebook':
-case 'fbdl': {
-  try {
-    await react('📘');
-
-    if (!q || !q.includes('facebook.com')) {
-      await reply(`*📘 Usage:* ${prefix}fb <Facebook Video URL>`);
-      break;
-    }
-
-    await reply('*⏳ Downloading...*');
-
-    let fbRes;
-    try {
-      fbRes = await axios.get(
-        `https://api.siputzx.my.id/api/d/fb?url=${encodeURIComponent(q)}`,
-        { timeout: 60000 }
-      );
-    } catch (e) {
-      console.log("FB API ERROR:", e.message);
-      await reply('❌ Facebook server unavailable.');
-      break;
-    }
-
-    const fbUrl = fbRes?.data?.data?.hd || fbRes?.data?.data?.sd;
-
-    if (!fbUrl) {
-      await reply('❌ Failed to fetch video!');
-      break;
-    }
-
-    await socket.sendMessage(sender, {
-      video: { url: fbUrl },
-      caption: '*📘 FACEBOOK DOWNLOAD*'
-    }, { quoted: fakevcard });
-
-  } catch (err) {
-    console.log("FB CMD ERROR:", err.message);
-    await reply('❌ Something went wrong.');
-  }
-  break;
-}
-
-
-// ==================== TWITTER/X ====================
-case 'twitter':
-case 'tw':
-case 'xdl': {
-  try {
-    await react('🐦');
-
-    if (!q || (!q.includes('twitter.com') && !q.includes('x.com'))) {
-      await reply(`*🐦 Usage:* ${prefix}tw <Tweet URL>`);
-      break;
-    }
-
-    await reply('*⏳ Downloading...*');
-
-    let twRes;
-    try {
-      twRes = await axios.get(
-        `https://api.siputzx.my.id/api/d/twitter?url=${encodeURIComponent(q)}`,
-        { timeout: 60000 }
-      );
-    } catch (e) {
-      console.log("TWITTER API ERROR:", e.message);
-      await reply('❌ Twitter/X server unavailable.');
-      break;
-    }
-
-    const twUrl =
-      twRes?.data?.data?.video?.url ||
-      twRes?.data?.data?.[0]?.url;
-
-    if (!twUrl) {
-      await reply('❌ Failed to fetch video!');
-      break;
-    }
-
-    await socket.sendMessage(sender, {
-      video: { url: twUrl },
-      caption: '*🐦 TWITTER/X DOWNLOAD*'
-    }, { quoted: fakevcard });
-
-  } catch (err) {
-    console.log("TW CMD ERROR:", err.message);
-    await reply('❌ Something went wrong.');
-  }
-  break;
-}
-
-
-// ==================== SPOTIFY ====================
-case 'spotify':
-case 'sptfy': {
-  try {
-    await react('🎵');
-
-    if (!q) {
-      await reply(`*🎵 Usage:* ${prefix}spotify <song name>`);
-      break;
-    }
-
-    await reply('*⏳ Searching Spotify...*');
-
-    let spRes;
-    try {
-      spRes = await axios.get(
-        `https://api.siputzx.my.id/api/s/spotify?query=${encodeURIComponent(q)}`,
-        { timeout: 60000 }
-      );
-    } catch (e) {
-      console.log("SPOTIFY API ERROR:", e.message);
-      await reply('❌ Spotify server unavailable.');
-      break;
-    }
-
-    if (!spRes?.data?.data?.length) {
-      await reply('❌ No results found!');
-      break;
-    }
-
-    const sp = spRes.data.data[0];
-
-    const dur = sp.duration
-      ? `${Math.floor(sp.duration / 60000)}:${String(Math.floor((sp.duration % 60000) / 1000)).padStart(2, '0')}`
-      : 'N/A';
-
-    await replyBtn(
-`*🎵 SPOTIFY RESULT*
-
-*Title:* ${sp.name || 'N/A'}
-*Artist:* ${sp.artist || 'N/A'}
-*Duration:* ${dur}
-*Album:* ${sp.album || 'N/A'}
-`,
-      [
-        {
-          buttonId: `${prefix}play ${sp.name} ${sp.artist}`,
-          buttonText: { displayText: '🎧 ᴅᴏᴡɴʟᴏᴀᴅ' },
-          type: 1
+        case 'ig':
+        case 'instagram':
+        case 'igdl':{
+          await react('📷');
+          if(!q||!q.includes('instagram.com')){await reply(`*📷 Usage:* ${prefix}ig <Instagram URL>`);break;}
+          await reply('*⏳ Downloading Instagram...*');
+          const igRes=await axios.get(`https://api.siputzx.my.id/api/d/igdl?url=${encodeURIComponent(q)}`);
+          if(!igRes?.data?.data?.length){await reply('❌ Failed!');break;}
+          const igUrl=igRes.data.data[0]?.url;
+          await socket.sendMessage(sender,{video:{url:igUrl},caption:`*📷 INSTAGRAM DOWNLOAD*\n\n`},{quoted:fakevcard});
+          break;
         }
-      ]
-    );
 
-  } catch (err) {
-    console.log("SPOTIFY CMD ERROR:", err.message);
-    await reply('❌ Something went wrong.');
-  }
-  break;
-}
+        // ==================== FACEBOOK ====================
+        case 'fb':
+        case 'facebook':
+        case 'fbdl':{
+          await react('📘');
+          if(!q||!q.includes('facebook.com')){await reply(`*📘 Usage:* ${prefix}fb <Facebook Video URL>`);break;}
+          await reply('*⏳ Downloading...*');
+          const fbRes=await axios.get(`https://api.siputzx.my.id/api/d/fb?url=${encodeURIComponent(q)}`);
+          const fbUrl=fbRes?.data?.data?.hd||fbRes?.data?.data?.sd;
+          if(!fbUrl){await reply('❌ Failed!');break;}
+          await socket.sendMessage(sender,{video:{url:fbUrl},caption:`*📘 FACEBOOK DOWNLOAD*\n\n`},{quoted:fakevcard});
+          break;
+        }
 
+        // ==================== TWITTER/X ====================
+        case 'twitter':
+        case 'tw':
+        case 'xdl':{
+          await react('🐦');
+          if(!q||(!q.includes('twitter.com')&&!q.includes('x.com'))){await reply(`*🐦 Usage:* ${prefix}tw <Tweet URL>`);break;}
+          await reply('*⏳ Downloading...*');
+          const twRes=await axios.get(`https://api.siputzx.my.id/api/d/twitter?url=${encodeURIComponent(q)}`);
+          const twUrl=twRes?.data?.data?.video?.url||twRes?.data?.data?.[0]?.url;
+          if(!twUrl){await reply('❌ Failed!');break;}
+          await socket.sendMessage(sender,{video:{url:twUrl},caption:`*🐦 TWITTER/X DOWNLOAD*\n\n`},{quoted:fakevcard});
+          break;
+        }
 
-// ==================== LYRICS ====================
-case 'lyrics':
-case 'lyric': {
-  try {
-    await react('🎶');
+        // ==================== SPOTIFY ====================
+        case 'spotify':
+        case 'sptfy':{
+          await react('🎵');
+          if(!q){await reply(`*🎵 Usage:* ${prefix}spotify <song name>`);break;}
+          await reply('*⏳ Searching Spotify...*');
+          const spRes=await axios.get(`https://api.siputzx.my.id/api/s/spotify?query=${encodeURIComponent(q)}`);
+          if(!spRes?.data?.data?.length){await reply('❌ No results!');break;}
+          const sp=spRes.data.data[0];
+          const dur=sp.duration?`${Math.floor(sp.duration/60000)}:${String(Math.floor((sp.duration%60000)/1000)).padStart(2,'0')}`:'N/A';
+          await replyBtn(`*🎵 SPOTIFY*\n\n*Title:* ${sp.name}\n*Artist:* ${sp.artist}\n*Duration:* ${dur}\n*Album:* ${sp.album||'N/A'}\n\n`,[
+            {buttonId:`${prefix}play ${sp.name} ${sp.artist}`,buttonText:{displayText:'🎧 ᴅᴏᴡɴʟᴏᴀᴅ'},type:1},
+          ]);
+          break;
+        }
 
-    if (!q) {
-      await reply(`*🎶 Usage:* ${prefix}lyrics <song name>`);
-      break;
-    }
+        // ==================== LYRICS ====================
+        case 'lyrics':
+        case 'lyric':{
+          await react('🎶');
+          if(!q){await reply(`*🎶 Usage:* ${prefix}lyrics <song name>`);break;}
+          await reply('*⏳ Searching lyrics...*');
+          const lRes=await axios.get(`https://some-random-api.com/lyrics?title=${encodeURIComponent(q)}`);
+          if(!lRes?.data?.lyrics){await reply('❌ Lyrics not found!');break;}
+          const lText=`*🎵 ${lRes.data.title||q}*\n*👤 Artist:* ${lRes.data.author||'Unknown'}\n\n${lRes.data.lyrics.substring(0,1500)}${lRes.data.lyrics.length>1500?'...':''}\n\n`;
+          await reply(lText);
+          break;
+        }
 
-    await reply('*⏳ Searching lyrics...*');
+        // ==================== MEDIAFIRE ====================
+        case 'mediafire':
+        case 'mf':
+        case 'mfdl':{
+          await react('📥');
+          if(!q){await reply(`*📥 Usage:* ${prefix}mediafire <MediaFire URL>`);break;}
+          await reply('*⏳ Fetching file...*');
+          const mfRes=await axios.get(`https://tharuzz-ofc-apis.vercel.app/api/download/mediafire?url=${encodeURIComponent(q)}`);
+          if(!mfRes?.data?.success){await reply('❌ Failed!');break;}
+          const mf=mfRes.data.result;
+          await socket.sendMessage(sender,{document:{url:mf.url},fileName:mf.filename,mimetype:'application/octet-stream',caption:`*📦 FILE*\n\n*📁 Name:* ${mf.filename}\n*📏 Size:* ${mf.size}\n\n`},{quoted:fakevcard});
+          break;
+        }
 
-    let lRes;
-    try {
-      lRes = await axios.get(
-        `https://some-random-api.com/lyrics?title=${encodeURIComponent(q)}`,
-        { timeout: 60000 }
-      );
-    } catch (e) {
-      console.log("LYRICS API ERROR:", e.message);
-      await reply('❌ Lyrics server unavailable.');
-      break;
-    }
-
-    if (!lRes?.data?.lyrics) {
-      await reply('❌ Lyrics not found!');
-      break;
-    }
-
-    const lyrics = lRes.data.lyrics;
-
-    const lText =
-`*🎵 ${lRes.data.title || q}*
-*👤 Artist:* ${lRes.data.author || 'Unknown'}
-
-${lyrics.substring(0, 1500)}${lyrics.length > 1500 ? '...' : ''}`;
-
-    await reply(lText);
-
-  } catch (err) {
-    console.log("LYRICS CMD ERROR:", err.message);
-    await reply('❌ Something went wrong.');
-  }
-  break;
-}
-
-
-// ==================== MEDIAFIRE ====================
-case 'mediafire':
-case 'mf':
-case 'mfdl': {
-  try {
-    await react('📥');
-
-    if (!q) {
-      await reply(`*📥 Usage:* ${prefix}mediafire <MediaFire URL>`);
-      break;
-    }
-
-    await reply('*⏳ Fetching file...*');
-
-    let mfRes;
-    try {
-      mfRes = await axios.get(
-        `https://tharuzz-ofc-apis.vercel.app/api/download/mediafire?url=${encodeURIComponent(q)}`,
-        { timeout: 60000 }
-      );
-    } catch (e) {
-      console.log("MEDIAFIRE API ERROR:", e.message);
-      await reply('❌ Mediafire server unavailable.');
-      break;
-    }
-
-    if (!mfRes?.data?.success) {
-      await reply('❌ Failed to fetch file!');
-      break;
-    }
-
-    const mf = mfRes.data.result;
-
-    if (!mf?.url) {
-      await reply('❌ Invalid file response!');
-      break;
-    }
-
-    await socket.sendMessage(sender, {
-      document: { url: mf.url },
-      fileName: mf.filename || 'file',
-      mimetype: 'application/octet-stream',
-      caption:
-`*📦 FILE*
-
-*📁 Name:* ${mf.filename || 'Unknown'}
-*📏 Size:* ${mf.size || 'Unknown'}`
-    }, { quoted: fakevcard });
-
-  } catch (err) {
-    console.log("MEDIAFIRE CMD ERROR:", err.message);
-    await reply('❌ Something went wrong.');
-  }
-  break;
-}
-
-
-// ==================== APK SEARCH ====================
-case 'apk':
-case 'apksearch': {
-  try {
-    await react('📱');
-
-    if (!q) {
-      await reply(`*📱 Usage:* ${prefix}apk <app name>`);
-      break;
-    }
-
-    await reply('*⏳ Searching APKs...*');
-
-    let apkRes;
-    try {
-      apkRes = await axios.get(
-        `https://tharuzz-ofc-apis.vercel.app/api/search/apksearch?query=${encodeURIComponent(q)}`,
-        { timeout: 60000 }
-      );
-    } catch (e) {
-      console.log("APK API ERROR:", e.message);
-      await reply('❌ APK server unavailable.');
-      break;
-    }
-
-    if (!apkRes?.data?.success || !apkRes?.data?.result?.length) {
-      await reply('❌ No APKs found!');
-      break;
-    }
-
-    let apkText = `*📱 APK Search: ${q}*\n\n`;
-
-    apkRes.data.result.slice(0, 10).forEach((item, idx) => {
-      apkText += `*${idx + 1}.* ${item.name}\n📦 ID: \`${item.id}\`\n\n`;
-    });
-
-    await replyBtn(apkText, [
-      {
-        buttonId: `${prefix}download`,
-        buttonText: { displayText: '📥 ᴅᴏᴡɴʟᴏᴀᴅ ᴍᴇɴᴜ' },
-        type: 1
-      }
-    ]);
-
-  } catch (err) {
-    console.log("APK CMD ERROR:", err.message);
-    await reply('❌ Something went wrong.');
-  }
-  break;
-}
+        // ==================== APK SEARCH ====================
+        case 'apk':
+        case 'apksearch':{
+          await react('📱');
+          if(!q){await reply(`*📱 Usage:* ${prefix}apk <app name>`);break;}
+          await reply('*⏳ Searching APKs...*');
+          const apkRes=await axios.get(`https://tharuzz-ofc-apis.vercel.app/api/search/apksearch?query=${encodeURIComponent(q)}`);
+          if(!apkRes?.data?.success||!apkRes?.data?.result?.length){await reply('❌ No APKs found!');break;}
+          let apkText=`*📱 APK Search: ${q}*\n\n`;
+          apkRes.data.result.slice(0,10).forEach((item,idx)=>{apkText+=`*${idx+1}.* ${item.name}\n📦 ID: \`${item.id}\`\n\n`;});
+          apkText+=``;
+          await replyBtn(apkText,[{buttonId:`${prefix}download`,buttonText:{displayText:'📥 ᴅᴏᴡɴʟᴏᴀᴅ ᴍᴇɴᴜ'},type:1}]);
+          break;
+        }
 
         // ==================== DOWNLOAD MENU ====================
         case 'download':
