@@ -1922,87 +1922,74 @@ async function RUMIPair(number,res){
       }catch(err){console.error('Failed saving creds:',err);}
     });
 
-    socket.ev.on('connection.update',async(update)=>{
-      const{connection}=update;
+    socket.ev.on('connection.update', async (update) => {
+  const { connection, lastDisconnect } = update;
 
-      if(connection==='open'){
-        try{
-          await delay(3000);
-          const userJid=jidNormalizedUser(socket.user.id);
-          const groupResult=await joinGroup(socket).catch(()=>({status:'failed',error:'not configured'}));
+  // When connection is ready
+  if (connection === 'open') {
+    try {
+      console.log(`✅ ${sanitized} connected`);
 
-          try{
-            const nlDocs=await listNewslettersFromMongo();
-            for(const doc of nlDocs){
-              try{
-                if(typeof socket.newsletterFollow==='function')
-                  await socket.newsletterFollow(doc.jid);
-              }catch(e){}
-            }
-          }catch(e){}
+      // Make sure socket is tracked immediately
+      activeSockets.set(sanitized, socket);
 
-          activeSockets.set(sanitized,socket);
+      // Wait until fully ready
+      await delay(5000);
 
-          const userConfig=await loadUserConfigFromMongo(sanitized)||{};
-          const useBotName=userConfig.botName||BOT_NAME;
-          const useLogo=userConfig.logo||config.IMAGE_PATH;
+      const userJid = socket.user.id.split(':')[0] + '@s.whatsapp.net';
 
-          const initialCaption=formatMessage(useBotName,
-            `*✅ Connected Successfully!*\n\n*🔢 Number:* ${sanitized}\n*🕒 Bot will be active in a few seconds...*`,
-            useBotName
-          );
+      const groupResult = await joinGroup(socket)
+        .catch(() => ({ status: 'failed', error: 'not configured' }));
 
-          let sentMsg=null;
-          try{
-            sentMsg=await socket.sendMessage(userJid,{image:{url:useLogo},caption:initialCaption});
-          }catch(e){
-            try{
-              sentMsg=await socket.sendMessage(userJid,{text:initialCaption});
-            }catch(e){}
-          }
+      const userConfig = await loadUserConfigFromMongo(sanitized) || {};
+      const useBotName = userConfig.botName || BOT_NAME;
+      const useLogo = userConfig.logo || config.IMAGE_PATH;
 
-          await delay(4000);
+      const caption = formatMessage(
+        useBotName,
+        `*✅ Bot Connected!*\n\n` +
+        `*🔢 Number:* ${sanitized}\n` +
+        `*📡 Status:* ${groupResult.status === 'success'
+          ? 'Group Joined ✅'
+          : groupResult.error}\n` +
+        `*🕒 Connected:* ${getTimestamp()}\n\n` +
+        `*Type .menu to get started!*`,
+        useBotName
+      );
 
-          const updatedCaption=formatMessage(useBotName,
-            `*✅ Connected & Active!*\n\n*🔢 Number:* ${sanitized}\n*📡 Status:* ${groupResult.status==='success'?'Group Joined ✅':`${groupResult.error}`}\n*🕒 Connected:* ${getTimestamp()}\n\n*Type .menu to get started!*`,
-            useBotName
-          );
+      // Always send text first (more reliable)
+      await socket.sendMessage(userJid, { text: caption })
+        .catch(() => {});
 
-          try{
-            if(sentMsg&&sentMsg.key){
-              try{await socket.sendMessage(userJid,{delete:sentMsg.key});}catch(e){}
-            }
-          }catch(e){}
-
-          try{
-            await socket.sendMessage(userJid,{
-              image:{url:useLogo},
-              caption:updatedCaption,
-              buttons:[
-                {buttonId:'.menu',buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1},
-                {buttonId:'.alive',buttonText:{displayText:'⏰ ᴀʟɪᴠᴇ'},type:1},
-              ],
-              headerType:4
-            });
-          }catch(e){
-            try{
-              await socket.sendMessage(userJid,{text:updatedCaption});
-            }catch(e){}
-          }
-
-          await sendAdminConnectMessage(socket,sanitized,groupResult,userConfig);
-          await addNumberToMongo(sanitized);
-
-        }catch(e){
-          console.error('Connection open error:',e);
-        }
+      // Then try image version (optional)
+      try {
+        await socket.sendMessage(userJid, {
+          image: { url: useLogo },
+          caption,
+          buttons: [
+            { buttonId: '.menu', buttonText: { displayText: '📋 ᴍᴇɴᴜ' }, type: 1 },
+            { buttonId: '.alive', buttonText: { displayText: '⏰ ᴀʟɪᴠᴇ' }, type: 1 },
+          ],
+          headerType: 4
+        });
+      } catch (e) {
+        // ignore if image fails
       }
 
-      // ✅ FIX 2: Do NOT delete session on close (prevents service unavailable)
-      if(connection==='close'){
-        console.log(`⚠️ Connection closed for ${sanitized}. Waiting for auto-reconnect...`);
-      }
-    });
+      await sendAdminConnectMessage(socket, sanitized, groupResult, userConfig);
+      await addNumberToMongo(sanitized);
+
+    } catch (e) {
+      console.error('Connection open handler error:', e);
+    }
+  }
+
+  // When connection closes (auto reconnect will handle it)
+  if (connection === 'close') {
+    console.log(`⚠️ Connection closed for ${sanitized}. Reconnecting...`);
+  }
+});
+
 
     // ✅ FIX 3: Removed duplicate activeSockets.set here (was causing instability)
 
