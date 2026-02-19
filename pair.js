@@ -394,39 +394,81 @@ async function handleMessageRevocation(socket) {
 
 
 // ==================== COMMAND HANDLER ====================
-function setupCommandHandlers(socket,number){
-  socket.ev.on('messages.upsert',async({messages})=>{
-    const msg=messages[0];
-    if(!msg||!msg.message||msg.key.remoteJid==='status@broadcast')return;
-    const type=getContentType(msg.message);
-    msg.message=(type==='ephemeralMessage')?msg.message.ephemeralMessage.message:msg.message;
-    const from=msg.key.remoteJid;
-    const sender=from;
-    const nowsender=msg.key.fromMe?(socket.user.id.split(':')[0]+'@s.whatsapp.net'):(msg.key.participant||msg.key.remoteJid);
-    const senderNumber=(nowsender||'').split('@')[0];
-    const isOwner=senderNumber===config.OWNER_NUMBER.replace(/[^0-9]/g,'');
-    const isGroup=from.endsWith('@g.us');
-    const body=(type==='conversation')?msg.message.conversation
-      :(type==='extendedTextMessage')?msg.message.extendedTextMessage.text
-      :(type==='imageMessage'&&msg.message.imageMessage.caption)?msg.message.imageMessage.caption
-      :(type==='videoMessage'&&msg.message.videoMessage.caption)?msg.message.videoMessage.caption
-      :(type==='buttonsResponseMessage')?msg.message.buttonsResponseMessage?.selectedButtonId
-      :(type==='listResponseMessage')?msg.message.listResponseMessage?.singleSelectReply?.selectedRowId:'';
-    if(!body||typeof body!=='string')return;
-    const prefix=config.PREFIX;
-    if(!body.startsWith(prefix))return;
-    const command=body.slice(prefix.length).trim().split(/\s+/)[0].toLowerCase();
-    const args=body.trim().split(/\s+/).slice(1);
-    const q=args.join(' ').trim();
+function setupCommandHandlers(socket, number) {
 
-    async function reply(text){await socket.sendMessage(sender,{text},{quoted:msg});}
-    async function react(emoji){try{await socket.sendMessage(sender,{react:{text:emoji,key:msg.key}});}catch(e){}}
-    async function replyBtn(text,buttons,footer=config.BOT_FOOTER){await socket.sendMessage(sender,{text,footer,buttons},{quoted:fakevcard});}
-    async function replyImgBtn(imgUrl,caption,buttons,footer=config.BOT_FOOTER){await socket.sendMessage(sender,{image:{url:imgUrl},caption,footer,buttons,headerType:4},{quoted:fakevcard});}
-    function uptime(){const s=socketCreationTime.get(number)||Date.now();const u=Math.floor((Date.now()-s)/1000);return `${Math.floor(u/3600)}h ${Math.floor((u%3600)/60)}m ${u%60}s`;}
+  socket.ev.on('messages.upsert', async (m) => {
+
+    if (m.type !== 'notify') return;
+
+    const msg = m.messages[0];
+    if (!msg || !msg.message) return;
+    if (msg.key.remoteJid === 'status@broadcast') return;
+
+    let message = msg.message;
+
+    // unwrap ephemeral properly
+    if (message?.ephemeralMessage) {
+      message = message.ephemeralMessage.message;
+    }
+
+    const type = getContentType(message);
+
+    const from = msg.key.remoteJid;
+    const sender = from;
+
+    const senderJid = msg.key.participant || msg.key.remoteJid;
+    const senderNumber = senderJid.split('@')[0];
+
+    const isOwner =
+      senderNumber === config.OWNER_NUMBER.replace(/[^0-9]/g,'');
+
+    const isGroup = from.endsWith('@g.us');
+
+    let body = '';
+
+    if (type === 'conversation') {
+      body = message.conversation;
+    } 
+    else if (type === 'extendedTextMessage') {
+      body = message.extendedTextMessage?.text;
+    }
+    else if (type === 'imageMessage') {
+      body = message.imageMessage?.caption;
+    }
+    else if (type === 'videoMessage') {
+      body = message.videoMessage?.caption;
+    }
+    else if (type === 'buttonsResponseMessage') {
+      body = message.buttonsResponseMessage?.selectedButtonId;
+    }
+    else if (type === 'listResponseMessage') {
+      body = message.listResponseMessage?.singleSelectReply?.selectedRowId;
+    }
+
+    if (!body || typeof body !== 'string') return;
+
+    const prefix = config.PREFIX || '.';
+    if (!body.startsWith(prefix)) return;
+
+    const command = body.slice(prefix.length).trim().split(/\s+/)[0].toLowerCase();
+    const args = body.trim().split(/\s+/).slice(1);
+    const q = args.join(' ').trim();
+
+    async function reply(text){
+      await socket.sendMessage(sender,{text},{quoted:msg});
+    }
+
+  
+
+       
 
     try{
       switch(command){
+      
+      
+      case 'hi':
+          await reply('🏓 hello!');
+          break;
 
         // ==================== MENU ====================
         case 'menu':
