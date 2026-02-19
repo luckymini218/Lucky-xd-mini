@@ -394,81 +394,36 @@ async function handleMessageRevocation(socket) {
 
 
 // ==================== COMMAND HANDLER ====================
-function setupCommandHandlers(socket, number) {
-  socket.ev.on('messages.upsert', async ({ messages }) => {
-    const msg = messages[0];
-    if (!msg || !msg.message || msg.key.remoteJid === 'status@broadcast') return;
+function setupCommandHandlers(socket,number){
+  socket.ev.on('messages.upsert',async({messages})=>{
+    const msg=messages[0];
+    if(!msg||!msg.message||msg.key.remoteJid==='status@broadcast')return;
+    const type=getContentType(msg.message);
+    msg.message=(type==='ephemeralMessage')?msg.message.ephemeralMessage.message:msg.message;
+    const from=msg.key.remoteJid;
+    const sender=from;
+    const nowsender=msg.key.fromMe?(socket.user.id.split(':')[0]+'@s.whatsapp.net'):(msg.key.participant||msg.key.remoteJid);
+    const senderNumber=(nowsender||'').split('@')[0];
+    const isOwner=senderNumber===config.OWNER_NUMBER.replace(/[^0-9]/g,'');
+    const isGroup=from.endsWith('@g.us');
+    const body=(type==='conversation')?msg.message.conversation
+      :(type==='extendedTextMessage')?msg.message.extendedTextMessage.text
+      :(type==='imageMessage'&&msg.message.imageMessage.caption)?msg.message.imageMessage.caption
+      :(type==='videoMessage'&&msg.message.videoMessage.caption)?msg.message.videoMessage.caption
+      :(type==='buttonsResponseMessage')?msg.message.buttonsResponseMessage?.selectedButtonId
+      :(type==='listResponseMessage')?msg.message.listResponseMessage?.singleSelectReply?.selectedRowId:'';
+    if(!body||typeof body!=='string')return;
+    const prefix=config.PREFIX;
+    if(!body.startsWith(prefix))return;
+    const command=body.slice(prefix.length).trim().split(/\s+/)[0].toLowerCase();
+    const args=body.trim().split(/\s+/).slice(1);
+    const q=args.join(' ').trim();
 
-    // Determine message type
-    const type = getContentType(msg.message);
-    msg.message = type === 'ephemeralMessage' ? msg.message.ephemeralMessage?.message : msg.message;
-
-    const from = msg.key.remoteJid;
-    const sender = from;
-
-    // Determine sender number
-    const nowsender = msg.key.fromMe
-      ? socket.user.id.split(':')[0] + '@s.whatsapp.net'
-      : msg.key.participant || msg.key.remoteJid;
-    const senderNumber = (nowsender || '').split('@')[0];
-
-    // Check if sender is the single owner
-    const isOwner = senderNumber === config.OWNER_NUMBER.replace(/[^0-9]/g, '');
-
-    // Group check
-    const isGroup = from.endsWith('@g.us');
-
-    // Extract message body
-    const body =
-      type === 'conversation' ? msg.message.conversation :
-      type === 'extendedTextMessage' ? msg.message.extendedTextMessage?.text :
-      type === 'imageMessage' && msg.message.imageMessage.caption ? msg.message.imageMessage.caption :
-      type === 'videoMessage' && msg.message.videoMessage.caption ? msg.message.videoMessage.caption :
-      type === 'buttonsResponseMessage' ? msg.message.buttonsResponseMessage?.selectedButtonId :
-      type === 'listResponseMessage' ? msg.message.listResponseMessage?.singleSelectReply?.selectedRowId :
-      '';
-
-    if (!body || typeof body !== 'string') return;
-
-    // Command parsing
-    const prefix = config.PREFIX || '!';
-    if (!body.startsWith(prefix)) return;
-    const command = body.slice(prefix.length).trim().split(/\s+/)[0].toLowerCase();
-    const args = body.trim().split(/\s+/).slice(1);
-    const q = args.join(' ').trim();
-
-    // Helper functions
-    async function reply(text) {
-      await socket.sendMessage(sender, { text }, { quoted: msg });
-    }
-
-    async function react(emoji) {
-      try {
-        await socket.sendMessage(sender, { react: { text: emoji, key: msg.key } });
-      } catch (e) { /* ignore errors */ }
-    }
-
-    async function replyBtn(text, buttons, footer = config.BOT_FOOTER) {
-      await socket.sendMessage(sender, { text, footer, buttons }, { quoted: fakevcard });
-    }
-
-    async function replyImgBtn(imgUrl, caption, buttons, footer = config.BOT_FOOTER) {
-      await socket.sendMessage(sender, {
-        image: { url: imgUrl },
-        caption,
-        footer,
-        buttons,
-        headerType: 4
-      }, { quoted: fakevcard });
-    }
-
-    function uptime() {
-      const start = socketCreationTime.get(number) || Date.now();
-      const u = Math.floor((Date.now() - start) / 1000);
-      return `${Math.floor(u / 3600)}h ${Math.floor((u % 3600) / 60)}m ${u % 60}s`;
-    }
-
-    
+    async function reply(text){await socket.sendMessage(sender,{text},{quoted:msg});}
+    async function react(emoji){try{await socket.sendMessage(sender,{react:{text:emoji,key:msg.key}});}catch(e){}}
+    async function replyBtn(text,buttons,footer=config.BOT_FOOTER){await socket.sendMessage(sender,{text,footer,buttons},{quoted:fakevcard});}
+    async function replyImgBtn(imgUrl,caption,buttons,footer=config.BOT_FOOTER){await socket.sendMessage(sender,{image:{url:imgUrl},caption,footer,buttons,headerType:4},{quoted:fakevcard});}
+    function uptime(){const s=socketCreationTime.get(number)||Date.now();const u=Math.floor((Date.now()-s)/1000);return `${Math.floor(u/3600)}h ${Math.floor((u%3600)/60)}m ${u%60}s`;}
 
     try{
       switch(command){
