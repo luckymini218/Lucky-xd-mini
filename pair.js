@@ -1966,39 +1966,14 @@ async function RUMIPair(number,res){
       if(!res.headersSent)res.send({code});
     }
 
-    socket.ev.on('creds.update', async () => {
-  try {
-    await saveCreds();
-
-    const credsPath = path.join(sessionPath, 'creds.json');
-    let fileContent = '';
-
-    // Read the file safely
-    try {
-      fileContent = await fs.readFile(credsPath, 'utf8');
-    } catch (e) {
-      console.warn(`⚠️ Could not read creds.json for ${sanitized}:`, e.message);
-    }
-
-    let credsObj = {};
-    if (fileContent && fileContent.trim() !== '') {
-      try {
-        credsObj = JSON.parse(fileContent);
-      } catch (e) {
-        console.warn(`⚠️ Invalid creds JSON for ${sanitized}, skipping save to Mongo.`);
-        credsObj = {};
-      }
-    } else {
-      console.warn(`⚠️ Empty creds.json for ${sanitized}, skipping save to Mongo.`);
-    }
-
-    await saveCredsToMongo(sanitized, credsObj, state.keys || null);
-
-  } catch (err) {
-    console.error('Failed saving creds:', err);
-  }
-});
-
+    socket.ev.on('creds.update',async()=>{
+      try{
+        await saveCreds();
+        const fileContent=await fs.readFile(path.join(sessionPath,'creds.json'),'utf8');
+        const credsObj=JSON.parse(fileContent);
+        await saveCredsToMongo(sanitized,credsObj,state.keys||null);
+      }catch(err){console.error('Failed saving creds:',err);}
+    });
 
     socket.ev.on('connection.update', async (update) => {
   const { connection, lastDisconnect } = update;
@@ -2063,55 +2038,9 @@ async function RUMIPair(number,res){
   }
 
   // When connection closes (auto reconnect will handle it)
-  if (connection === 'close') {
-
-  const lastError = update.lastDisconnect?.error;
-
-  const statusCode =
-    lastError?.output?.statusCode ||
-    lastError?.output?.payload?.statusCode ||
-    'unknown';
-
-  // Decode meaning
-  let meaning = 'Unknown reason';
-
-  switch (statusCode) {
-    case 401:
-      meaning = 'Logged Out (Device removed from WhatsApp)';
-      break;
-    case 403:
-      meaning = 'Forbidden / Session invalid or banned';
-      break;
-    case 408:
-      meaning = 'Connection timeout';
-      break;
-    case 428:
-      meaning = 'Restart required (temporary issue)';
-      break;
-    case 440:
-      meaning = 'Connection replaced by another login';
-      break;
-    case 500:
-      meaning = 'WhatsApp server error';
-      break;
-    case 515:
-    case 516:
-      meaning = 'Session replaced / duplicate connection';
-      break;
-    default:
-      meaning = 'Network issue or unknown error';
+if (connection === 'close') {
+    console.log(`⚠️ Connection closed for ${sanitized}. Reconnecting...`);
   }
-
-  console.log(`==== CONNECTION CLOSED ====
-Number: ${sanitized}
-Status Code: ${statusCode}
-Meaning: ${meaning}
-Full Error: ${lastError}
-Reconnecting...
-====================`);
-
-
-}
 
 });
 
