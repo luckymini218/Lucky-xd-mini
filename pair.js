@@ -939,15 +939,52 @@ case 'apksearch': {
         }
 
         // ==================== WEATHER ====================
-        case 'weather':{
-          await react('🌤️');
-          if(!q){await reply(`*🌤️ Usage:* ${prefix}weather <city>`);break;}
-          const wxRes=await axios.get(`https://api.siputzx.my.id/api/s/weather?q=${encodeURIComponent(q)}`);
-          if(!wxRes?.data?.data){await reply('❌ City not found!');break;}
-          const wx=wxRes.data.data;
-          await replyBtn(`*🌤️ WEATHER — ${wx.name||q}*\n\n*🌡️ Temp:* ${wx.temp}°C\n*🌥️ Condition:* ${wx.condition}\n*💧 Humidity:* ${wx.humidity}%\n*💨 Wind:* ${wx.wind}\n\n`,[{buttonId:`${prefix}menu`,buttonText:{displayText:'📋 ᴍᴇɴᴜ'},type:1}]);
-          break;
+        case 'weather': {
+  await react('🌤️');
+
+  try {
+    if (!q) {
+      await reply(`*🌤️ Usage:* ${prefix}weather <city>`);
+      break;
+    }
+
+    const apiKey = "2d61a72574c11c4f36173b627f8cb177"; // replace with your key
+
+    const wxRes = await axios.get(
+      `http://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(q)}&appid=${apiKey}&units=metric`
+    );
+
+    const data = wxRes.data;
+
+    if (!data || data.cod !== 200) {
+      await reply('❌ City not found!');
+      break;
+    }
+
+    await replyBtn(
+      `*🌤️ WEATHER — ${data.name}, ${data.sys.country}*\n\n` +
+      `*🌡️ Temp:* ${data.main.temp}°C\n` +
+      `*🤔 Feels Like:* ${data.main.feels_like}°C\n` +
+      `*🌥️ Condition:* ${data.weather[0].main}\n` +
+      `*💧 Humidity:* ${data.main.humidity}%\n` +
+      `*💨 Wind:* ${data.wind.speed} m/s\n\n` +
+      `⚡ *Powered By Lucky Tech Hub*`,
+      [
+        {
+          buttonId: `${prefix}menu`,
+          buttonText: { displayText: '📋 ᴍᴇɴᴜ' },
+          type: 1
         }
+      ]
+    );
+
+  } catch (e) {
+    console.error('Weather error:', e.response?.data || e.message);
+    await reply('⚠️ Failed to fetch weather data. Try again later.');
+  }
+
+  break;
+}
 
         // ==================== NEWS ====================
         case 'news':
