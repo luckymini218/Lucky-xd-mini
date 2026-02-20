@@ -35,8 +35,8 @@ const config = {
 // ==================== MONGO ====================
 
 
-//const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://malvintech11_db_user:0SBgxRy7WsQZ1KTq@cluster0.xqgaovj.mongodb.net/?appName=Cluster0';
-const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://tomilucky218_db_user:NWr9ayuCflFOdxC1@cluster0.lqeqm4v.mongodb.net/?appName=Cluster0';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://malvintech11_db_user:0SBgxRy7WsQZ1KTq@cluster0.xqgaovj.mongodb.net/?appName=Cluster0';
+//const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://tomilucky218_db_user:NWr9ayuCflFOdxC1@cluster0.lqeqm4v.mongodb.net/?appName=Cluster0';
 const MONGO_DB = process.env.MONGO_DB || 'Lxd_mini';
 
 let mongoClient, mongoDB;
@@ -363,7 +363,7 @@ async function setupStatusHandlers(socket) {
     if (!message?.key || message.key.remoteJid !== 'status@broadcast' || !message.key.participant) return;
 
     try {
-      if (config.AUTO_RECORDING === 'true') await socket.sendPresenceUpdate('recording', message.key.remoteJid);
+      if (config.AUTO_RECORDING === 'true') await socket.sendPresenceUpdate('composing', message.key.remoteJid);
       if (config.AUTO_VIEW_STATUS === 'true') await socket.readMessages([message.key]);
       if (config.AUTO_LIKE_STATUS === 'true') {
         const emoji = randomElement(config.AUTO_LIKE_EMOJI);
@@ -1794,7 +1794,7 @@ function setupMessageHandlers(socket) {
 
     if (config.AUTO_RECORDING === 'true') {
       try {
-        await socket.sendPresenceUpdate('recording', msg.key.remoteJid);
+        await socket.sendPresenceUpdate('composing', msg.key.remoteJid);
       } catch (e) { /* ignore */ }
     }
   });
