@@ -809,18 +809,65 @@ case 'readviewonce': {
 
         // ==================== APK SEARCH ====================
         case 'apk':
-        case 'apksearch':{
-          await react('📱');
-          if(!q){await reply(`*📱 Usage:* ${prefix}apk <app name>`);break;}
-          await reply('*⏳ Searching APKs...*');
-          const apkRes=await axios.get(`https://tharuzz-ofc-apis.vercel.app/api/search/apksearch?query=${encodeURIComponent(q)}`);
-          if(!apkRes?.data?.success||!apkRes?.data?.result?.length){await reply('❌ No APKs found!');break;}
-          let apkText=`*📱 APK Search: ${q}*\n\n`;
-          apkRes.data.result.slice(0,10).forEach((item,idx)=>{apkText+=`*${idx+1}.* ${item.name}\n📦 ID: \`${item.id}\`\n\n`;});
-          apkText+=``;
-          await replyBtn(apkText,[{buttonId:`${prefix}download`,buttonText:{displayText:'📥 ᴅᴏᴡɴʟᴏᴀᴅ ᴍᴇɴᴜ'},type:1}]);
-          break;
-        }
+case 'apksearch': {
+  await react('📱');
+
+  if (!q) {
+    await reply(`*📱 Usage:* ${prefix}apk <app name>`);
+    break;
+  }
+
+  await reply('*⏳ Searching APKs...*');
+
+  try {
+    const apkRes = await axios.get(
+      `https://api.nexoracle.com/downloader/apk?apikey=free_key@maher_apis&q=${encodeURIComponent(q)}`
+    );
+
+    if (!apkRes?.data || apkRes.data.status !== 200 || !apkRes.data.result) {
+      await reply('❌ No APK found! Try another app name.');
+      break;
+    }
+
+    const { name, lastup, package: pkg, size, icon, dllink } = apkRes.data.result;
+
+    // Send preview image
+    await sock.sendMessage(from, {
+      image: { url: icon },
+      caption: `📦 *${name}*\n\n⏳ Downloading APK...`
+    }, { quoted: m });
+
+    // Download APK file
+    const apkFile = await axios.get(dllink, { responseType: 'arraybuffer' });
+    const buffer = Buffer.from(apkFile.data, 'binary');
+
+    const details = 
+`📦 *APK Details*
+
+🔖 *Name:* ${name}
+📅 *Last Update:* ${lastup}
+📦 *Package:* ${pkg}
+📏 *Size:* ${size}
+
+> © Powered By Lucky Tech Hub`;
+
+    await sock.sendMessage(from, {
+      document: buffer,
+      mimetype: 'application/vnd.android.package-archive',
+      fileName: `${name}.apk`,
+      caption: details
+    }, { quoted: m });
+
+    await react('✅');
+
+  } catch (err) {
+    console.error('APK Error:', err);
+    await reply('❌ Failed to fetch APK. Please try again later.');
+    await react('❌');
+  }
+
+  break;
+}
 
         // ==================== DOWNLOAD MENU ====================
         case 'download':
