@@ -838,8 +838,13 @@ case 'apksearch': {
     }, { quoted: m });
 
     // Download APK file
-    const apkFile = await axios.get(dllink, { responseType: 'arraybuffer' });
-    const buffer = Buffer.from(apkFile.data, 'binary');
+    const apkFile = await axios.get(dllink, {
+  responseType: 'arraybuffer',
+  headers: {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+    'Accept': '*/*'
+  }
+});
 
     const details = 
 `📦 *APK Details*
