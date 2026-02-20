@@ -948,10 +948,10 @@ case 'apksearch': {
       break;
     }
 
-    const apiKey = "2d61a72574c11c4f36173b627f8cb177"; // replace with your key
+    const apiKey = "2d61a72574c11c4f36173b627f8cb177";
 
     const wxRes = await axios.get(
-      `http://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(q)}&appid=${apiKey}&units=metric`
+      `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(q)}&appid=${apiKey}&units=metric`
     );
 
     const data = wxRes.data;
@@ -965,7 +965,7 @@ case 'apksearch': {
       `*🌤️ WEATHER — ${data.name}, ${data.sys.country}*\n\n` +
       `*🌡️ Temp:* ${data.main.temp}°C\n` +
       `*🤔 Feels Like:* ${data.main.feels_like}°C\n` +
-      `*🌥️ Condition:* ${data.weather[0].main}\n` +
+      `*🌥️ Condition:* ${data.weather[0].description}\n` +
       `*💧 Humidity:* ${data.main.humidity}%\n` +
       `*💨 Wind:* ${data.wind.speed} m/s\n\n` +
       `⚡ *Powered By Lucky Tech Hub*`,
@@ -980,7 +980,7 @@ case 'apksearch': {
 
   } catch (e) {
     console.error('Weather error:', e.response?.data || e.message);
-    await reply('⚠️ Failed to fetch weather data. Try again later.');
+    await reply(`⚠️ API Error:\n${e.response?.data?.message || e.message}`);
   }
 
   break;
