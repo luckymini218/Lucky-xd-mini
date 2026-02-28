@@ -1952,145 +1952,152 @@ function setupAutoRestart(socket, number) {
   });
 }
 
-
 // ==================== MAIN PAIRING FUNCTION ====================
-async function RUMIPair(number,res){
-  const sanitized=number.replace(/[^0-9]/g,'');
-  const sessionPath=path.join(os.tmpdir(),`session_${sanitized}`);
-  await initMongo().catch(()=>{});
-  try{
-    const mongoDoc=await loadCredsFromMongo(sanitized);
-    if(mongoDoc&&mongoDoc.creds){
-      fs.ensureDirSync(sessionPath);
-      fs.writeFileSync(path.join(sessionPath,'creds.json'),JSON.stringify(mongoDoc.creds,null,2));
-      if(mongoDoc.keys)fs.writeFileSync(path.join(sessionPath,'keys.json'),JSON.stringify(mongoDoc.keys,null,2));
-      console.log('Prefilled creds from Mongo');
+async function RUMIPair(number, res) {
+  const sanitized = number.replace(/[^0-9]/g, '');
+  const sessionPath = path.join(os.tmpdir(), `session_${sanitized}`);
+
+  // Preload Mongo & ensure session folder in parallel
+  const mongoPromise = (async () => {
+    await initMongo().catch(() => {});
+    try {
+      const mongoDoc = await loadCredsFromMongo(sanitized);
+      if (mongoDoc && mongoDoc.creds) {
+        fs.ensureDirSync(sessionPath);
+        fs.writeFileSync(path.join(sessionPath, 'creds.json'), JSON.stringify(mongoDoc.creds, null, 2));
+        if (mongoDoc.keys) fs.writeFileSync(path.join(sessionPath, 'keys.json'), JSON.stringify(mongoDoc.keys, null, 2));
+        console.log('Prefilled creds from Mongo');
+      }
+    } catch (e) {
+      console.warn('Prefill from Mongo failed', e);
     }
-  }catch(e){console.warn('Prefill from Mongo failed',e);}
+  })();
 
-  const{state,saveCreds}=await useMultiFileAuthState(sessionPath);
-  const logger=pino({level:process.env.NODE_ENV==='production'?'fatal':'debug'});
+  // Prepare auth state
+  const { state, saveCreds } = await useMultiFileAuthState(sessionPath);
+  const logger = pino({ level: process.env.NODE_ENV === 'production' ? 'fatal' : 'debug' });
 
-  try{
-    const socket=makeWASocket({
-      auth:{creds:state.creds,keys:makeCacheableSignalKeyStore(state.keys,logger)},
-      printQRInTerminal:false,
+  await mongoPromise; // Wait for Mongo prefill to complete if not already done
+
+  let socket;
+
+  async function createSocket() {
+    socket = makeWASocket({
+      auth: { creds: state.creds, keys: makeCacheableSignalKeyStore(state.keys, logger) },
+      printQRInTerminal: false,
       logger,
-      browser:Browsers.macOS('Safari')
+      browser: Browsers.macOS('Safari')
     });
 
-    socketCreationTime.set(sanitized,Date.now());
+    socketCreationTime.set(sanitized, Date.now());
+
+    // Setup all handlers
     setupStatusHandlers(socket);
-    setupCommandHandlers(socket,sanitized);
+    setupCommandHandlers(socket, sanitized);
     setupMessageHandlers(socket);
-    setupAutoRestart(socket,sanitized);
-    setupNewsletterHandlers(socket,sanitized);
+    setupAutoRestart(socket, sanitized);
+    setupNewsletterHandlers(socket, sanitized);
     handleMessageRevocation(socket);
 
-    // ✅ FIX 1: Correct registered check
-    if(!state.creds.registered){
-      let retries=config.MAX_RETRIES,code;
-      while(retries>0){
-        try{
-          await delay(1500);
-          code=await socket.requestPairingCode(sanitized);
-          break;
-        }catch(e){
-          retries--;
-          await delay(2000*(config.MAX_RETRIES-retries));
+    // Creds save handler
+    socket.ev.on('creds.update', async () => {
+      try {
+        await saveCreds();
+        const fileContent = await fs.readFile(path.join(sessionPath, 'creds.json'), 'utf8');
+        const credsObj = JSON.parse(fileContent);
+        await saveCredsToMongo(sanitized, credsObj, state.keys || null);
+      } catch (err) {
+        console.error('Failed saving creds:', err);
+      }
+    });
+
+    // Connection updates
+    socket.ev.on('connection.update', async (update) => {
+      const { connection, lastDisconnect } = update;
+
+      if (connection === 'open') {
+        try {
+          console.log(`✅ ${sanitized} connected`);
+          activeSockets.set(sanitized, socket);
+          await delay(5000);
+
+          const userJid = socket.user.id.split(':')[0] + '@s.whatsapp.net';
+          const groupResult = await joinGroup(socket).catch(() => ({ status: 'failed', error: 'not configured' }));
+          const userConfig = await loadUserConfigFromMongo(sanitized) || {};
+          const useBotName = userConfig.botName || BOT_NAME;
+          const useLogo = userConfig.logo || config.IMAGE_PATH;
+
+          const caption = formatMessage(
+            useBotName,
+            `*✅ Bot Connected!*\n\n` +
+            `*🔢 Number:* ${sanitized}\n` +
+            `*📡 Status:* ${groupResult.status === 'success' ? 'Group Joined ✅' : groupResult.error}\n` +
+            `*🕒 Connected:* ${getTimestamp()}\n\n` +
+            `*Type .menu to get started!*`,
+            useBotName
+          );
+
+          await socket.sendMessage(userJid, { text: caption }).catch(() => {});
+
+          try {
+            await socket.sendMessage(userJid, {
+              image: { url: useLogo },
+              caption,
+              buttons: [
+                { buttonId: '.menu', buttonText: { displayText: '📋 ᴍᴇɴᴜ' }, type: 1 },
+                { buttonId: '.alive', buttonText: { displayText: '⏰ ᴀʟɪᴠᴇ' }, type: 1 },
+              ],
+              headerType: 4
+            });
+          } catch (e) {}
+
+          await sendAdminConnectMessage(socket, sanitized, groupResult, userConfig);
+          await addNumberToMongo(sanitized);
+
+        } catch (e) {
+          console.error('Connection open handler error:', e);
         }
       }
-      if(!res.headersSent)res.send({code});
-    }
 
-    socket.ev.on('creds.update',async()=>{
-      try{
-        await saveCreds();
-        const fileContent=await fs.readFile(path.join(sessionPath,'creds.json'),'utf8');
-        const credsObj=JSON.parse(fileContent);
-        await saveCredsToMongo(sanitized,credsObj,state.keys||null);
-      }catch(err){console.error('Failed saving creds:',err);}
-    });
+      if (connection === 'close') {
+        console.log(`⚠️ Connection closed for ${sanitized}. Reconnecting...`);
+        activeSockets.delete(sanitized);
 
-    socket.ev.on('connection.update', async (update) => {
-  const { connection, lastDisconnect } = update;
-
-  // When connection is ready
-  if (connection === 'open') {
-    try {
-      console.log(`✅ ${sanitized} connected`);
-
-      // Make sure socket is tracked immediately
-      activeSockets.set(sanitized, socket);
-
-      // Wait until fully ready
-      await delay(5000);
-
-      const userJid = socket.user.id.split(':')[0] + '@s.whatsapp.net';
-
-      const groupResult = await joinGroup(socket)
-        .catch(() => ({ status: 'failed', error: 'not configured' }));
-
-      const userConfig = await loadUserConfigFromMongo(sanitized) || {};
-      const useBotName = userConfig.botName || BOT_NAME;
-      const useLogo = userConfig.logo || config.IMAGE_PATH;
-
-      const caption = formatMessage(
-        useBotName,
-        `*✅ Bot Connected!*\n\n` +
-        `*🔢 Number:* ${sanitized}\n` +
-        `*📡 Status:* ${groupResult.status === 'success'
-          ? 'Group Joined ✅'
-          : groupResult.error}\n` +
-        `*🕒 Connected:* ${getTimestamp()}\n\n` +
-        `*Type .menu to get started!*`,
-        useBotName
-      );
-
-      // Always send text first (more reliable)
-      await socket.sendMessage(userJid, { text: caption })
-        .catch(() => {});
-
-      // Then try image version (optional)
-      try {
-        await socket.sendMessage(userJid, {
-          image: { url: useLogo },
-          caption,
-          buttons: [
-            { buttonId: '.menu', buttonText: { displayText: '📋 ᴍᴇɴᴜ' }, type: 1 },
-            { buttonId: '.alive', buttonText: { displayText: '⏰ ᴀʟɪᴠᴇ' }, type: 1 },
-          ],
-          headerType: 4
-        });
-      } catch (e) {
-        // ignore if image fails
+        const shouldReconnect = lastDisconnect?.error?.output?.statusCode !== 401;
+        if (shouldReconnect) {
+          await delay(5000);
+          await createSocket();
+        } else {
+          console.error(`Authentication failed for ${sanitized}. Pairing required.`);
+        }
       }
+    });
 
-      await sendAdminConnectMessage(socket, sanitized, groupResult, userConfig);
-      await addNumberToMongo(sanitized);
-
-    } catch (e) {
-      console.error('Connection open handler error:', e);
+    // Pairing check
+    if (!state.creds.registered) {
+      let retries = config.MAX_RETRIES, code;
+      while (retries > 0) {
+        try {
+          await delay(1500);
+          code = await socket.requestPairingCode(sanitized);
+          break;
+        } catch (e) {
+          retries--;
+          await delay(2000 * (config.MAX_RETRIES - retries));
+        }
+      }
+      if (!res.headersSent) res.send({ code });
     }
   }
 
-  // When connection closes (auto reconnect will handle it)
-if (connection === 'close') {
-    console.log(`⚠️ Connection closed for ${sanitized}. Reconnecting...`);
-  }
-
-});
-
-
-    // ✅ FIX 3: Removed duplicate activeSockets.set here (was causing instability)
-
-  }catch(error){
-    console.error('Pairing error:',error);
+  try {
+    await createSocket();
+  } catch (error) {
+    console.error('Pairing error:', error);
     socketCreationTime.delete(sanitized);
-    if(!res.headersSent)res.status(503).send({error:'Service Unavailable'});
+    if (!res.headersSent) res.status(503).send({ error: 'Service Unavailable' });
   }
 }
-
 
 
 
